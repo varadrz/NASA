@@ -8,6 +8,15 @@
       "registration_id": "123",
       "is_disabled": false,
       "created_at": "2026-05-30T11:50:24.694Z"
+    },
+    {
+      "id": "part-v5dpkk9sf",
+      "full_name": "VARAD PATIL",
+      "college_name": "Zone 6",
+      "phone_number": "1234567890",
+      "registration_id": "12345",
+      "is_disabled": false,
+      "created_at": "2026-05-30T12:39:10.863Z"
     }
   ],
   "quizzes": [
@@ -2135,6 +2144,15 @@
       "next_barrel_id": 3,
       "current_attempt_id": null,
       "updated_at": "2026-05-30T12:36:22.810Z"
+    },
+    {
+      "participant_id": "part-v5dpkk9sf",
+      "completed_quizzes": 0,
+      "total_score": 0,
+      "total_time": 0,
+      "next_barrel_id": 3,
+      "current_attempt_id": null,
+      "updated_at": "2026-05-30T12:39:10.863Z"
     }
   ],
   "audit_logs": [
@@ -2297,6 +2315,46 @@
       "ip_address": "::1",
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
       "created_at": "2026-05-30T12:36:22.815Z"
+    },
+    {
+      "id": "audit-xyuu3o48n",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Participant registered: VARAD PATIL (12345) from Zone 6",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:39:10.877Z"
+    },
+    {
+      "id": "audit-1kb69dych",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Participant logged in: VARAD PATIL (12345)",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:39:29.018Z"
+    },
+    {
+      "id": "audit-e9zf893zn",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Participant logged in: VARAD PATIL (12345)",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:40:53.730Z"
+    },
+    {
+      "id": "audit-bzj30y8m4",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Participant logged in: VARAD PATIL (12345)",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.26100.8457",
+      "created_at": "2026-05-30T12:40:57.281Z"
+    },
+    {
+      "id": "audit-lk69hkuj3",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Participant logged in: VARAD PATIL (12345)",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:41:05.211Z"
     }
   ]
 }

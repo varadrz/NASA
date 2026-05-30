@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   if (!token) {
     return NextResponse.json(
       { authenticated: false, error: 'No active session found.' },
-      { status: 401 }
+      { status: 200 }
     );
   }
 
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
   if (!decoded) {
     const response = NextResponse.json(
       { authenticated: false, error: 'Session expired or invalid.' },
-      { status: 401 }
+      { status: 200 }
     );
     // Clear invalid cookie
     response.cookies.delete('participant_session');
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     if (!participant) {
       const response = NextResponse.json(
         { authenticated: false, error: 'Participant not found.' },
-        { status: 401 }
+        { status: 200 }
       );
       response.cookies.delete('participant_session');
       return response;
