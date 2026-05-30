@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   const userAgent = request.headers.get('user-agent') || 'Unknown';
 
   // 2. Enforce Rate Limiting (max 5 login attempts per IP per minute)
-  const rl = await rateLimit(ip, 5, 60);
+  const rl = await rateLimit(`login:${ip}`, 5, 60);
   if (!rl.success) {
     return NextResponse.json(
       { error: 'Too many login attempts. Please wait a minute and try again.' },

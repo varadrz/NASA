@@ -27,7 +27,7 @@ export async function GET(
   const userAgent = request.headers.get('user-agent') || 'Unknown';
 
   // 2. Rate Limiting (max 30 requests per minute per IP for scanning)
-  const rl = await rateLimit(ip, 30, 60);
+  const rl = await rateLimit(`scan:${ip}`, 30, 60);
   if (!rl.success) {
     return NextResponse.json(
       { error: 'Too many requests. Please wait a moment.' },

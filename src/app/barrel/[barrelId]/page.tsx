@@ -412,8 +412,9 @@ export default function BarrelQuizPage({
 
                     {/* Options Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-0 md:pl-12">
-                      {q.options.map((opt) => {
+                      {q.options.map((opt, optIdx) => {
                         const isSelected = selections[q.id] === opt.value;
+                        const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
                         return (
                           <button
                             key={opt.value}
@@ -426,7 +427,7 @@ export default function BarrelQuizPage({
                             }`}
                           >
                             <span className="font-mono text-xs font-bold bg-brand-on-surface text-brand-surface w-6 h-6 flex items-center justify-center shrink-0">
-                              {opt.value}
+                              {letter}
                             </span>
                             <span className="text-sm font-bold text-brand-on-surface self-center">{opt.text}</span>
                           </button>

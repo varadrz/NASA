@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   const userAgent = request.headers.get('user-agent') || 'Unknown';
 
   // 2. Rate Limiting (max 10 submissions per minute per IP to prevent spamming)
-  const rl = await rateLimit(ip, 10, 60);
+  const rl = await rateLimit(`submit:${ip}`, 10, 60);
   if (!rl.success) {
     return NextResponse.json(
       { error: 'Too many submissions. Please wait a moment.' },

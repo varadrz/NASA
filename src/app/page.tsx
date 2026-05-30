@@ -402,7 +402,7 @@ export default function Home() {
                     <div className="space-y-4 pt-4 border-t border-brand-outline-variant text-xs text-brand-on-surface-variant leading-relaxed">
                       <div className="flex gap-2">
                         <span className="font-bold text-brand-secondary">✓</span>
-                        <span>Points contribute to your college and individual scoreboard standing.</span>
+                        <span>Points contribute to your Zone and individual scoreboard standing.</span>
                       </div>
                       <div className="flex gap-2">
                         <span className="font-bold text-brand-primary">!</span>
