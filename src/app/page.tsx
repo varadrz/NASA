@@ -227,6 +227,18 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!loading && typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('scan') === 'true') {
+        setIsScannerOpen(true);
+        // Clear the search param from URL so it doesn't trigger on refresh
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+  }, [loading]);
+
   const formatTime = (secs: number) => {
     const h = Math.floor(secs / 3600);
     const m = Math.floor((secs % 3600) / 60);

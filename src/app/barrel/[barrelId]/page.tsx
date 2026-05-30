@@ -547,7 +547,7 @@ export default function BarrelQuizPage({
 
                   {!submittedResult.progress.is_finished ? (
                     <Link
-                      href={`/barrel/${submittedResult.progress.next_barrel_id}`}
+                      href="/?scan=true"
                       className="flex-1 py-3.5 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-display text-xs uppercase font-bold shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-primary-container active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(28,27,27,1)] transition-all text-center"
                     >
                       Scan Next
