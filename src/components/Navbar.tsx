@@ -104,12 +104,12 @@ export default function Navbar() {
       <nav className="sticky top-0 z-40 bg-brand-surface border-b-4 border-brand-on-surface shadow-[4px_4px_0px_0px_rgba(28,27,27,1)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            
+
             {/* Logo Section */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-2 group">
                 <span className="font-display font-black text-lg md:text-xl tracking-tighter uppercase text-brand-on-surface">
-                  68th NASA CONVENTION
+                  ANNUAL NASA CONVENTION
                 </span>
               </Link>
             </div>
@@ -123,11 +123,10 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`flex items-center gap-2 px-3 py-1.5 border-2 text-xs uppercase font-mono font-bold tracking-wider transition ${
-                      isActive
-                        ? 'bg-brand-secondary text-brand-on-secondary border-brand-on-surface'
-                        : 'text-brand-on-surface-variant border-transparent hover:border-brand-on-surface hover:text-brand-on-surface'
-                    }`}
+                    className={`flex items-center gap-2 px-3 py-1.5 border-2 text-xs uppercase font-mono font-bold tracking-wider transition ${isActive
+                      ? 'bg-brand-secondary text-brand-on-secondary border-brand-on-surface'
+                      : 'text-brand-on-surface-variant border-transparent hover:border-brand-on-surface hover:text-brand-on-surface'
+                      }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
                     {link.name}
@@ -155,7 +154,7 @@ export default function Navbar() {
                       <span>{progress?.completed_quizzes || 0}/10 BARRELS</span>
                     </div>
                   </div>
-                  
+
                   {/* Square block avatar - Bauhaus style */}
                   <div className="h-9 w-9 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface flex items-center justify-center font-display font-bold text-sm shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]">
                     {getInitials(participant.full_name)}
@@ -226,16 +225,15 @@ export default function Navbar() {
 
       {/* Mobile Bottom Tab Bar (App-style layout) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-brand-surface border-t-4 border-brand-on-surface h-16 flex items-center justify-around shadow-[0_-4px_12px_rgba(0,0,0,0.1)]">
-        
+
         {/* Tab 1: Home / Hunt */}
         <Link
           href="/"
           onClick={() => setProfileOpen(false)}
-          className={`flex flex-col items-center justify-center w-12 h-12 transition ${
-            pathname === '/' && !profileOpen
-              ? 'text-brand-primary scale-105'
-              : 'text-brand-on-surface-variant opacity-80'
-          }`}
+          className={`flex flex-col items-center justify-center w-12 h-12 transition ${pathname === '/' && !profileOpen
+            ? 'text-brand-primary scale-105'
+            : 'text-brand-on-surface-variant opacity-80'
+            }`}
         >
           <LayoutDashboard className="h-5 w-5" />
           <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Hunt</span>
@@ -245,11 +243,10 @@ export default function Navbar() {
         <Link
           href="/leaderboard"
           onClick={() => setProfileOpen(false)}
-          className={`flex flex-col items-center justify-center w-12 h-12 transition ${
-            pathname === '/leaderboard' && !profileOpen
-              ? 'text-brand-primary scale-105'
-              : 'text-brand-on-surface-variant opacity-80'
-          }`}
+          className={`flex flex-col items-center justify-center w-12 h-12 transition ${pathname === '/leaderboard' && !profileOpen
+            ? 'text-brand-primary scale-105'
+            : 'text-brand-on-surface-variant opacity-80'
+            }`}
         >
           <Award className="h-5 w-5" />
           <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Scores</span>
@@ -268,11 +265,10 @@ export default function Navbar() {
         <Link
           href="/map"
           onClick={() => setProfileOpen(false)}
-          className={`flex flex-col items-center justify-center w-12 h-12 transition ${
-            pathname === '/map' && !profileOpen
-              ? 'text-brand-primary scale-105'
-              : 'text-brand-on-surface-variant opacity-80'
-          }`}
+          className={`flex flex-col items-center justify-center w-12 h-12 transition ${pathname === '/map' && !profileOpen
+            ? 'text-brand-primary scale-105'
+            : 'text-brand-on-surface-variant opacity-80'
+            }`}
         >
           <Compass className="h-5 w-5" />
           <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Map</span>
@@ -281,11 +277,10 @@ export default function Navbar() {
         {/* Tab 5: Profile Sheet Trigger */}
         <button
           onClick={() => setProfileOpen(!profileOpen)}
-          className={`flex flex-col items-center justify-center w-12 h-12 transition ${
-            profileOpen
-              ? 'text-brand-primary scale-105'
-              : 'text-brand-on-surface-variant opacity-80'
-          }`}
+          className={`flex flex-col items-center justify-center w-12 h-12 transition ${profileOpen
+            ? 'text-brand-primary scale-105'
+            : 'text-brand-on-surface-variant opacity-80'
+            }`}
         >
           <User className="h-5 w-5" />
           <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Profile</span>
@@ -297,18 +292,18 @@ export default function Navbar() {
       {profileOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex items-end justify-center">
           {/* Dark Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/60 transition-opacity duration-300"
             onClick={() => setProfileOpen(false)}
           />
-          
+
           {/* Bottom Sheet Container */}
           <div className="relative w-full bg-brand-surface border-t-4 border-brand-on-surface p-6 pb-12 space-y-6 rounded-t-2xl shadow-[0_-8px_24px_rgba(0,0,0,0.2)] animate-slide-up">
-            
+
             {/* Header */}
             <div className="flex justify-between items-center">
               <span className="font-display font-black text-sm uppercase text-brand-on-surface">Participant Profile</span>
-              <button 
+              <button
                 onClick={() => setProfileOpen(false)}
                 className="p-1.5 border-2 border-brand-on-surface bg-brand-surface text-brand-on-surface hover:bg-brand-surface-low transition active:translate-y-[1px] font-bold text-xs"
               >
