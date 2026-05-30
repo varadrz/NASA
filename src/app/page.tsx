@@ -201,10 +201,18 @@ export default function Home() {
         if (data.authenticated) {
           setParticipant(data.participant);
           setProgress(data.progress);
+        } else {
+          setParticipant(null);
+          setProgress(null);
         }
+      } else {
+        setParticipant(null);
+        setProgress(null);
       }
     } catch (err) {
       console.error('Error checking session:', err);
+      setParticipant(null);
+      setProgress(null);
     } finally {
       setLoading(false);
     }
@@ -212,6 +220,11 @@ export default function Home() {
 
   useEffect(() => {
     fetchSession();
+    const handleRefresh = () => fetchSession();
+    window.addEventListener('refresh-session', handleRefresh);
+    return () => {
+      window.removeEventListener('refresh-session', handleRefresh);
+    };
   }, []);
 
   const formatTime = (secs: number) => {

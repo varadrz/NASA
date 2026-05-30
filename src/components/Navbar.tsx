@@ -64,6 +64,9 @@ export default function Navbar() {
     try {
       const res = await fetch('/api/auth/session', { method: 'DELETE' });
       if (res.ok) {
+        setParticipant(null);
+        setProgress(null);
+        window.dispatchEvent(new Event('refresh-session'));
         router.push('/');
         router.refresh();
       }
