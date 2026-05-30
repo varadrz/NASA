@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-surface: #fcf9f8;
+  --color-brand-surface-dim: #dcd9d9;
+  --color-brand-surface-low: #f6f3f2;
+  --color-brand-surface-container: #f0eded;
+  --color-brand-surface-high: #eae7e7;
+  --color-brand-surface-highest: #e5e2e1;
+  --color-brand-on-surface: #1c1b1b;
+  --color-brand-on-surface-variant: #55433e;
+  --color-brand-outline: #88726d;
+  --color-brand-outline-variant: #dbc1ba;
+  
+  --color-brand-primary: #94442e; /* Terracotta Red */
+  --color-brand-primary-container: #b35c44;
+  --color-brand-on-primary: #ffffff;
+  
+  --color-brand-secondary: #006a61; /* Teal Green */
+  --color-brand-secondary-container: #99f3e6;
+  --color-brand-on-secondary: #ffffff;
+  
+  --color-brand-tertiary: #775700;
+  --color-brand-mustard: #f1bf52; /* Mustard Yellow */
+  --color-brand-error: #ba1a1a;
+  
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+/* Force sharp corners across all components to respect the Brutalist theme */
+*, *::before, *::after {
+  border-radius: 0px !important;
+}
+
+body {
+  background-color: var(--color-brand-surface);
+  color: var(--color-brand-on-surface);
+  font-family: var(--font-sans);
+  background-image: radial-gradient(circle, var(--color-brand-outline-variant) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+}
+
+/* Hard Drop Shadows */
+.hard-shadow {
+  box-shadow: 4px 4px 0px 0px #1c1b1b;
+}
+
+.hard-shadow-lg {
+  box-shadow: 8px 8px 0px 0px #1c1b1b;
+}
+
+.hard-shadow-sm {
+  box-shadow: 2px 2px 0px 0px #1c1b1b;
+}
+
+/* Brutalist Button States */
+.btn-brutalist-primary {
+  background-color: var(--color-brand-primary);
+  color: var(--color-brand-on-primary);
+  border: 2px solid #1c1b1b;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 4px 4px 0px 0px #1c1b1b;
+}
+
+.btn-brutalist-primary:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0px 0px #1c1b1b;
+}
+
+.btn-brutalist-primary:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px 0px #1c1b1b;
+}
+
+.btn-brutalist-secondary {
+  background-color: var(--color-brand-secondary);
+  color: var(--color-brand-on-secondary);
+  border: 2px solid #1c1b1b;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 4px 4px 0px 0px #1c1b1b;
+}
+
+.btn-brutalist-secondary:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0px 0px #1c1b1b;
+}
+
+.btn-brutalist-secondary:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px 0px #1c1b1b;
+}
+
+.btn-brutalist-neutral {
+  background-color: var(--color-brand-surface);
+  color: var(--color-brand-on-surface);
+  border: 2px solid #1c1b1b;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-brutalist-neutral:hover {
+  background-color: var(--color-brand-surface-low);
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0px 0px #1c1b1b;
+}
+
+.btn-brutalist-neutral:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0px 0px 0px 0px #1c1b1b;
+}
+
+/* Input Fields */
+.input-brutalist {
+  background-color: var(--color-brand-surface);
+  border: 2px solid #1c1b1b;
+  color: var(--color-brand-on-surface);
+  font-family: var(--font-sans);
+  transition: all 0.15s ease-in-out;
+}
+
+.input-brutalist:focus {
+  outline: none;
+  border-color: var(--color-brand-secondary);
+  box-shadow: 3px 3px 0px 0px #1c1b1b;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-brand-surface-low);
+  border-left: 2px solid #1c1b1b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-primary);
+  border: 2px solid #1c1b1b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-primary-container);
+}

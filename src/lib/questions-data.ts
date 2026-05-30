@@ -1,0 +1,1691 @@
+// Pool of 200 questions (20 per quiz/barrel) for NASA Hyderabad Heritage Quiz Hunt
+// Location: src/lib/questions-data.ts
+
+export interface QuestionInput {
+  question: string;
+  option_a: string;
+  option_b: string;
+  option_c: string;
+  option_d: string;
+  correct_answer: 'A' | 'B' | 'C' | 'D';
+}
+
+export interface QuizSeed {
+  barrel_id: number;
+  title: string;
+  description: string;
+  questions: QuestionInput[];
+}
+
+export const questionsData: QuizSeed[] = [
+  {
+    barrel_id: 1,
+    title: "Charminar & Qutb Shahi Dynasty",
+    description: "Explore the architectural genius and structural elements of the Charminar and early Islamic structures of Hyderabad.",
+    questions: [
+      {
+        question: "Which material was primarily used for the intricate stucco decorations on the arches of Charminar?",
+        option_a: "Lime plaster mixed with marble dust and egg whites",
+        option_b: "Pure white Rajasthan marble",
+        option_c: "Finely carved red sandstone",
+        option_d: "Granite covered with lime wash",
+        correct_answer: "A"
+      },
+      {
+        question: "Who was the primary architect commissioned by Muhammad Quli Qutb Shah to design Hyderabad and the Charminar?",
+        option_a: "Mir Momin Astarabadi",
+        option_b: "Yaqut bin Yaqub",
+        option_c: "Malik Ambar",
+        option_d: "Mirza Ghiyas Beg",
+        correct_answer: "A"
+      },
+      {
+        question: "Charminar was built in 1591 to commemorate the eradication of which devastating epidemic?",
+        option_a: "Plague",
+        option_b: "Cholera",
+        option_c: "Smallpox",
+        option_d: "Malaria",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the approximate height of each of the four minarets of Charminar from the ground level?",
+        option_a: "48.7 meters (approx. 160 feet)",
+        option_b: "30.5 meters (approx. 100 feet)",
+        option_c: "62.1 meters (approx. 204 feet)",
+        option_d: "38.2 meters (approx. 125 feet)",
+        correct_answer: "A"
+      },
+      {
+        question: "On which floor of the Charminar is the oldest surviving mosque of the city located?",
+        option_a: "Second Floor",
+        option_b: "First Floor",
+        option_c: "Ground Floor",
+        option_d: "Roof/Terrace level only",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural system is used to support the upper galleries of the Charminar?",
+        option_a: "Corbelled stone arches",
+        option_b: "Pointed squinches and intersecting arches",
+        option_c: "Post and beam timber framing",
+        option_d: "Monolithic granite pillars",
+        correct_answer: "B"
+      },
+      {
+        question: "What urban design layout did Mir Momin Astarabadi use for Hyderabad, centering around the Charminar?",
+        option_a: "Charbagh / Gridiron hybrid layout",
+        option_b: "Radial concentric circles",
+        option_c: "Linear organic settlement plan",
+        option_d: "Spiraling axial pattern",
+        correct_answer: "A"
+      },
+      {
+        question: "The double-arched gateway located north of Charminar, which served as the royal entrance, is known as what?",
+        option_a: "Char Kaman",
+        option_b: "Kali Kaman",
+        option_c: "Machli Kaman",
+        option_d: "Sher-e-Batil Kaman",
+        correct_answer: "A"
+      },
+      {
+        question: "Which water fountain, situated in the center of the Char Kaman grid, supplied water to the palace complexes?",
+        option_a: "Gulzar Houz",
+        option_b: "Kali Houz",
+        option_c: "Salar Jung Houz",
+        option_d: "Nizam Houz",
+        correct_answer: "A"
+      },
+      {
+        question: "Which stone forms the core structure of the Charminar before being finished with stucco?",
+        option_a: "Granite and Limestone",
+        option_b: "Red Sandstone",
+        option_c: "Laterite",
+        option_d: "Basalt",
+        correct_answer: "A"
+      },
+      {
+        question: "What architectural feature of the Charminar reflects Persian influence?",
+        option_a: "Bulbous domes and high minarets",
+        option_b: "Pillar-beam-bracket construction",
+        option_c: "Carved floral brackets under balconies",
+        option_d: "The use of black basalt panels",
+        correct_answer: "A"
+      },
+      {
+        question: "How many arches does the Charminar have opening to the four cardinal directions?",
+        option_a: "4 grand arches",
+        option_b: "8 symmetrical arches",
+        option_c: "12 miniature arches",
+        option_d: "16 intersecting arches",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the function of the small vents/windows on the minarets of Charminar?",
+        option_a: "Structural load reduction and ventilation",
+        option_b: "To house oil lamps for city lighting",
+        option_c: "For defense and archery slots",
+        option_d: "To act as acoustic pipes",
+        correct_answer: "A"
+      },
+      {
+        question: "Which dynasty ruled Hyderabad when Charminar was built?",
+        option_a: "Qutb Shahi Dynasty",
+        option_b: "Asaf Jahi Dynasty",
+        option_c: "Bahmani Sultanate",
+        option_d: "Mughal Empire",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the shape of the plan of Charminar?",
+        option_a: "Square",
+        option_b: "Octagonal",
+        option_c: "Hexagonal",
+        option_d: "Rectangular",
+        correct_answer: "A"
+      },
+      {
+        question: "What decorative motif, symbolizing prosperity, is carved extensively over the arches of Charminar?",
+        option_a: "Lotus and chain motifs",
+        option_b: "Lion and sun symbols",
+        option_c: "Geometric star patterns only",
+        option_d: "Calligraphic inscriptions only",
+        correct_answer: "A"
+      },
+      {
+        question: "Which heritage mosque, located near Charminar, was built using granite blocks cut from a single quarry?",
+        option_a: "Mecca Masjid",
+        option_b: "Toli Masjid",
+        option_c: "Begumpet Mosque",
+        option_d: "Hayat Bakshi Masjid",
+        correct_answer: "A"
+      },
+      {
+        question: "Where were the bricks used in the central arch of Mecca Masjid reportedly imported from?",
+        option_a: "Mecca, Saudi Arabia",
+        option_b: "Isfahan, Iran",
+        option_c: "Baghdad, Iraq",
+        option_d: "Istanbul, Turkey",
+        correct_answer: "A"
+      },
+      {
+        question: "Which Qutb Shahi ruler completed the construction of Mecca Masjid?",
+        option_a: "It was completed by Mughal Emperor Aurangzeb",
+        option_b: "Muhammad Quli Qutb Shah",
+        option_c: "Abdullah Qutb Shah",
+        option_d: "Abul Hasan Tana Shah",
+        correct_answer: "A"
+      },
+      {
+        question: "The architectural style of the Qutb Shahi dynasty is best described as a synthesis of which styles?",
+        option_a: "Persian (Safavid) and South Indian Hindu (Vijayanagara)",
+        option_b: "Mughal and Gothic styles",
+        option_c: "Saracenic and Romanesque styles",
+        option_d: "Seljuk Turkish and Buddhist styles",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 2,
+    title: "Golconda Fort & Acoustics",
+    description: "Uncover the military engineering, acoustic systems, and water supply structures of the Golconda Fort.",
+    questions: [
+      {
+        question: "What architectural feature at the 'Bala Hissar' gate causes sound to carry to the hilltop palace?",
+        option_a: "A series of coffered plaster domes that compress sound waves",
+        option_b: "Narrow stone tunnels acting as whispering tubes",
+        option_c: "Highly polished granite walls reflecting sound",
+        option_d: "A hidden copper pipe system in the masonry",
+        correct_answer: "A"
+      },
+      {
+        question: "Which material makes up the primary core of the massive double-walled ramparts of Golconda Fort?",
+        option_a: "Granite blocks bonded with lime mortar and lead",
+        option_b: "Solid basalt blocks laid dry without mortar",
+        option_c: "Mud mortar and rubble stone faced with granite slabs",
+        option_d: "Brick masonry reinforced with iron rods",
+        correct_answer: "C"
+      },
+      {
+        question: "How did the Golconda water supply system lift water to the high palaces on the hill?",
+        option_a: "Using a series of Persian wheels (Saqia) and overhead clay pipes",
+        option_b: "Via deep gravity-fed artesian wells",
+        option_c: "Through elephant-powered pulley lifts using leather bags",
+        option_d: "By manual siphon systems operated by guards",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the purpose of the iron spikes on the Fateh Darwaza of Golconda Fort?",
+        option_a: "To prevent war elephants from battering down the gate",
+        option_b: "To act as lightning rods for the fort",
+        option_c: "For decorative display of royal weapons",
+        option_d: "To align the gate with magnetic north",
+        correct_answer: "A"
+      },
+      {
+        question: "Which palace inside Golconda Fort is known for its multi-tiered arches and natural ventilation system?",
+        option_a: "Taramati Baradari",
+        option_b: "Bala Hissar Palace",
+        option_c: "Naya Qila Palace",
+        option_d: "Katora Houz",
+        correct_answer: "B"
+      },
+      {
+        question: "The acoustics of the 'Whispering Gallery' in Golconda Fort are attributed to what structural form?",
+        option_a: "The semi-elliptical dome shape",
+        option_b: "The use of hollow clay bricks in the ceiling",
+        option_c: "The specific angle of the side walls",
+        option_d: "The combination of limestone and granite plaster",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the outermost wall perimeter of Golconda Fort?",
+        option_a: "10 kilometers",
+        option_b: "3 kilometers",
+        option_c: "15 kilometers",
+        option_d: "7 kilometers",
+        correct_answer: "A"
+      },
+      {
+        question: "Which gate served as the main entrance to the Golconda Fort?",
+        option_a: "Fateh Darwaza",
+        option_b: "Bala Hissar Darwaza",
+        option_c: "Moti Darwaza",
+        option_d: "Banjara Darwaza",
+        correct_answer: "B"
+      },
+      {
+        question: "What defensive feature was built directly in front of the fort gates to prevent frontal ramming attacks?",
+        option_a: "A sharp L-shaped bent entry path",
+        option_b: "A wide water moat filled with crocodiles",
+        option_c: "A drawbridge with heavy iron chains",
+        option_d: "A steep stone slide for rolling boulders",
+        correct_answer: "A"
+      },
+      {
+        question: "Which iconic tree, over 400 years old and having a hollow trunk of massive girth, is located in the Naya Qila area of the fort?",
+        option_a: "African Baobab Tree (Hathiyan ka Jhar)",
+        option_b: "Great Banyan Tree",
+        option_c: "Sacred Peepal Tree",
+        option_d: "Giant Mahogany",
+        correct_answer: "A"
+      },
+      {
+        question: "What was the purpose of the 'Katora Houz' pool outside the inner fortifications?",
+        option_a: "A water reservoir fed by channels from nearby lakes",
+        option_b: "A royal swimming pool for the harem",
+        option_c: "A decorative reflection pool for light shows",
+        option_d: "A moat filtration basin",
+        correct_answer: "A"
+      },
+      {
+        question: "Who was the founder of the Golconda Fort before it was fortified by the Qutb Shahis?",
+        option_a: "Kakatiya Dynasty (as a mud fort)",
+        option_b: "Chalukya Dynasty",
+        option_c: "Rashtrakuta Dynasty",
+        option_d: "Bahmani Sultanate",
+        correct_answer: "A"
+      },
+      {
+        question: "What material was used to coat the inside of the clay pipes in the Golconda water system to prevent leaks?",
+        option_a: "Glazed terra cotta slip",
+        option_b: "Natural rubber coating",
+        option_c: "Bitumen and pine resin",
+        option_d: "Beeswax and lime sealant",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural method was used to span the openings of the granaries inside the fort?",
+        option_a: "Semicircular barrel vaulting",
+        option_b: "Timber beams with iron brackets",
+        option_c: "Corbelled stone slabs",
+        option_d: "Flat brick arches",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the significance of the 'Bala Hissar'?",
+        option_a: "The Citadel / High Palace at the summit",
+        option_b: "The outer defensive ditch",
+        option_c: "The Royal Armoury",
+        option_d: "The public assembly hall",
+        correct_answer: "A"
+      },
+      {
+        question: "Which prison cell, located at the top of Golconda Fort, is famous for stone carvings made by a devotee of Lord Rama?",
+        option_a: "Bhakt Ramadasu Jail",
+        option_b: "Tana Shah Jail",
+        option_c: "Aurangzeb Dungeon",
+        option_d: "Sidi Masood Cell",
+        correct_answer: "A"
+      },
+      {
+        question: "What type of stone was mined near Golconda that made it globally famous?",
+        option_a: "Diamonds (Kollur Mine)",
+        option_b: "Rubies",
+        option_c: "Emeralds",
+        option_d: "Sapphires",
+        correct_answer: "A"
+      },
+      {
+        question: "How many bastions (Burj) are there along the outer walls of Golconda Fort?",
+        option_a: "87 bastions",
+        option_b: "52 bastions",
+        option_c: "120 bastions",
+        option_d: "64 bastions",
+        correct_answer: "A"
+      },
+      {
+        question: "What military defensive element is placed on top of the fort bastions?",
+        option_a: "Cannons (such as Fateh Rahber)",
+        option_b: "Giant catapults",
+        option_c: "Hot oil cauldrons",
+        option_d: "Archery towers",
+        correct_answer: "A"
+      },
+      {
+        question: "The ruins of the Royal Bath (Hammam) in Golconda demonstrate which architectural feature?",
+        option_a: "Hypocaust heating and cold/hot water chambers",
+        option_b: "Solar heating panels",
+        option_c: "Natural spring-fed pools only",
+        option_d: "Deep wells under the floor",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 3,
+    title: "Chowmahalla Palace & Nizams",
+    description: "Delve into the European-styled neoclassical architectures, courtyards, and grand chandeliers of Chowmahalla.",
+    questions: [
+      {
+        question: "What does the name 'Chowmahalla' literally mean?",
+        option_a: "Four Palaces",
+        option_b: "Five Courtyards",
+        option_c: "King's Palace",
+        option_d: "White Mansion",
+        correct_answer: "A"
+      },
+      {
+        question: "Which architectural style is predominantly seen in the Chowmahalla Palace, reflecting 18th and 19th-century European influence?",
+        option_a: "Neoclassical style with Baroque details",
+        option_b: "Gothic Revival",
+        option_c: "Pure Indo-Saracenic",
+        option_d: "Art Deco",
+        correct_answer: "A"
+      },
+      {
+        question: "The grand Durbar Hall where the Nizams held their official ceremonies is known as what?",
+        option_a: "Khilwat Mubarak",
+        option_b: "Aftab Mahal",
+        option_c: "Mehtab Mahal",
+        option_d: "Baradari Hall",
+        correct_answer: "A"
+      },
+      {
+        question: "What unique material was used to carve the royal seat (Takht-e-Nishan) in the Durbar Hall?",
+        option_a: "Pure white marble from Rajasthan",
+        option_b: "Engraved green jade",
+        option_c: "Gold-plated teakwood",
+        option_d: "Monolithic black granite",
+        correct_answer: "A"
+      },
+      {
+        question: "How many Belgian crystal chandeliers hang from the ceiling of the Khilwat Mubarak?",
+        option_a: "19 chandeliers",
+        option_b: "7 chandeliers",
+        option_c: "12 chandeliers",
+        option_d: "32 chandeliers",
+        correct_answer: "A"
+      },
+      {
+        question: "Which building in the northern courtyard features a prominent clock tower designed by European watchmakers?",
+        option_a: "Khilwat Clock Tower (Lakkad Kot)",
+        option_b: "Aftab Clock Tower",
+        option_c: "Baradari Tower",
+        option_d: "Zenana Gate Tower",
+        correct_answer: "A"
+      },
+      {
+        question: "Chowmahalla Palace was modeled on the palace of the Shah of Iran in which city?",
+        option_a: "Tehran (Golestan Palace)",
+        option_b: "Isfahan",
+        option_c: "Shiraz",
+        option_d: "Tabriz",
+        correct_answer: "A"
+      },
+      {
+        question: "Which Nizam initiated the construction of the Chowmahalla Palace in 1750?",
+        option_a: "Nizam Salabat Jung",
+        option_b: "Nizam-ul-Mulk Asaf Jah I",
+        option_c: "Nizam Ali Khan Asaf Jah II",
+        option_d: "Nizam Mir Mahboob Ali Khan",
+        correct_answer: "A"
+      },
+      {
+        question: "Which palace in the Chowmahalla complex is painted in a pastel yellow shade and features a grand dome?",
+        option_a: "Aftab Mahal",
+        option_b: "Mehtab Mahal",
+        option_c: "Tahniat Mahal",
+        option_d: "Afzal Mahal",
+        correct_answer: "A"
+      },
+      {
+        question: "What landscaping concept separates the Northern and Southern courtyards of Chowmahalla Palace?",
+        option_a: "A series of rectangular lawns with central fountains",
+        option_b: "A Japanese zen rock garden",
+        option_c: "A circular rose garden labyrinth",
+        option_d: "A dense fruit orchard with stepwell irrigation",
+        correct_answer: "A"
+      },
+      {
+        question: "The massive pillars in the Durbar Hall are finished with what premium technique?",
+        option_a: "Lime stucco polished to look like marble (Araish)",
+        option_b: "White marble cladding from Italy",
+        option_c: "Oil paint with gold leaf detailing",
+        option_d: "Terrazzo tile installation",
+        correct_answer: "A"
+      },
+      {
+        question: "Which historic vehicle collection is permanently exhibited in the Chowmahalla Palace garages?",
+        option_a: "Vintage Rolls-Royces and Buicks",
+        option_b: "Royal steam carriages",
+        option_c: "Nizam's fighter planes",
+        option_d: "Military tanks",
+        correct_answer: "A"
+      },
+      {
+        question: "What type of roof structure is used in the single-story residential blocks surrounding the courtyards?",
+        option_a: "Flat terrace with brick-jelly concrete",
+        option_b: "Corrugated iron sheets",
+        option_c: "Sloped Mangalore tiles",
+        option_d: "Thatch roofs supported by steel",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the structural material of the main gates of Chowmahalla?",
+        option_a: "Teakwood reinforced with iron studs",
+        option_b: "Cast bronze",
+        option_c: "Wrought iron grillwork",
+        option_d: "Solid granite portals only",
+        correct_answer: "A"
+      },
+      {
+        question: "Which gallery in Chowmahalla houses the Quran collection, displaying hand-written scripts in gold?",
+        option_a: "Quran Exhibit in the Southern Courtyard",
+        option_b: "Khilwat Arms Gallery",
+        option_c: "Baggage Room",
+        option_d: "Mir Osman Ali Khan Gallery",
+        correct_answer: "A"
+      },
+      {
+        question: "Which of the following palaces is part of the Chowmahalla Southern Courtyard?",
+        option_a: "Aftab Mahal, Afzal Mahal, Tahniat Mahal, and Mehtab Mahal",
+        option_b: "Falaknuma, Purani Haveli, King Kothi",
+        option_c: "Bella Vista, Hill Fort, Asman Garh",
+        option_d: "Koti Residency",
+        correct_answer: "A"
+      },
+      {
+        question: "What architectural feature of the windows in Chowmahalla helps reduce glare in summer?",
+        option_a: "Stained glass fanlights and timber louvers (jafris)",
+        option_b: "Double glazing with argon gas",
+        option_c: "Heavy marble panels without openings",
+        option_d: "Black tint film",
+        correct_answer: "A"
+      },
+      {
+        question: "In what year did the Chowmahalla Palace win the UNESCO Asia-Pacific Heritage Award for Culture Heritage Conservation?",
+        option_a: "2010",
+        option_b: "2005",
+        option_c: "2015",
+        option_d: "1998",
+        correct_answer: "A"
+      },
+      {
+        question: "What was the purpose of the 'Lakkad Kot' inside the palace complex?",
+        option_a: "A wooden administrative block / court",
+        option_b: "A stable for royal elephants",
+        option_c: "An execution platform",
+        option_d: "A timber storage yard",
+        correct_answer: "A"
+      },
+      {
+        question: "Which building served as the treasury and royal library in the northern complex?",
+        option_a: "Baradari and adjacent vaults",
+        option_b: "Khilwat Mubarak",
+        option_c: "Aftab Mahal",
+        option_d: "Zenana Mahal",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 4,
+    title: "Falaknuma Palace",
+    description: "Study the 'Mirror of the Sky,' Palladian architectural style, and the legendary dining hall details.",
+    questions: [
+      {
+        question: "What does 'Falaknuma' mean in Persian?",
+        option_a: "Mirror of the Sky / Like the Sky",
+        option_b: "Star of the Deccan",
+        option_c: "Crown of the Nizam",
+        option_d: "White Cloud",
+        correct_answer: "A"
+      },
+      {
+        question: "Who was the original owner and designer-builder of Falaknuma Palace before it was sold to the Nizam?",
+        option_a: "Sir Vicar-ul-Umra (Prime Minister of Hyderabad)",
+        option_b: "Nizam Mir Mahboob Ali Khan",
+        option_c: "Salar Jung I",
+        option_d: "Major James Achilles Kirkpatrick",
+        correct_answer: "A"
+      },
+      {
+        question: "Which European architectural style is most prominent in the front facade of Falaknuma Palace?",
+        option_a: "Italian Renaissance / Palladian style",
+        option_b: "Gothic Revival",
+        option_c: "Elizabethan Tudor style",
+        option_d: "Baroque style",
+        correct_answer: "A"
+      },
+      {
+        question: "What is unique about the grand dining hall at Falaknuma Palace?",
+        option_a: "It has a monolithic table seating 101 guests, with acoustic wooden ceilings",
+        option_b: "It is built entirely of green jade stone",
+        option_c: "It is located underground inside a natural cave",
+        option_d: "The table floats on a thin layer of water",
+        correct_answer: "A"
+      },
+      {
+        question: "Which marble was used for the grand double staircase of Falaknuma Palace?",
+        option_a: "Carrara marble from Italy",
+        option_b: "Makrana marble from Rajasthan",
+        option_c: "Green marble from Udaipur",
+        option_d: "Black limestone from Cuddapah",
+        correct_answer: "A"
+      },
+      {
+        question: "The shape of the Falaknuma Palace plan is modeled on which creature?",
+        option_a: "A scorpion with its claws extended",
+        option_b: "An eagle in flight",
+        option_c: "A peacock displaying feathers",
+        option_d: "A cobra ready to strike",
+        correct_answer: "A"
+      },
+      {
+        question: "Who was the English architect who helped finalize the design and completion of the Falaknuma Palace?",
+        option_a: "William Ward Marrett",
+        option_b: "Vincent Esch",
+        option_c: "Edwin Lutyens",
+        option_d: "Herbert Baker",
+        correct_answer: "A"
+      },
+      {
+        question: "Which room in Falaknuma features walls covered with embossed camel leather and a library modeled after Windsor Castle?",
+        option_a: "The Palace Library",
+        option_b: "The Smoking Room",
+        option_c: "The Durbar Hall",
+        option_d: "The Zenana Drawing Room",
+        correct_answer: "A"
+      },
+      {
+        question: "What material is the ceiling of the main drawing room made of, decorated with gold leaf and oil paintings of cherubs?",
+        option_a: "Pressed tin panels and plaster of Paris",
+        option_b: "Solid carved teakwood panels",
+        option_c: "Reinforced concrete slab",
+        option_d: "Stretched silk canvas",
+        correct_answer: "A"
+      },
+      {
+        question: "How high is the hill on which Falaknuma Palace is built, overlooking Hyderabad?",
+        option_a: "2,000 feet (approx. 60 meters above city level)",
+        option_b: "500 feet",
+        option_c: "1,000 feet",
+        option_d: "150 feet",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the primary material used for the exterior walls of Falaknuma Palace?",
+        option_a: "Fine Italian stucco over granite and brick masonry",
+        option_b: "Exposed grey granite blocks",
+        option_c: "Red sandstone tiles",
+        option_d: "Terracotta bricks",
+        correct_answer: "A"
+      },
+      {
+        question: "Which country supplied the stained glass panels depicting mythological figures in the palace windows?",
+        option_a: "England and France",
+        option_b: "Italy",
+        option_c: "Persia",
+        option_d: "Belgium",
+        correct_answer: "A"
+      },
+      {
+        question: "What engine-driven luxury system was installed in Falaknuma, which was a rarity in late 19th-century India?",
+        option_a: "A private petrol-generator electrical system and custom elevator",
+        option_b: "Central air conditioning",
+        option_c: "Pneumatic elevator operated by steam",
+        option_d: "Solar-powered water heaters",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the main motif seen on the crockery and furniture commissioned for Falaknuma?",
+        option_a: "The monogram of Sir Vicar-ul-Umra (VO)",
+        option_b: "The Nizam's Crown (Kulah)",
+        option_c: "The Royal Falcon",
+        option_d: "A lotus flower",
+        correct_answer: "A"
+      },
+      {
+        question: "Which room in Falaknuma is decorated in Japanese style with imported woodwork and lacquer paintings?",
+        option_a: "The Japanese Parlour",
+        option_b: "The Billiard Room",
+        option_c: "The Jade Room",
+        option_d: "The Ballroom",
+        correct_answer: "A"
+      },
+      {
+        question: "The massive dining hall table consists of how many identical sectioned wooden tables?",
+        option_a: "7 sections",
+        option_b: "3 sections",
+        option_c: "12 sections",
+        option_d: "5 sections",
+        correct_answer: "A"
+      },
+      {
+        question: "What mechanism is used to cool the inner courtyards of the Falaknuma Palace naturally?",
+        option_a: "Water fountains and marble floor channels providing evaporative cooling",
+        option_b: "Underground cold water chambers",
+        option_c: "Large wind towers (Badgirs)",
+        option_d: "Electric exhaust fans",
+        correct_answer: "A"
+      },
+      {
+        question: "In what year was the Falaknuma Palace leased to the Taj Group to run as a luxury heritage hotel?",
+        option_a: "2000 (opened in 2010)",
+        option_b: "1995",
+        option_c: "2005",
+        option_d: "2012",
+        correct_answer: "A"
+      },
+      {
+        question: "Which of the following royals stayed at Falaknuma Palace during their state visit to Hyderabad?",
+        option_a: "King George V and Queen Mary",
+        option_b: "Queen Victoria",
+        option_c: "Napoleon Bonaparte",
+        option_d: "Tsar Nicholas II",
+        correct_answer: "A"
+      },
+      {
+        question: "The facade of Falaknuma features a double-storied colonnade with columns of which order?",
+        option_a: "Corinthian Order",
+        option_b: "Doric Order",
+        option_c: "Tuscan Order",
+        option_d: "Ionic Order",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 5,
+    title: "Kalasiguda & British Residency",
+    description: "Learn about the colonial Palladian villas, military cantonments, and the historic British Residency building in Koti.",
+    questions: [
+      {
+        question: "The British Residency at Koti, built in 1803, is a replica of which famous neoclassical villa design?",
+        option_a: "The White House in Washington D.C.",
+        option_b: "Villa Capra 'La Rotonda' by Palladio",
+        option_c: "The Mansion House in London",
+        option_d: "Kedleston Hall in Derbyshire",
+        correct_answer: "D"
+      },
+      {
+        question: "Who was the British Resident who built this mansion, famous for his marriage to Khair-un-Nissa?",
+        option_a: "James Achilles Kirkpatrick",
+        option_b: "Arthur Wellesley",
+        option_c: "Henry Russell",
+        option_d: "Thomas Sydenham",
+        correct_answer: "A"
+      },
+      {
+        question: "What major architectural feature dominates the front entrance of the British Residency (now Koti Women's College)?",
+        option_a: "A grand portico with six Corinthian columns",
+        option_b: "A massive Gothic rose window",
+        option_c: "Two marble minarets",
+        option_d: "An octagonal bulbous dome",
+        correct_answer: "A"
+      },
+      {
+        question: "Which structural material was used for the ceilings of the grand ballrooms in the Residency to prevent sagging?",
+        option_a: "Iron girders imported from Britain with jack-arch brickwork",
+        option_b: "Monolithic concrete slab",
+        option_c: "Solid Burma teak beams and rafters",
+        option_d: "Reinforced bamboo-lime mortar sheets",
+        correct_answer: "C"
+      },
+      {
+        question: "What animal sculpture stands guard at the steps of the Residency building, facing the city?",
+        option_a: "Two massive stone lions",
+        option_b: "Two bronze elephants",
+        option_c: "Two marble tigers",
+        option_d: "Two gryphons",
+        correct_answer: "A"
+      },
+      {
+        question: "The Residency has a scaled miniature model of itself located in the backyard. Why was it built?",
+        option_a: "For Kirkpatrick's wife, Khair-un-Nissa, to view the palace layout from her purdah screen",
+        option_b: "As a structural test model before main construction",
+        option_c: "To serve as a birdhouse",
+        option_d: "For the children's play area",
+        correct_answer: "A"
+      },
+      {
+        question: "Which Indian architect/engineer assisted in the construction of the Koti Residency?",
+        option_a: "P. Pestonji",
+        option_b: "Samuel Bourne",
+        option_c: "Mahmud Ali",
+        option_d: "Sidi Masood",
+        correct_answer: "A"
+      },
+      {
+        question: "What layout design is observed in the cantonment area of Secunderabad/Kalasiguda?",
+        option_a: "Gridiron pattern with wide roads and central parade grounds",
+        option_b: "Organic concentric medieval plan",
+        option_c: "Walled fortification with bastions",
+        option_d: "Ribbon development along the railway line",
+        correct_answer: "A"
+      },
+      {
+        question: "Which church in Secunderabad, built in 1813, represents the Gothic Revival style of architecture?",
+        option_a: "St. John's Church",
+        option_b: "Holy Trinity Church",
+        option_c: "St. Mary's Basilica",
+        option_d: "Wesley Cathedral",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the primary roofing style of typical colonial bungalow housing in Kalasiguda?",
+        option_a: "High sloping pitched roof with Mangalore tiles and wooden eaves",
+        option_b: "Flat RCC terrace",
+        option_c: "Stone dome construction",
+        option_d: "Vaulted brick arches",
+        correct_answer: "A"
+      },
+      {
+        question: "The large wooden porches in colonial bungalows, designed to shade the interiors, are called what?",
+        option_a: "Verandah",
+        option_b: "Chhajja",
+        option_c: "Mandapa",
+        option_d: "Atrium",
+        correct_answer: "A"
+      },
+      {
+        question: "What was the purpose of the 'Rang Mahal' inside the Residency complex?",
+        option_a: "A private palace built in Zenana style for Resident Kirkpatrick's wife",
+        option_b: "A courthouse for trial cases",
+        option_c: "A banquet hall for dancing and dining",
+        option_d: "A military storehouse",
+        correct_answer: "A"
+      },
+      {
+        question: "What material was used for the flooring of the central Durbar Hall of the Koti Residency?",
+        option_a: "Inlaid marble panels and parquet wood",
+        option_b: "Cuddapah black limestone slabs",
+        option_c: "Red cement oxide",
+        option_d: "Glazed ceramic tiles",
+        correct_answer: "A"
+      },
+      {
+        question: "How did the British Residency manage rainwater harvesting?",
+        option_a: "Through a network of brick-lined underground storage cisterns",
+        option_b: "Using deep stone wells connected to the Musi River",
+        option_c: "By open canal networks leading to a lake",
+        option_d: "No harvesting systems were present",
+        correct_answer: "A"
+      },
+      {
+        question: "Which of the following features of the British Residency reflects a local climatic adaptation?",
+        option_a: "Deep verandahs, high ceilings, and clerestory ventilators",
+        option_b: "Thick double glazing on windows",
+        option_c: "Fireplaces in every room",
+        option_d: "Basements for storage of ice",
+        correct_answer: "A"
+      },
+      {
+        question: "In what style is the ceiling of the grand drawing room in the Koti Residency painted?",
+        option_a: "French style floral papier-mâché and gilding",
+        option_b: "Islamic calligraphy and geometric tiles",
+        option_c: "Exposed wooden trusses without decoration",
+        option_d: "Modernist linear paint",
+        correct_answer: "A"
+      },
+      {
+        question: "What public institution is currently housed inside the main British Residency building?",
+        option_a: "Osmania University College for Women (Koti Women's College)",
+        option_b: "State Legislative Assembly",
+        option_c: "High Court of Telangana",
+        option_d: "State Archaeological Museum",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural issue threatened the Koti Residency before its major restoration project in 2015-2020?",
+        option_a: "Termite infestation of timber beams and moisture seepage in the jack-arches",
+        option_b: "Foundational collapse due to earthquake",
+        option_c: "Complete burning down of the front portico",
+        option_d: "Demolition of the mini model by college expansion",
+        correct_answer: "A"
+      },
+      {
+        question: "Who was the conservation architect leading the recent restoration of the British Residency in Koti?",
+        option_a: "Letika Saran / World Monuments Fund",
+        option_b: "B. V. Doshi",
+        option_c: "Charles Correa",
+        option_d: "Raj Rewal",
+        correct_answer: "A"
+      },
+      {
+        question: "Secunderabad was established as a cantonment in which year?",
+        option_a: "1806",
+        option_b: "1750",
+        option_c: "1857",
+        option_d: "1947",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 6,
+    title: "Deccan Vernacular Dwellings",
+    description: "Discover the layout, courtyards (Aangan), wooden lintels, and climatic response of traditional Hyderabadi houses.",
+    questions: [
+      {
+        question: "What is the central open-to-sky space in a traditional Hyderabadi house called, which helps in natural convection cooling?",
+        option_a: "Aangan / Courtyard",
+        option_b: "Dalan",
+        option_c: "Sahn",
+        option_d: "Chauk",
+        correct_answer: "A"
+      },
+      {
+        question: "Traditional Deccan houses feature thick mud-plastered walls. How does this benefit the indoor climate?",
+        option_a: "High thermal mass that buffers daytime heat and releases it at night",
+        option_b: "Provides insulation against winter cold only",
+        option_c: "Allows moisture to seep in, cooling the house via humidity",
+        option_d: "Allows walls to breath and filter dust particles",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the 'Dalan' in a Deccani vernacular dwelling?",
+        option_a: "A pillared verandah or semi-open hall opening onto the courtyard",
+        option_b: "The kitchen area",
+        option_c: "The underground storage vault",
+        option_d: "The private toilet block",
+        correct_answer: "A"
+      },
+      {
+        question: "Which wood was most commonly preferred for structural columns and brackets in traditional Deccan houses?",
+        option_a: "Teakwood (Tectona grandis)",
+        option_b: "Pine wood",
+        option_c: "Mango wood",
+        option_d: "Bamboo stalks",
+        correct_answer: "A"
+      },
+      {
+        question: "How did traditional vernacular architecture handle hot summer winds (Loo) in Hyderabad?",
+        option_a: "By placing high-level ventilators and low-level window openings to create stack ventilation",
+        option_b: "By avoiding windows altogether",
+        option_c: "Using mechanical water sprays on metal roofs",
+        option_d: "By using thick wool curtains on all openings",
+        correct_answer: "A"
+      },
+      {
+        question: "Which of the following is a classic decorative feature over the wooden door frames (chaukhat) of Deccani houses?",
+        option_a: "Carved lintels with Ganesha or floral/geometric motifs",
+        option_b: "Inlaid glass mosaic pieces",
+        option_c: "Cast iron gargoyles",
+        option_d: "Concrete screen projections",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the typical flooring finish of older vernacular middle-class homes in Hyderabad?",
+        option_a: "Cuddapah black stone or red oxide flooring",
+        option_b: "Ceramic vitrified tiles",
+        option_c: "Polished white marble slabs",
+        option_d: "Raw clay tiles without sealing",
+        correct_answer: "A"
+      },
+      {
+        question: "In Deccani houses, the separate formal sitting area for male guests is historically referred to as what?",
+        option_a: "Mardana / Baithak",
+        option_b: "Zenana",
+        option_c: "Bawarchi Khana",
+        option_d: "Sahan",
+        correct_answer: "A"
+      },
+      {
+        question: "The private quarters reserved for women inside a traditional household are known as what?",
+        option_a: "Zenana",
+        option_b: "Diwan-i-Aam",
+        option_c: "Dalan",
+        option_d: "Deodhi",
+        correct_answer: "A"
+      },
+      {
+        question: "What is a 'Deodhi' in Hyderabad's architectural history?",
+        option_a: "A grand gated entrance archway leading to a nobleman's mansion",
+        option_b: "A type of water fountain",
+        option_c: "A small kitchen chimney",
+        option_d: "A timber balcony projection",
+        correct_answer: "A"
+      },
+      {
+        question: "Deccan vernacular roofs are often sloping. What is the traditional support system under the tiles?",
+        option_a: "Wooden rafters, purlins, and split-bamboo mats",
+        option_b: "Steel joists and precast panels",
+        option_c: "Corrugated plastic sheets",
+        option_d: "Mud brick arches",
+        correct_answer: "A"
+      },
+      {
+        question: "How did traditional builders protect the lime-mortar walls from erosion during heavy monsoon rains?",
+        option_a: "By providing deep roof overhangs (chhajjas) supported by carved brackets",
+        option_b: "By applying a coat of tar on the exterior",
+        option_c: "By cladding the walls with plastic sheets",
+        option_d: "Using copper sheeting on the external facade",
+        correct_answer: "A"
+      },
+      {
+        question: "Which of the following layout arrangements is typical of a large Deccani Deodhi?",
+        option_a: "A sequence of interconnected courtyards serving different privacy levels",
+        option_b: "A single linear block of rooms with no open space",
+        option_c: "A radial design centered on a tall watchtower",
+        option_d: "A high-rise structure with exterior steel stairs",
+        correct_answer: "A"
+      },
+      {
+        question: "What was the purpose of the 'Chabutra' (raised platform) outside the house front?",
+        option_a: "For socializing with neighbors and evening seating",
+        option_b: "To tie up horses only",
+        option_c: "For drying agricultural grain",
+        option_d: "As a religious altar",
+        correct_answer: "A"
+      },
+      {
+        question: "How is 'Jali' (latticed screen) work used climatically in Hyderabad houses?",
+        option_a: "To allow breezes to pass through while blocking direct solar radiation and glare",
+        option_b: "As a purely structural load-bearing wall",
+        option_c: "To keep birds out of the rooms only",
+        option_d: "To block all light and create dark rooms",
+        correct_answer: "A"
+      },
+      {
+        question: "Traditional clay tiles used in vernacular roofs of Hyderabad are commonly known as what?",
+        option_a: "Nala / Country tiles (half-round clay tiles)",
+        option_b: "Slate tiles",
+        option_c: "Shingle tiles",
+        option_d: "Asbestos tiles",
+        correct_answer: "A"
+      },
+      {
+        question: "Which domestic activity was the secondary courtyard (often in the rear) reserved for?",
+        option_a: "Washing, cleaning, and cooking (services)",
+        option_b: "Receiving formal guests",
+        option_c: "Sleeping under the stars",
+        option_d: "Storing weapons",
+        correct_answer: "A"
+      },
+      {
+        question: "What material was mixed with lime to make the 'Araish' plaster so smooth and durable?",
+        option_a: "Marble powder, curds, and natural gums",
+        option_b: "Portland cement and gypsum",
+        option_c: "Asphalt and sand",
+        option_d: "Silica gel and glass dust",
+        correct_answer: "A"
+      },
+      {
+        question: "Traditional Deccani house layouts are highly sustainable because they rely on which lighting method?",
+        option_a: "Natural daylighting through courtyards and skylights",
+        option_b: "Incandescent bulb placement",
+        option_c: "Solar reflective light tubes",
+        option_d: "Oil lamps kept burning all day",
+        correct_answer: "A"
+      },
+      {
+        question: "Why are kitchens in traditional houses usually located in the corner downwind of the courtyard?",
+        option_a: "To prevent smoke and cooking heat from flowing back into the living rooms",
+        option_b: "To keep it closest to the main entrance",
+        option_c: "Because corners are structurally strongest",
+        option_d: "To hide the food from visitors",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 7,
+    title: "Qutb Shahi Tombs",
+    description: "Analyze the unique blend of Persian, Hindu, and Pathan architectural styles in the royal necropolis.",
+    questions: [
+      {
+        question: "What is the primary plan layout of the lower base platform of most major Qutb Shahi Tombs?",
+        option_a: "Square with a wide surrounding arcade (corridor)",
+        option_b: "Perfectly circular terrace",
+        option_c: "Star-shaped (hexagonal)",
+        option_d: "Triangular platform",
+        correct_answer: "A"
+      },
+      {
+        question: "The bulbous domes of the Qutb Shahi Tombs rest on which transitional architectural element?",
+        option_a: "A petal-shaped calyx base (circular drum)",
+        option_b: "Corbelled stone brackets only",
+        option_c: "Directly on the flat roof slab",
+        option_d: "A timber truss collar",
+        correct_answer: "A"
+      },
+      {
+        question: "Which tomb in the complex is the largest, standing on a grand platform with two tiers of galleries?",
+        option_a: "Tomb of Muhammad Quli Qutb Shah",
+        option_b: "Tomb of Ibrahim Quli Qutb Shah",
+        option_c: "Tomb of Hayat Bakshi Begum",
+        option_d: "Tomb of Jamsheed Quli Qutb Shah",
+        correct_answer: "A"
+      },
+      {
+        question: "Which Qutb Shahi tomb is unique for having an octagonal plan rather than the standard square plan?",
+        option_a: "Tomb of Jamsheed Quli Qutb Shah",
+        option_b: "Tomb of Subhan Quli Qutb Shah",
+        option_c: "Tomb of Muhammad Qutb Shah",
+        option_d: "Tomb of Abul Hasan Tana Shah",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the significance of the Mortuary Bath (Hammam) in the Tombs complex?",
+        option_a: "A place for ritual washing of the dead bodies before burial",
+        option_b: "A pleasure pool for the tomb guards",
+        option_c: "A water-harvesting cistern",
+        option_d: "An irrigation head for the gardens",
+        correct_answer: "A"
+      },
+      {
+        question: "Which material was used to finish the exterior of the domes, giving them a brilliant sheen in the past?",
+        option_a: "Glazed turquoise and green tiles (Kashi work)",
+        option_b: "White marble cladding",
+        option_c: "Gold foil and copper sheets",
+        option_d: "Polished black granite veneer",
+        correct_answer: "A"
+      },
+      {
+        question: "The arches in the Qutb Shahi Tombs display a distinct outline characteristic of the dynasty. What is it?",
+        option_a: "Pointed arch with a slight curve at the base (Tudor-like Deccan arch)",
+        option_b: "Semicircular Roman arch",
+        option_c: "Multifoil horseshoe arch",
+        option_d: "Flat lintel span",
+        correct_answer: "A"
+      },
+      {
+        question: "Who was the female royal leader who built her own tomb and commissioned a grand mosque with 5 arches nearby?",
+        option_a: "Hayat Bakshi Begum",
+        option_b: "Bhagmati",
+        option_c: "Kulsum Begum",
+        option_d: "Premamati",
+        correct_answer: "A"
+      },
+      {
+        question: "Which stone was carved to create the cenotaphs inside the tomb chambers?",
+        option_a: "Black basalt or polished granite",
+        option_b: "White Carrara marble",
+        option_c: "Soft sandstone",
+        option_d: "Soapstone",
+        correct_answer: "A"
+      },
+      {
+        question: "What pattern is carved on the base of the minarets that decorate the corners of the tomb platforms?",
+        option_a: "Ringed bands with floral stone brackets",
+        option_b: "Plain spiral grooves only",
+        option_c: "Inlaid marble calligraphy",
+        option_d: "Brick pattern overlay",
+        correct_answer: "A"
+      },
+      {
+        question: "The tombs are situated close to which famous landmark of Hyderabad?",
+        option_a: "Golconda Fort (north-west of the fort walls)",
+        option_b: "Charminar",
+        option_c: "Hussain Sagar Lake",
+        option_d: "Osmania University",
+        correct_answer: "A"
+      },
+      {
+        question: "What architectural feature of the tombs shows Hindu (Vijayanagara) architectural influence?",
+        option_a: "Carved temple-style column pillars and chain motifs under the eaves",
+        option_b: "The use of monolithic domes",
+        option_c: "Squinches inside the dome chambers",
+        option_d: "The orientation facing east",
+        correct_answer: "A"
+      },
+      {
+        question: "Which international trust has partnered with the Telangana government for the extensive restoration of the Tombs since 2013?",
+        option_a: "Aga Khan Trust for Culture (AKTC)",
+        option_b: "World Heritage Fund",
+        option_c: "Getty Foundation",
+        option_d: "Smithsonian Institution",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural system is used to support the massive heavy domes of the tombs?",
+        option_a: "Squinches converting the square room into an octagonal ring",
+        option_b: "Internal steel columns",
+        option_c: "Solid stone pillars in the center of the grave chamber",
+        option_d: "Double vaulting with empty air gap",
+        correct_answer: "A"
+      },
+      {
+        question: "How many tombs are located within the main necropolis of the Qutb Shahi Tombs?",
+        option_a: "Over 70 structures (including tombs, mosques, and pavilions)",
+        option_b: "Only 7 royal tombs",
+        option_c: "15 tombs",
+        option_d: "10 tombs",
+        correct_answer: "A"
+      },
+      {
+        question: "Which of the following tombs features a double-storeyed gallery and is reached by a wide flight of steps?",
+        option_a: "Tomb of Muhammad Quli Qutb Shah",
+        option_b: "Tomb of Sultan Quli Qutb-ul-Mulk",
+        option_c: "Tomb of Jamsheed",
+        option_d: "Tomb of Fatima Sultan",
+        correct_answer: "A"
+      },
+      {
+        question: "Why was the tomb of Sultan Quli Qutb-ul-Mulk (the first ruler) kept simple compared to later tombs?",
+        option_a: "It was built during the early phase of the dynasty using local materials and basic structural forms",
+        option_b: "It was vandalized during the Mughal siege",
+        option_c: "He was a Sufi saint who wanted a simple open grave",
+        option_d: "The treasury was empty due to wars",
+        correct_answer: "A"
+      },
+      {
+        question: "The plasterwork of the tombs features which floral motif extensively?",
+        option_a: "Lotus and leaf scrolls",
+        option_b: "Rose bouquets",
+        option_c: "Maple leaves",
+        option_d: "Jasmine vines",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the purpose of the small mosques located adjacent to almost every major tomb?",
+        option_a: "To offer prayers (Fateha) for the departed soul of the ruler",
+        option_b: "To house the grave diggers",
+        option_c: "To serve as classrooms",
+        option_d: "To act as security towers",
+        correct_answer: "A"
+      },
+      {
+        question: "Which tomb was built for the non-royal singer-dancer sisters Premamati and Taramati?",
+        option_a: "Two identical smaller tombs built on a single platform in the complex",
+        option_b: "The octagonal tomb near the Hammam",
+        option_c: "They do not have tombs, only names on walls",
+        option_d: "A single large tomb with two domes",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 8,
+    title: "Modernist Hyderabad",
+    description: "Examine the post-independence modern architectures, iconic institutional campuses, and concrete designs of Hyderabad.",
+    questions: [
+      {
+        question: "Who was the legendary architect who designed the master plan and key buildings of the National Institute of Nutrition (NIN) in Hyderabad?",
+        option_a: "Charles Correa",
+        option_b: "B. V. Doshi",
+        option_c: "Fayazuddin",
+        option_d: "Achyut Kanvinde",
+        correct_answer: "D"
+      },
+      {
+        question: "Which iconic building in Hyderabad, completed in 1918, represents a hybrid Indo-Saracenic style using local pink granite?",
+        option_a: "Osmania University Arts College",
+        option_b: "High Court of Telangana",
+        option_c: "Asafia Library (State Central Library)",
+        option_d: "Kachiguda Railway Station",
+        correct_answer: "A"
+      },
+      {
+        question: "Who designed the Osmania University Arts College building, blending Belgian Gothic and Indo-Saracenic styles?",
+        option_a: "Monsieur Ernest Jasper",
+        option_b: "Vincent Esch",
+        option_c: "Edwin Lutyens",
+        option_d: "Charles Correa",
+        correct_answer: "A"
+      },
+      {
+        question: "Which building in Hyderabad is famous for its fish-shaped structure, built in 2012 for a government department?",
+        option_a: "National Fisheries Development Board (NFDB) building",
+        option_b: "State Central Library",
+        option_c: "Telangana Secretariat",
+        option_d: "Cyber Towers",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the architectural significance of the Cyber Towers in HITEC City, built in 1998?",
+        option_a: "It features a circular design with a jail-like screen facade reflecting modern technology",
+        option_b: "It is the tallest skyscraper in Hyderabad",
+        option_c: "It is built entirely of bamboo",
+        option_d: "It has a suspension roof structure",
+        correct_answer: "A"
+      },
+      {
+        question: "Which modernist architect designed the campus of the Administrative Staff College of India (ASCI) at Bella Vista?",
+        option_a: "It was originally a Nizam's palace, repurposed in modernist style",
+        option_b: "Achyut Kanvinde",
+        option_c: "Laurie Baker",
+        option_d: "B. V. Doshi",
+        correct_answer: "A"
+      },
+      {
+        question: "Which iconic flyover was the first major elevated corridor in Hyderabad, representing post-modern pre-stressed concrete engineering?",
+        option_a: "Telugu Talli Flyover",
+        option_b: "PV Narasimha Rao Expressway",
+        option_c: "Begumpet Flyover",
+        option_d: "Gachibowli Flyover",
+        correct_answer: "B"
+      },
+      {
+        question: "Which building is known for its cantilevered concrete canopy, mimicking a bird in flight, designed by Habib Rahman?",
+        option_a: "Post and Telegraph Office building (Dak Sadan)",
+        option_b: "Ravindra Bharathi",
+        option_c: "State Assembly",
+        option_d: "Lalit Kala Academy",
+        correct_answer: "A"
+      },
+      {
+        question: "The Ravindra Bharathi auditorium, built in 1961, was designed by which state architect?",
+        option_a: "Fayazuddin",
+        option_b: "Charles Correa",
+        option_c: "B. V. Doshi",
+        option_d: "Laurie Baker",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural material is most prominent in the modernist institutional buildings built during the 1960s-1980s in Hyderabad?",
+        option_a: "Exposed Board-formed shuttered concrete (Brutalist aesthetic)",
+        option_b: "Red brick and terracotta tiles",
+        option_c: "Polished marble facade panels",
+        option_d: "Steel frame with glass curtain walls",
+        correct_answer: "A"
+      },
+      {
+        question: "Which campus in Hyderabad, designed by B. V. Doshi, features raw concrete vaults and a series of courtyards integrating nature?",
+        option_a: "ICRISAT Campus (International Crops Research Institute)",
+        option_b: "National Institute of Urban Management",
+        option_c: "Hyderabad Central University (HCU) Science blocks",
+        option_d: "NALSAR University of Law",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the primary architectural style of the Telangana Legislative Assembly building?",
+        option_a: "Indo-Saracenic with neoclassical elements, completed in 1913",
+        option_b: "Post-modernism",
+        option_c: "Brutalist raw concrete",
+        option_d: "Art Deco",
+        correct_answer: "A"
+      },
+      {
+        question: "Which building in Hyderabad features a shell-like dome made of ferro-cement, resembling a lotus, housing a museum?",
+        option_a: "Birla Science Museum & Planetarium",
+        option_b: "Ravindra Bharathi",
+        option_c: "Salargung Museum",
+        option_d: "NTR Memorial",
+        correct_answer: "A"
+      },
+      {
+        question: "The state central library, constructed in 1932 on the bank of Musi river, is designed in which style?",
+        option_a: "Late Mughal and British Colonial fusion (Indo-Saracenic)",
+        option_b: "Ultra-modernist glass curtain wall",
+        option_c: "Deconstructivism",
+        option_d: "Classical Greek",
+        correct_answer: "A"
+      },
+      {
+        question: "Which of the following projects is an example of sustainable and mud-based architecture in the outskirts of Hyderabad?",
+        option_a: "Buildings inside the Timbaktu Collective / Earth Architecture projects",
+        option_b: "Cyber Gateway",
+        option_c: "Neopolis Towers",
+        option_d: "Mindspace IT Park",
+        correct_answer: "A"
+      },
+      {
+        question: "Who was the chief architect of the Nizam's State Railway who designed the Kachiguda Railway Station?",
+        option_a: "Vincent Esch",
+        option_b: "Monsieur Jasper",
+        option_c: "Edwin Lutyens",
+        option_d: "Fayazuddin",
+        correct_answer: "A"
+      },
+      {
+        question: "What style is Kachiguda Railway station built in, showcasing minarets and arches?",
+        option_a: "Indo-Saracenic Style",
+        option_b: "Gothic Cathedral Style",
+        option_c: "Art Deco Style",
+        option_d: "Brutalist Concrete Style",
+        correct_answer: "A"
+      },
+      {
+        question: "The Birla Mandir in Hyderabad is built on which hill, using how many tons of pure white marble?",
+        option_a: "Naubath Pahad, 2000 tons of Rajasthani marble",
+        option_b: "Banjara Hills, 500 tons",
+        option_c: "Maula Ali Hill, 1000 tons",
+        option_d: "Golconda Hill, 4000 tons",
+        correct_answer: "A"
+      },
+      {
+        question: "Which architectural school in Hyderabad was the first to offer formal training in architecture in Telangana?",
+        option_a: "JNAFAU (Jawaharlal Nehru Architecture and Fine Arts University)",
+        option_b: "CBIT Department of Architecture",
+        option_c: "NIFT Hyderabad",
+        option_d: "SPA Vijayawada (satellite campus)",
+        correct_answer: "A"
+      },
+      {
+        question: "The new Telangana Secretariat building, opened in 2023, is built in which architectural style?",
+        option_a: "Indo-Saracenic / Deccani Kakatiya fusion",
+        option_b: "Pure Gothic Revival",
+        option_c: "International Modernist Glass style",
+        option_d: "Brutalist Raw Concrete",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 9,
+    title: "Stepwells of Hyderabad",
+    description: "Dive into the historic stepwells (Baolis), their engineering, stone carvings, and water-harvesting systems.",
+    questions: [
+      {
+        question: "Which award-winning restored stepwell in Hyderabad won the UNESCO Asia-Pacific Award of Distinction for Heritage Conservation in 2022?",
+        option_a: "Bansilalpet Stepwell",
+        option_b: "Bhagwandas Bagh Stepwell",
+        option_c: "Qutb Shahi Tombs Hammam Stepwell",
+        option_d: "Gachibowli Baoli",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the vernacular Deccani term used for a stepwell?",
+        option_a: "Baoli / Baradari",
+        option_b: "Katora",
+        option_c: "Houz",
+        option_d: "Sahn",
+        correct_answer: "A"
+      },
+      {
+        question: "The Bansilalpet Stepwell was constructed during which era?",
+        option_a: "Asaf Jahi (Nizam) Era",
+        option_b: "Qutb Shahi Era",
+        option_c: "Kakatiya Era",
+        option_d: "British East India Company directly",
+        correct_answer: "A"
+      },
+      {
+        question: "What was the primary function of stepwells in the semi-arid climate of Hyderabad?",
+        option_a: "To collect rainwater and tap the high groundwater table for drinking and irrigation",
+        option_b: "To act as swimming pools for royals only",
+        option_c: "To serve as escape tunnels during war",
+        option_d: "To dump waste water",
+        correct_answer: "A"
+      },
+      {
+        question: "Which stepwell in the Qutb Shahi Tombs complex was historically used to irrigate the royal orchards (Bagh)?",
+        option_a: "Badi Baoli",
+        option_b: "Ganga Baoli",
+        option_c: "Jamila Baoli",
+        option_d: "Hamam Baoli",
+        correct_answer: "A"
+      },
+      {
+        question: "The Badi Baoli in the Qutb Shahi Tombs has what structural layout?",
+        option_a: "A large rectangular stone well with steps running down three sides and a water channel",
+        option_b: "A circular well with spiral steps only",
+        option_c: "An L-shaped stepwell",
+        option_d: "A square stepwell with zero surface access",
+        correct_answer: "A"
+      },
+      {
+        question: "What type of stone was primarily used to line the walls and construct the arches of Hyderabadi stepwells?",
+        option_a: "Granite blocks dressed and fitted with lime mortar",
+        option_b: "Red sandstone blocks imported from north India",
+        option_c: "Laterite soil bricks",
+        option_d: "Basalt rock without mortar",
+        correct_answer: "A"
+      },
+      {
+        question: "How did the stepwells help in cooling the surrounding air?",
+        option_a: "Microclimatic cooling through evaporation of exposed water in deep, shaded stone chambers",
+        option_b: "By pumping water to the roofs of surrounding buildings",
+        option_c: "Using natural springs that bubbled cold gas",
+        option_d: "They did not affect the air temperature",
+        correct_answer: "A"
+      },
+      {
+        question: "Which organization led the clean-up and structural restoration of the Bansilalpet Stepwell, removing 2,000 tonnes of debris?",
+        option_a: "The Rainwater Project along with the HMDA",
+        option_b: "World Monuments Fund",
+        option_c: "UNESCO directly",
+        option_d: "Archaeological Survey of India (ASI)",
+        correct_answer: "A"
+      },
+      {
+        question: "How many tiers of galleries or platforms did the Bansilalpet Stepwell have?",
+        option_a: "3 levels / tiers",
+        option_b: "5 levels",
+        option_c: "1 level",
+        option_d: "7 levels",
+        correct_answer: "A"
+      },
+      {
+        question: "Which stepwell is located within the Osmania University campus, representing Nizam-era institutional stepwells?",
+        option_a: "Adikmet Baoli",
+        option_b: "Bansilalpet Baoli",
+        option_c: "Gachibowli Baoli",
+        option_d: "Lingampally Baoli",
+        correct_answer: "A"
+      },
+      {
+        question: "Stepwells often feature arches to support the overhead platforms. What shape are these arches typically in Nizam-era baolis?",
+        option_a: "Multifoil or segmented arches",
+        option_b: "True semicircular roman arches",
+        option_c: "Flat wooden lintels only",
+        option_d: "Corbelled stone slabs",
+        correct_answer: "A"
+      },
+      {
+        question: "The structural collapse of stepwells is mostly caused by which factor over time?",
+        option_a: "Clogging of water recharge veins and tree root growth breaking the dry masonry joints",
+        option_b: "Earthquakes",
+        option_c: "High winds",
+        option_d: "Acid rain eroding granite",
+        correct_answer: "A"
+      },
+      {
+        question: "Which stepwell near Gachibowli has been integrated into a modern IT park landscaping scheme?",
+        option_a: "Gachibowli / Kokapet Stepwell",
+        option_b: "Bansilalpet Stepwell",
+        option_c: "Sitarambagh Stepwell",
+        option_d: "Hasnathpet Stepwell",
+        correct_answer: "A"
+      },
+      {
+        question: "What feature of stepwells allowed local women to utilize them as social spaces?",
+        option_a: "Shaded pavilions and wide platforms (chabutra) at intermediate levels",
+        option_b: "Swimming lanes",
+        option_c: "Market stalls built on steps",
+        option_d: "Temples in the water itself",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the approximate age of the stepwells inside the Qutb Shahi Tombs complex?",
+        option_a: "Over 400 years old",
+        option_b: "100 years old",
+        option_c: "250 years old",
+        option_d: "600 years old",
+        correct_answer: "A"
+      },
+      {
+        question: "What water management principle was utilized in the link between Hyderabad's lakes and the stepwells?",
+        option_a: "Sub-surface filtration and gravity flow channels connecting tanks like Hussain Sagar to wells",
+        option_b: "Electrical pumping systems",
+        option_c: "Siphon pipelines over hills",
+        option_d: "Open river channels only",
+        correct_answer: "A"
+      },
+      {
+        question: "The stepwell at Sitarambagh temple complex is built of which stone?",
+        option_a: "Dressed grey granite blocks",
+        option_b: "White marble",
+        option_c: "Black basalt",
+        option_d: "Brick masonry only",
+        correct_answer: "A"
+      },
+      {
+        question: "How did the structural design of stepwells adapt to varying water levels between monsoon and summer?",
+        option_a: "Multiple landing levels (platforms) allowed access to water at any depth",
+        option_b: "The walls of the well floated up and down",
+        option_c: "Water was pumped to the surface using steam engines",
+        option_d: "The steps were retractable",
+        correct_answer: "A"
+      },
+      {
+        question: "What was the main source of pollution that filled and hid these stepwells in the 20th century?",
+        option_a: "Solid municipal waste dumping after they fell out of use",
+        option_b: "Silt from the Musi River",
+        option_c: "Industrial chemical discharge",
+        option_d: "Volcanic ash",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 10,
+    title: "Moazzam Jahi Market & Public Buildings",
+    description: "Investigate the Indo-Saracenic public structures built during the Nizam's reign using granite and arches.",
+    questions: [
+      {
+        question: "In what year was the iconic Moazzam Jahi Market completed, serving as a fruit and vegetable market?",
+        option_a: "1935",
+        option_b: "1910",
+        option_c: "1948",
+        option_d: "1899",
+        correct_answer: "A"
+      },
+      {
+        question: "Which style of architecture does the Moazzam Jahi Market display, characterized by its domes and arches?",
+        option_a: "Indo-Saracenic / Deccani style built in granite",
+        option_b: "Gothic Revival",
+        option_c: "Modernism",
+        option_d: "Classic Roman style",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the shape of the plan of Moazzam Jahi Market?",
+        option_a: "Triangular / V-shaped with a central clock tower courtyard",
+        option_b: "Circular concentric plan",
+        option_c: "Square block layout",
+        option_d: "Octagonal ring",
+        correct_answer: "A"
+      },
+      {
+        question: "What stone was primarily used for the construction of Moazzam Jahi Market, giving it its grand look?",
+        option_a: "Fine grey granite",
+        option_b: "Red sandstone",
+        option_c: "Basalt",
+        option_d: "Laterite",
+        correct_answer: "A"
+      },
+      {
+        question: "Which agency was established by Nizam Mir Osman Ali Khan in 1908 to rebuild Hyderabad after the Musi floods, constructing many public buildings?",
+        option_a: "City Improvement Board (CIB)",
+        option_b: "Hyderabad Urban Development Authority (HUDA)",
+        option_c: "Telangana Heritage Board",
+        option_d: "Musi Reconstruction Trust",
+        correct_answer: "A"
+      },
+      {
+        question: "Which public building in Hyderabad, designed by Vincent Esch, features a huge dome and is located near the High Court?",
+        option_a: "City College",
+        option_b: "Kachiguda Railway Station",
+        option_c: "Osmania General Hospital",
+        option_d: "State Central Library",
+        correct_answer: "C"
+      },
+      {
+        question: "What is the structural layout of Osmania General Hospital?",
+        option_a: "Indo-Saracenic layout with multi-layered wards and central dome ventilation",
+        option_b: "High-rise modern tower",
+        option_c: "Single-storey pavilion wards only",
+        option_d: "Underground chambers",
+        correct_answer: "A"
+      },
+      {
+        question: "Who was the architect who worked on Osmania General Hospital and City College, contributing significantly to Hyderabad's public image?",
+        option_a: "Vincent Esch",
+        option_b: "Monsieur Jasper",
+        option_c: "Edwin Lutyens",
+        option_d: "Achyut Kanvinde",
+        correct_answer: "A"
+      },
+      {
+        question: "The High Court building of Hyderabad, built of red and white stone, represents which architectural synthesis?",
+        option_a: "Mughal Saracenic style with pink granite cladding",
+        option_b: "Classical Greek Doric style",
+        option_c: "Brutalist Concrete style",
+        option_d: "Art Deco style",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the name of the Nizam's son after whom the Moazzam Jahi Market is named?",
+        option_a: "Prince Moazzam Jah",
+        option_b: "Prince Azam Jah",
+        option_c: "Mir Osman Ali Khan",
+        option_d: "Prince Mukarram Jah",
+        correct_answer: "A"
+      },
+      {
+        question: "Which famous ice cream shop is a historic landmark inside the Moazzam Jahi Market?",
+        option_a: "Famous Ice Cream",
+        option_b: "Nizam Ice Cream",
+        option_c: "Deccan Kulfi",
+        option_d: "Royal Malai",
+        correct_answer: "A"
+      },
+      {
+        question: "What type of domes are seen on the corners of the Moazzam Jahi Market?",
+        option_a: "Chhatris (dome-shaped pavilions) with stone columns",
+        option_b: "Semicircular concrete domes",
+        option_c: "Glass domes",
+        option_d: "Timber shingle domes",
+        correct_answer: "A"
+      },
+      {
+        question: "How did the City Improvement Board (CIB) improve public health through design?",
+        option_a: "By designing wide roads, open playgrounds, and houses with courtyards and windows",
+        option_b: "By building air purifiers in public squares",
+        option_c: "By closing down all markets",
+        option_d: "By using steel roofs on all buildings",
+        correct_answer: "A"
+      },
+      {
+        question: "Which public building in Koti served as the State Bank of Hyderabad's main office, representing neoclassical architecture?",
+        option_a: "The SBH building (resembling a Greek temple with columns)",
+        option_b: "The British Residency",
+        option_c: "Kachiguda station",
+        option_d: "City College",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the structure of the roof in Moazzam Jahi Market shops?",
+        option_a: "Stone slabs supported by steel beams (jack-arch style)",
+        option_b: "Thatch",
+        option_c: "Mangalore tiles on wood",
+        option_d: "Reinforced concrete slabs",
+        correct_answer: "A"
+      },
+      {
+        question: "Which river floods in 1908 prompted the design of modern flood control and public spaces in Hyderabad?",
+        option_a: "Musi River",
+        option_b: "Krishna River",
+        option_c: "Godavari River",
+        option_d: "Manjira River",
+        correct_answer: "A"
+      },
+      {
+        question: "What engineering project did the Nizam construct to control the Musi floods, designing Osmansagar and Himayatsagar?",
+        option_a: "Sir M. Visvesvaraya flood control reservoirs",
+        option_b: "Golconda Fort canal systems",
+        option_c: "Hussain Sagar sluice gates",
+        option_d: "Gachibowli dam project",
+        correct_answer: "A"
+      },
+      {
+        question: "The Town Hall building, which now houses the Telangana State Legislative Assembly, was funded by whom?",
+        option_a: "Public subscription / citizens of Hyderabad to mark the Nizam's 40th birthday",
+        option_b: "The British Government",
+        option_c: "The Mughal Emperor",
+        option_d: "A single rich merchant from Persia",
+        correct_answer: "A"
+      },
+      {
+        question: "Which railway station in Hyderabad is famous for its castellated design resembling a fort?",
+        option_a: "Nampally Station (Hyderabad Deccan)",
+        option_b: "Secunderabad Station",
+        option_c: "Kachiguda Station",
+        option_d: "Begumpet Station",
+        correct_answer: "A"
+      },
+      {
+        question: "What restoration was done to Moazzam Jahi Market in 2020 by the Urban Development Department?",
+        option_a: "Restoring the granite stone facade, fixing clock tower bells, and illumination",
+        option_b: "Converting it into an air-conditioned mall",
+        option_c: "Demolishing inner walls for a parking lot",
+        option_d: "Replacing all granite with glass sheets",
+        correct_answer: "A"
+      }
+    ]
+  }
+];

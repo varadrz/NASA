@@ -1,0 +1,306 @@
+{
+  "projectName": "NASA Hyderabad Heritage Quiz Hunt",
+  "corpusName": "SmartApply-AI",
+  "techStack": {
+    "framework": "Next.js 16 (App Router)",
+    "runtime": "React 19, TypeScript",
+    "styling": "Tailwind CSS v4 (via @tailwindcss/postcss)",
+    "auth": "JWT via jose (HS256)",
+    "database": "Supabase (PostgreSQL) with local persistent mock fallback (mock_db.json via mock-db.ts)",
+    "caching_rate_limiting": "Upstash Redis with in-memory map fallback"
+  },
+  "databaseSchema": {
+    "description": "Unified database layer. If SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables are missing or default, it falls back to a local JSON file (mock_db.json) in the project root.",
+    "tables": {
+      "participants": {
+        "columns": {
+          "id": "UUID (Primary Key, Default: gen_random_uuid())",
+          "full_name": "VARCHAR(255) (Not Null)",
+          "college_name": "VARCHAR(255) (Not Null)",
+          "phone_number": "VARCHAR(20) (Not Null)",
+          "registration_id": "VARCHAR(50) (Unique, Not Null)",
+          "is_disabled": "BOOLEAN (Default: FALSE)",
+          "created_at": "TIMESTAMP WITH TIME ZONE (Default: CURRENT_TIMESTAMP)"
+        },
+        "description": "Stores registered quiz participants."
+      },
+      "quizzes": {
+        "columns": {
+          "id": "UUID (Primary Key, Default: gen_random_uuid())",
+          "barrel_id": "INTEGER (Unique, Not Null, CHECK 1-10)",
+          "title": "VARCHAR(255) (Not Null)",
+          "description": "TEXT (Not Null)"
+        },
+        "description": "Stores the 10 quiz barrels corresponding to the 10 heritage sites."
+      },
+      "questions": {
+        "columns": {
+          "id": "UUID (Primary Key, Default: gen_random_uuid())",
+          "quiz_id": "UUID (Foreign Key -> quizzes.id, ON DELETE CASCADE)",
+          "question": "TEXT (Not Null)",
+          "option_a": "TEXT (Not Null)",
+          "option_b": "TEXT (Not Null)",
+          "option_c": "TEXT (Not Null)",
+          "option_d": "TEXT (Not Null)",
+          "correct_answer": "CHAR(1) (Not Null, CHECK A, B, C, D)"
+        },
+        "description": "Stores the pool of questions (20 per quiz/barrel)."
+      },
+      "quiz_attempts": {
+        "columns": {
+          "id": "UUID (Primary Key, Default: gen_random_uuid())",
+          "participant_id": "UUID (Foreign Key -> participants.id, ON DELETE CASCADE)",
+          "quiz_id": "UUID (Foreign Key -> quizzes.id, ON DELETE CASCADE)",
+          "score": "INTEGER (Default: 0)",
+          "time_taken_seconds": "INTEGER (Default: 0)",
+          "started_at": "TIMESTAMP WITH TIME ZONE (Default: CURRENT_TIMESTAMP)",
+          "submitted_at": "TIMESTAMP WITH TIME ZONE (Nullable)",
+          "is_completed": "BOOLEAN (Default: FALSE)"
+        },
+        "description": "Logs individual quiz attempt events, scoring, and duration."
+      },
+      "participant_progress": {
+        "columns": {
+          "participant_id": "UUID (Primary Key, Foreign Key -> participants.id, ON DELETE CASCADE)",
+          "completed_quizzes": "INTEGER (Default: 0)",
+          "total_score": "INTEGER (Default: 0)",
+          "total_time": "INTEGER (Default: 0)",
+          "next_barrel_id": "INTEGER (Nullable, CHECK 1-10)",
+          "current_attempt_id": "UUID (Foreign Key -> quiz_attempts.id, ON DELETE SET NULL)",
+          "updated_at": "TIMESTAMP WITH TIME ZONE (Default: CURRENT_TIMESTAMP)"
+        },
+        "description": "Maintains accumulated state (score, total time, next target barrel) for participants."
+      },
+      "audit_logs": {
+        "columns": {
+          "id": "UUID (Primary Key, Default: gen_random_uuid())",
+          "participant_id": "UUID (Foreign Key -> participants.id, Nullable, ON DELETE SET NULL)",
+          "action": "TEXT (Not Null)",
+          "ip_address": "VARCHAR(45)",
+          "user_agent": "TEXT",
+          "created_at": "TIMESTAMP WITH TIME ZONE (Default: CURRENT_TIMESTAMP)"
+        },
+        "description": "Logs critical user actions (registration, scan attempts, wrong scans, submissions) for audit trail."
+      }
+    }
+  },
+  "fileCatalog": {
+    "src/lib/db.ts": {
+      "purpose": "Primary database adapter. Instantiates Supabase if environment variables are set, otherwise instantiates MockDB fallback.",
+      "exports": ["IS_REAL_DB", "supabase", "DB"],
+      "dependencies": ["@supabase/supabase-js", "@/lib/mock-db"]
+    },
+    "src/lib/mock-db.ts": {
+      "purpose": "Local fallback database. Persists database state to `mock_db.json` in the root folder using Node fs sync APIs. Contains memory fallback for serverless read-only contexts.",
+      "exports": ["getDB", "saveDB", "MockDB"],
+      "dependencies": ["fs", "path", "@/lib/questions-data"]
+    },
+    "src/lib/questions-data.ts": {
+      "purpose": "Static repository containing metadata and 200 questions (20 per barrel) for all 10 heritage sites.",
+      "exports": ["questionsData"],
+      "dependencies": []
+    },
+    "src/lib/jwt.ts": {
+      "purpose": "Creates and decodes participant session JWTs using the jose library.",
+      "exports": ["signJWT", "verifyJWT"],
+      "dependencies": ["jose"]
+    },
+    "src/lib/rate-limit.ts": {
+      "purpose": "Limits route spam using Upstash Redis. Falls back to local in-memory Map structure if Redis is unconfigured or fails.",
+      "exports": ["rateLimit"],
+      "dependencies": ["@upstash/redis"]
+    },
+    "src/lib/admin-auth.ts": {
+      "purpose": "Authenticates administrative requests by comparing request headers (`x-admin-password`) or cookies (`admin_session`) to a predefined ADMIN_PASSWORD.",
+      "exports": ["isAdminAuthorized"],
+      "dependencies": []
+    }
+  },
+  "apiEndpoints": {
+    "api/auth/register": {
+      "method": "POST",
+      "auth": "None",
+      "rateLimit": "5 requests/min per IP",
+      "payload": {
+        "full_name": "string (required)",
+        "college_name": "string (required)",
+        "phone_number": "string (required)",
+        "registration_id": "string (required, unique, min length 3)"
+      },
+      "behavior": "Creates a participant, instantiates progress record with a random starting next_barrel_id (1-10), generates JWT cookie `participant_session`, and records an audit log.",
+      "responses": {
+        "200": "Participant details and token",
+        "400": "Validation error",
+        "409": "Duplicate Registration ID",
+        "429": "Rate limit exceeded",
+        "500": "Server error"
+      }
+    },
+    "api/auth/session": {
+      "GET": {
+        "auth": "JWT Cookie (`participant_session`) or Bearer header",
+        "behavior": "Verifies session token, checks if participant account is suspended, fetches and returns their current progress.",
+        "responses": {
+          "200": "Authenticated participant & progress",
+          "401": "Invalid/expired session",
+          "403": "Suspended account",
+          "500": "Server error"
+        }
+      },
+      "DELETE": {
+        "auth": "None",
+        "behavior": "Logs out participant by clearing the `participant_session` cookie.",
+        "responses": {
+          "200": "Successfully logged out"
+        }
+      }
+    },
+    "api/barrel/[barrelId]": {
+      "method": "GET",
+      "auth": "JWT Cookie (`participant_session`) or Bearer header",
+      "rateLimit": "30 requests/min per IP",
+      "behavior": "Processes QR code scanning. Verifies that the scanned barrelId matches the participant's assigned `next_barrel_id`. If correct, creates/resumes a quiz attempt, selects 5 random questions from the quiz's 20-question pool, shuffles the options, strips the correct answers, logs an audit record, and returns the questions. If incorrect, audits the wrong scan and returns a 400 error indicating the correct barrel.",
+      "responses": {
+        "200": "Quiz title, description, questions (without answers), and attempt details",
+        "400": "Invalid barrel ID OR wrong barrel scanned (returns assigned_barrel ID)",
+        "401": "Authentication required",
+        "403": "Account suspended",
+        "404": "Participant or progress not found",
+        "429": "Rate limit exceeded",
+        "500": "Server error"
+      }
+    },
+    "api/quiz/submit": {
+      "method": "POST",
+      "auth": "JWT Cookie (`participant_session`) or Bearer header",
+      "rateLimit": "10 requests/min per IP",
+      "payload": {
+        "attemptId": "string (required)",
+        "answers": "array of { questionId: string, answer: string } (required)"
+      },
+      "behavior": "Scores the submitted answers server-side (10 points per correct answer, max 50). Calculates elapsed time on the server to prevent cheating. Updates participant progress (increments completed count, adds score and time). Selects a new random unattempted barrel ID for the next destination (or null if all 10 completed). Resets current_attempt_id, audits the submission, and returns results.",
+      "responses": {
+        "200": "Score, correct count, time taken, updated progress details",
+        "400": "Validation error, wrong active attempt, or duplicate submission",
+        "401": "Authentication required",
+        "403": "Account suspended",
+        "404": "Participant/attempt not found",
+        "429": "Rate limit exceeded",
+        "500": "Server error"
+      }
+    },
+    "api/leaderboard": {
+      "method": "GET",
+      "auth": "None",
+      "rateLimit": "60 requests/min per IP",
+      "queryParams": {
+        "type": "string ('overall' | 'quiz', default: 'overall')",
+        "barrelId": "number (required if type='quiz')"
+      },
+      "behavior": "Returns leaderboard rankings. Overall: sorted by total score descending, then total time ascending. Quiz-specific: sorted by attempt score descending, then attempt time ascending.",
+      "responses": {
+        "200": "Leaderboard list with rank, name, college, score, and time taken",
+        "400": "Missing/invalid barrelId for quiz type",
+        "429": "Rate limit exceeded",
+        "500": "Server error"
+      }
+    },
+    "api/admin/stats": {
+      "method": "GET",
+      "auth": "Admin (Header `x-admin-password` or Cookie `admin_session`)",
+      "behavior": "Retrieves high-level stats: total active/disabled participants, overall averages, completion distributions, and average performance scores/times for each of the 10 barrels.",
+      "responses": {
+        "200": "Event stats dashboard data",
+        "401": "Unauthorized",
+        "500": "Server error"
+      }
+    },
+    "api/admin/participants": {
+      "GET": {
+        "auth": "Admin",
+        "behavior": "Lists all registered participants enriched with their current progress statistics.",
+        "responses": {
+          "200": "List of enriched participants",
+          "401": "Unauthorized",
+          "500": "Server error"
+        }
+      },
+      "POST": {
+        "auth": "Admin",
+        "payload": {
+          "id": "string (required)",
+          "isDisabled": "boolean (required)"
+        },
+        "behavior": "Suspends or unsuspends a participant account, logs an audit trace.",
+        "responses": {
+          "200": "Status updated successfully",
+          "400": "Missing participant ID",
+          "401": "Unauthorized",
+          "404": "Participant not found",
+          "500": "Server error"
+        }
+      },
+      "DELETE": {
+        "auth": "Admin",
+        "queryParams": {
+          "id": "string (required)"
+        },
+        "behavior": "Deletes participant from the database, cascades to clear progress and attempts, logs an audit trace.",
+        "responses": {
+          "200": "Successfully deleted",
+          "400": "Missing participant ID",
+          "401": "Unauthorized",
+          "500": "Server error"
+        }
+      }
+    },
+    "api/admin/audit-logs": {
+      "method": "GET",
+      "auth": "Admin",
+      "behavior": "Fetches audit log entries sorted by creation timestamp descending.",
+      "responses": {
+        "200": "List of audit logs with action details, IPs, and user agents",
+        "401": "Unauthorized",
+        "500": "Server error"
+      }
+    },
+    "api/admin/export-csv": {
+      "method": "GET",
+      "auth": "Admin",
+      "behavior": "Exports all participant registration, progress, status, and rank details to an Excel-formatted CSV stream with UTF-8 BOM. Audits the export action.",
+      "responses": {
+        "200": "CSV file stream attachment download",
+        "401": "Unauthorized",
+        "500": "Server error"
+      }
+    },
+    "api/admin/reset": {
+      "method": "POST",
+      "auth": "Admin",
+      "behavior": "Wipes out all participant registrations, attempts, progress, and audit logs to reset the event state for a clean run. Re-logs the reset operation.",
+      "responses": {
+        "200": "Event wiped successfully",
+        "401": "Unauthorized",
+        "500": "Server error"
+      }
+    },
+    "api/admin/seed-questions": {
+      "method": "POST",
+      "auth": "Admin",
+      "behavior": "Populates the questions database with the 200 static questions from questionsData. Clears any existing questions first to prevent duplicates.",
+      "responses": {
+        "200": "Successfully seeded count",
+        "401": "Unauthorized",
+        "500": "Server error"
+      }
+    }
+  },
+  "businessRules": [
+    "Strict Sequential Scans: A participant must scan their assigned next_barrel_id. Random barrel hopping is blocked.",
+    "Decentralized Path Routing: In order to prevent bottlenecking at sites, each participant gets a randomized barrel path. The first barrel is chosen randomly upon registration (1 to 10), and subsequent barrels are chosen randomly from remaining unattempted ones.",
+    "Server-Side Scoring: Clients receive options shuffled and without correct answer mappings. Evaluation occurs server-side.",
+    "Server-Side Time Tracking: Duration is calculated on the server by comparing attempt start timestamps to submission timestamps, ensuring that client-side timing manipulation is prevented.",
+    "Suspended Account Guard: If is_disabled is set to true on a participant, all their active session routes (GET session, GET barrel, POST submit) return 403 Forbidden.",
+    "Rate Limiting Defaults: Enforces 5 registrations/min, 10 submissions/min, 30 scans/min, and 60 leaderboard checks/min. IP-based."
+  ]
+}
