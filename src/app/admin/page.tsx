@@ -407,93 +407,142 @@ export default function AdminPage() {
         ) : (
           <>
             {/* 1. OVERVIEW ANALYTICS TAB */}
-            {activeTab === 'stats' && summary && (
-              <div className="space-y-8 animate-fade-in print:hidden">
-                {/* Metric Bento Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[
-                    { label: 'Total Registered', val: summary.total_participants, icon: Users, color: 'bg-brand-surface border-brand-on-surface text-brand-on-surface' },
-                    { label: 'Completed All 10', val: summary.completed_all_10, icon: Trophy, color: 'bg-brand-mustard border-brand-on-surface text-brand-on-surface' },
-                    { label: 'Average Score', val: `${summary.average_score} / 500`, icon: CheckCircle2, color: 'bg-brand-secondary border-brand-on-surface text-brand-on-secondary' },
-                    { label: 'Avg Hunt Duration', val: `${Math.floor(summary.average_time_seconds / 60)}m ${summary.average_time_seconds % 60}s`, icon: Clock, color: 'bg-brand-primary border-brand-on-surface text-brand-on-primary' }
-                  ].map((card, idx) => {
-                    const Icon = card.icon;
-                    return (
-                      <div key={idx} className={`p-6 border-2 shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] flex items-center gap-4 ${card.color}`}>
-                        <div className="p-3 border-2 border-brand-on-surface bg-brand-surface text-brand-on-surface">
-                          <Icon className="h-6 w-6" />
-                        </div>
-                        <div>
-                          <span className="font-mono text-[9px] block font-bold uppercase tracking-widest opacity-80">{card.label}</span>
-                          <strong className="font-display text-2xl font-black mt-1 block">{card.val}</strong>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+            {/* 1. OVERVIEW ANALYTICS TAB */}
+            {activeTab === 'stats' && summary && (() => {
+              const activeQuizStats = quizStats.filter(q => q.completions > 0);
+              const hardestQuiz = activeQuizStats.length > 0 
+                ? [...activeQuizStats].sort((a, b) => a.average_score - b.average_score)[0]
+                : null;
+              const longestQuiz = activeQuizStats.length > 0 
+                ? [...activeQuizStats].sort((a, b) => b.average_time_seconds - a.average_time_seconds)[0]
+                : null;
+              const mostPopularQuiz = activeQuizStats.length > 0
+                ? [...activeQuizStats].sort((a, b) => b.completions - a.completions)[0]
+                : null;
+              const maxCompletions = Math.max(...quizStats.map(q => q.completions), 1);
 
-                {/* Sub-table: Quiz Completion Statistics */}
-                <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)]">
-                  <div className="bg-brand-on-surface p-4 border-b-2 border-brand-on-surface text-brand-surface font-display font-black text-sm uppercase tracking-wider">
-                    INDIVIDUAL BARREL ANALYTICS
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-brand-surface border-b-2 border-brand-on-surface text-xs text-brand-on-surface-variant font-mono uppercase tracking-widest font-bold">
-                          <th className="py-4 px-6 text-center w-24">Barrel</th>
-                          <th className="py-4 px-6">Quiz Title Location</th>
-                          <th className="py-4 px-6 text-center">Completing Roster</th>
-                          <th className="py-4 px-6 text-center">Average Score</th>
-                          <th className="py-4 px-6 text-center">Average Time Evaluated</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y-2 divide-brand-on-surface text-sm font-sans font-bold text-brand-on-surface">
-                        {quizStats.map((q) => (
-                          <tr key={q.barrel_id} className="hover:bg-brand-surface-low">
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center justify-center h-8 w-8 bg-brand-mustard border-2 border-brand-on-surface font-mono text-xs shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] text-brand-on-surface">
-                                #{q.barrel_id.toString().padStart(2, '0')}
-                              </span>
-                            </td>
-                            <td className="py-4 px-6 font-display font-bold uppercase">{q.title}</td>
-                            <td className="py-4 px-6 text-center font-mono text-xs">{q.completions} chapters</td>
-                            <td className="py-4 px-6 text-center font-mono text-brand-primary">+{q.average_score} XP</td>
-                            <td className="py-4 px-6 text-center font-mono text-brand-secondary text-xs">{q.average_time_seconds}s</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* completion distribution */}
-                <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] p-6 md:p-8 space-y-6">
-                  <h3 className="font-display text-xl font-black text-brand-on-surface uppercase">QUIZ COMPLETION DISTRIBUTION</h3>
-                  <div className="space-y-4">
-                    {completionDist.map((item) => {
-                      const percentage = summary.total_participants > 0 
-                        ? (item.participant_count / summary.total_participants) * 100 
-                        : 0;
+              return (
+                <div className="space-y-8 animate-fade-in print:hidden">
+                  {/* Metric Bento Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {[
+                      { label: 'Total Registered', val: summary.total_participants, icon: Users, color: 'bg-brand-surface border-brand-on-surface text-brand-on-surface' },
+                      { label: 'Completed All 10', val: summary.completed_all_10, icon: Trophy, color: 'bg-brand-mustard border-brand-on-surface text-brand-on-surface' },
+                      { label: 'Average Score', val: `${summary.average_score} / 500`, icon: CheckCircle2, color: 'bg-brand-secondary border-brand-on-surface text-brand-on-secondary' },
+                      { label: 'Avg Hunt Duration', val: `${Math.floor(summary.average_time_seconds / 60)}m ${summary.average_time_seconds % 60}s`, icon: Clock, color: 'bg-brand-primary border-brand-on-surface text-brand-on-primary' }
+                    ].map((card, idx) => {
+                      const Icon = card.icon;
                       return (
-                        <div key={item.quizzes_completed} className="space-y-2">
-                          <div className="flex justify-between font-mono text-xs font-bold text-brand-on-surface-variant uppercase tracking-wider">
-                            <span>Completed {item.quizzes_completed} / 10 Quiz Nodes</span>
-                            <span className="text-brand-on-surface">{item.participant_count} Students ({Math.round(percentage)}%)</span>
+                        <div key={idx} className={`p-6 border-2 shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] flex items-center gap-4 ${card.color}`}>
+                          <div className="p-3 border-2 border-brand-on-surface bg-brand-surface text-brand-on-surface">
+                            <Icon className="h-6 w-6" />
                           </div>
-                          <div className="w-full bg-brand-surface-container h-6 border-2 border-brand-on-surface overflow-hidden">
-                            <div 
-                              className="bg-brand-secondary h-full border-r-2 border-brand-on-surface transition-all duration-300"
-                              style={{ width: `${percentage}%` }}
-                            ></div>
+                          <div>
+                            <span className="font-mono text-[9px] block font-bold uppercase tracking-widest opacity-80">{card.label}</span>
+                            <strong className="font-display text-2xl font-black mt-1 block">{card.val}</strong>
                           </div>
                         </div>
                       );
                     })}
                   </div>
+
+                  {/* Sub-table: Quiz Completion Statistics */}
+                  <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)]">
+                    <div className="bg-brand-on-surface p-4 border-b-2 border-brand-on-surface text-brand-surface font-display font-black text-sm uppercase tracking-wider">
+                      INDIVIDUAL BARREL ANALYTICS
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-brand-surface border-b-2 border-brand-on-surface text-xs text-brand-on-surface-variant font-mono uppercase tracking-widest font-bold">
+                            <th className="py-4 px-6 text-center w-24">Barrel</th>
+                            <th className="py-4 px-6">Quiz Title Location</th>
+                            <th className="py-4 px-6 text-center">Completing Roster</th>
+                            <th className="py-4 px-6 text-center">Average Score</th>
+                            <th className="py-4 px-6 text-center">Average Time Evaluated</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y-2 divide-brand-on-surface text-sm font-sans font-bold text-brand-on-surface">
+                          {quizStats.map((q) => {
+                            const isHardest = hardestQuiz && hardestQuiz.barrel_id === q.barrel_id && q.completions > 0;
+                            const isLongest = longestQuiz && longestQuiz.barrel_id === q.barrel_id && q.completions > 0;
+                            const isPopular = mostPopularQuiz && mostPopularQuiz.barrel_id === q.barrel_id && q.completions > 0;
+                            const barPercent = Math.min((q.completions / maxCompletions) * 100, 100);
+
+                            return (
+                              <tr key={q.barrel_id} className="hover:bg-brand-surface-low">
+                                <td className="py-4 px-6 text-center">
+                                  <span className="inline-flex items-center justify-center h-8 w-8 bg-brand-mustard border-2 border-brand-on-surface font-mono text-xs shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] text-brand-on-surface">
+                                    #{q.barrel_id.toString().padStart(2, '0')}
+                                  </span>
+                                </td>
+                                <td className="py-4 px-6">
+                                  <div className="font-display font-bold uppercase">{q.title}</div>
+                                  <div className="flex flex-wrap gap-1.5 mt-1.5 print:hidden">
+                                    {isHardest && (
+                                      <span className="font-mono text-[8px] font-black uppercase bg-red-100 text-brand-error px-2 py-0.5 border border-brand-error">
+                                        ⚠️ Lowest Average Score
+                                      </span>
+                                    )}
+                                    {isLongest && (
+                                      <span className="font-mono text-[8px] font-black uppercase bg-brand-mustard/20 text-brand-on-surface px-2 py-0.5 border border-brand-mustard">
+                                        ⏱️ Most Time Consuming
+                                      </span>
+                                    )}
+                                    {isPopular && (
+                                      <span className="font-mono text-[8px] font-black uppercase bg-brand-secondary/20 text-brand-on-secondary px-2 py-0.5 border border-brand-secondary">
+                                        🔥 Most Completed
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 text-center font-mono text-xs">
+                                  <div>{q.completions} chapters</div>
+                                  <div className="w-24 bg-brand-surface-container h-2 border border-brand-on-surface mt-1 mx-auto overflow-hidden print:hidden">
+                                    <div 
+                                      className="bg-brand-secondary h-full"
+                                      style={{ width: `${barPercent}%` }}
+                                    ></div>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 text-center font-mono text-brand-primary">+{q.average_score} XP</td>
+                                <td className="py-4 px-6 text-center font-mono text-brand-secondary text-xs">{q.average_time_seconds}s</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* completion distribution */}
+                  <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] p-6 md:p-8 space-y-6">
+                    <h3 className="font-display text-xl font-black text-brand-on-surface uppercase">QUIZ COMPLETION DISTRIBUTION</h3>
+                    <div className="space-y-4">
+                      {completionDist.map((item) => {
+                        const percentage = summary.total_participants > 0 
+                          ? (item.participant_count / summary.total_participants) * 100 
+                          : 0;
+                        return (
+                          <div key={item.quizzes_completed} className="space-y-2">
+                            <div className="flex justify-between font-mono text-xs font-bold text-brand-on-surface-variant uppercase tracking-wider">
+                              <span>Completed {item.quizzes_completed} / 10 Quiz Nodes</span>
+                              <span className="text-brand-on-surface">{item.participant_count} Students ({Math.round(percentage)}%)</span>
+                            </div>
+                            <div className="w-full bg-brand-surface-container h-6 border-2 border-brand-on-surface overflow-hidden">
+                              <div 
+                                className="bg-brand-secondary h-full border-r-2 border-brand-on-surface transition-all duration-300"
+                                style={{ width: `${percentage}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* 2. PARTICIPANTS LIST TAB */}
             {activeTab === 'participants' && (

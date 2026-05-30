@@ -26,11 +26,11 @@ export async function GET(request: NextRequest) {
     const completionStats = Array(11).fill(0); // index 0 to 10
 
     leaderboard.forEach(p => {
-      totalScoreAll += p.score;
-      totalTimeAll += p.time;
-      if (p.completed === 10) completedCount++;
-      if (p.completed >= 0 && p.completed <= 10) {
-        completionStats[p.completed]++;
+      totalScoreAll += p.total_score || 0;
+      totalTimeAll += p.total_time || 0;
+      if (p.completed_quizzes === 10) completedCount++;
+      if (p.completed_quizzes >= 0 && p.completed_quizzes <= 10) {
+        completionStats[p.completed_quizzes]++;
       }
     });
 
