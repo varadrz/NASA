@@ -2104,17 +2104,37 @@
       "started_at": "2026-05-30T12:27:01.108Z",
       "submitted_at": "2026-05-30T12:27:40.373Z",
       "is_completed": true
+    },
+    {
+      "id": "attempt-m186czj9o",
+      "participant_id": "part-chsyzzcwi",
+      "quiz_id": "quiz-uuid-2",
+      "score": 20,
+      "time_taken_seconds": 13,
+      "started_at": "2026-05-30T12:35:43.039Z",
+      "submitted_at": "2026-05-30T12:35:56.257Z",
+      "is_completed": true
+    },
+    {
+      "id": "attempt-jut583u46",
+      "participant_id": "part-chsyzzcwi",
+      "quiz_id": "quiz-uuid-9",
+      "score": 0,
+      "time_taken_seconds": 22,
+      "started_at": "2026-05-30T12:36:00.683Z",
+      "submitted_at": "2026-05-30T12:36:22.805Z",
+      "is_completed": true
     }
   ],
   "participant_progress": [
     {
       "participant_id": "part-chsyzzcwi",
-      "completed_quizzes": 3,
-      "total_score": 50,
-      "total_time": 67,
-      "next_barrel_id": 2,
+      "completed_quizzes": 5,
+      "total_score": 70,
+      "total_time": 102,
+      "next_barrel_id": 3,
       "current_attempt_id": null,
-      "updated_at": "2026-05-30T12:27:40.376Z"
+      "updated_at": "2026-05-30T12:36:22.810Z"
     }
   ],
   "audit_logs": [
@@ -2229,6 +2249,54 @@
       "ip_address": "::1",
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
       "created_at": "2026-05-30T12:27:40.377Z"
+    },
+    {
+      "id": "audit-m11vzy8kq",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Successfully scanned Barrel #2 and unlocked Quiz: \"Golconda Fort & Acoustics\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:35:43.049Z"
+    },
+    {
+      "id": "audit-rf2z14121",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Successfully scanned Barrel #2 and unlocked Quiz: \"Golconda Fort & Acoustics\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:35:43.217Z"
+    },
+    {
+      "id": "audit-fyr1mbdlj",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Submitted Quiz \"Golconda Fort & Acoustics\" (Barrel #2). Score: 20/50, Time: 13s. Next assigned: #9",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:35:56.263Z"
+    },
+    {
+      "id": "audit-q6e3jr0uf",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Successfully scanned Barrel #9 and unlocked Quiz: \"Stepwells of Hyderabad\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:36:00.687Z"
+    },
+    {
+      "id": "audit-abzd9bgbt",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Successfully scanned Barrel #9 and unlocked Quiz: \"Stepwells of Hyderabad\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:36:00.765Z"
+    },
+    {
+      "id": "audit-u0spqepcx",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Submitted Quiz \"Stepwells of Hyderabad\" (Barrel #9). Score: 0/50, Time: 22s. Next assigned: #3",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:36:22.815Z"
     }
   ]
 }

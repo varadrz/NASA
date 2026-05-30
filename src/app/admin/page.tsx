@@ -550,7 +550,7 @@ export default function AdminPage() {
                 <div>
                   <input
                     type="text"
-                    placeholder="SEARCH ROSTER BY REGISTRATION ID, NAME, OR COLLEGE..."
+                    placeholder="SEARCH ROSTER BY Z-ID, NAME, OR ZONE..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full input-brutalist px-4 py-3.5 text-xs font-mono uppercase"
@@ -562,9 +562,9 @@ export default function AdminPage() {
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
                         <tr className="bg-brand-on-surface border-b-2 border-brand-on-surface text-xs text-brand-surface font-mono uppercase tracking-widest font-bold">
-                          <th className="py-4 px-6">ID Code</th>
+                          <th className="py-4 px-6">Z-Id</th>
                           <th className="py-4 px-6">Participant</th>
-                          <th className="py-4 px-6">College Chapter</th>
+                          <th className="py-4 px-6">Zone No.</th>
                           <th className="py-4 px-6">Phone</th>
                           <th className="py-4 px-6 text-center">Progress</th>
                           <th className="py-4 px-6 text-center">Score</th>

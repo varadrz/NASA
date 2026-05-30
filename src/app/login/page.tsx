@@ -102,10 +102,10 @@ function LoginForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* NASA Registration ID */}
+          {/* Z-Id */}
           <div>
             <label htmlFor="registration_id" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
-              NASA Registration ID
+              Z-Id
             </label>
             <input
               type="text"
@@ -113,7 +113,7 @@ function LoginForm() {
               name="registration_id"
               value={formData.registration_id}
               onChange={handleChange}
-              placeholder="NASA-2026-XXXX"
+              placeholder="ENTER Z-ID"
               disabled={submitting}
               className="w-full input-brutalist px-4 py-3.5 text-sm uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
               required

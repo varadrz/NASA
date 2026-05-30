@@ -268,7 +268,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-brand-surface border-2 border-brand-on-surface shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] p-6 flex flex-col justify-between">
                 <span className="font-mono text-xs font-bold text-brand-on-surface-variant uppercase tracking-wider">
-                  REGISTRATION NO.
+                  Z-ID CODE
                 </span>
                 <span className="font-display text-2xl font-black text-brand-primary mt-2">
                   {participant.registration_id}

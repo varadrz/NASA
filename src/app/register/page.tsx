@@ -123,22 +123,34 @@ function RegisterForm() {
             />
           </div>
 
-          {/* College Name */}
+          {/* Zone Number */}
           <div>
             <label htmlFor="college_name" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
-              College / Institute
+              Zone No.
             </label>
-            <input
-              type="text"
+            <select
               id="college_name"
               name="college_name"
               value={formData.college_name}
-              onChange={handleChange}
-              placeholder="ARCHITECTURAL INSTITUTE"
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
+                  college_name: e.target.value
+                });
+                setError(null);
+              }}
               disabled={submitting}
-              className="w-full input-brutalist px-4 py-3.5 text-sm uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
+              className="w-full input-brutalist px-4 py-3.5 text-sm uppercase bg-brand-surface text-brand-on-surface font-sans font-bold cursor-pointer"
               required
-            />
+            >
+              <option value="" disabled>SELECT YOUR ZONE</option>
+              <option value="Zone 1">ZONE 1</option>
+              <option value="Zone 2">ZONE 2</option>
+              <option value="Zone 3">ZONE 3</option>
+              <option value="Zone 4">ZONE 4</option>
+              <option value="Zone 5">ZONE 5</option>
+              <option value="Zone 6">ZONE 6</option>
+            </select>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -160,10 +172,10 @@ function RegisterForm() {
               />
             </div>
 
-            {/* NASA Registration ID */}
+            {/* Z-Id */}
             <div>
               <label htmlFor="registration_id" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
-                NASA Registration ID (Unique)
+                Z-Id (Unique Code)
               </label>
               <input
                 type="text"
@@ -171,7 +183,7 @@ function RegisterForm() {
                 name="registration_id"
                 value={formData.registration_id}
                 onChange={handleChange}
-                placeholder="NASA-2026-XXXX"
+                placeholder="ENTER Z-ID"
                 disabled={submitting}
                 className="w-full input-brutalist px-4 py-3.5 text-sm uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
                 required

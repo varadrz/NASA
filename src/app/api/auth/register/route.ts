@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     // 3. Validation
     if (!full_name || !college_name || !phone_number || !registration_id) {
       return NextResponse.json(
-        { error: 'All fields (Full Name, College Name, Phone, Registration ID) are required.' },
+        { error: 'All fields (Full Name, Zone No., Phone, Z-Id) are required.' },
         { status: 400 }
       );
     }
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     const trimmedRegId = registration_id.trim();
     if (trimmedRegId.length < 3) {
       return NextResponse.json(
-        { error: 'Registration ID must be at least 3 characters long.' },
+        { error: 'Z-Id must be at least 3 characters long.' },
         { status: 400 }
       );
     }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const existing = await DB.getParticipantByRegistrationId(trimmedRegId);
     if (existing) {
       return NextResponse.json(
-        { error: 'This Registration ID is already registered.' },
+        { error: 'This Z-Id is already registered.' },
         { status: 409 }
       );
     }
