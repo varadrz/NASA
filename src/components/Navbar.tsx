@@ -157,12 +157,20 @@ export default function Navbar() {
               </div>
             ) : (
               !loading && (
-                <Link
-                  href="/register"
-                  className="px-4 py-2 text-xs font-display font-bold uppercase tracking-wider bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_rgba(28,27,27,1)] transition-all"
-                >
-                  Register
-                </Link>
+                <div className="flex gap-2">
+                  <Link
+                    href="/login"
+                    className="px-4 py-2 text-xs font-display font-bold uppercase tracking-wider bg-brand-surface text-brand-on-surface border-2 border-brand-on-surface hover:bg-brand-surface-low transition-all"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-4 py-2 text-xs font-display font-bold uppercase tracking-wider bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_rgba(28,27,27,1)] transition-all"
+                  >
+                    Register
+                  </Link>
+                </div>
               )
             )}
           </div>
@@ -237,11 +245,18 @@ export default function Navbar() {
             </div>
           ) : (
             !loading && (
-              <div className="pt-4 border-t border-brand-on-surface px-3">
+              <div className="pt-4 border-t border-brand-on-surface px-3 flex flex-col gap-3">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-3 bg-brand-surface text-brand-on-surface border-2 border-brand-on-surface flex items-center justify-center font-display font-black text-xs uppercase tracking-wider hover:bg-brand-surface-low transition-all"
+                >
+                  Log In
+                </Link>
                 <Link
                   href="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-3 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface flex items-center justify-center font-display font-black text-xs uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(28,27,27,1)]"
+                  className="w-full py-3 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface flex items-center justify-center font-display font-black text-xs uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 transition-all"
                 >
                   Register / Join Hunt
                 </Link>

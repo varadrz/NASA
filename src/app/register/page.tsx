@@ -5,6 +5,7 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { Compass, Loader2, QrCode } from 'lucide-react';
 
@@ -197,6 +198,15 @@ function RegisterForm() {
             )}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="font-mono text-xs text-brand-on-surface-variant">
+            Already registered?{' '}
+            <Link href="/login" className="font-bold text-brand-primary hover:underline uppercase">
+              Log In Here
+            </Link>
+          </p>
+        </div>
 
         <p className="mt-8 font-mono text-[10px] text-brand-on-surface-variant text-center tracking-wide leading-relaxed">
           By joining, you agree to the 68th Convention Code of Conduct. Accounts are bound to one active session.

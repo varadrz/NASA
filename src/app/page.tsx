@@ -19,7 +19,8 @@ import {
   Zap,
   X,
   Camera,
-  AlertCircle
+  AlertCircle,
+  LogIn
 } from 'lucide-react';
 
 const getBarrelIdFromCode = (code: string): number | null => {
@@ -496,14 +497,23 @@ export default function Home() {
 
             {/* Call to Action Button */}
             <section className="flex flex-col items-center py-4">
-              <Link
-                href="/register"
-                className="group px-10 py-5 bg-brand-primary text-brand-on-primary border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] hover:shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center gap-4"
-              >
-                <span className="font-display text-xl font-black uppercase tracking-widest">Start Hunt</span>
-                <QrCode className="h-6 w-6" />
-              </Link>
-              <p className="font-mono text-[10px] text-brand-on-surface-variant uppercase mt-4 tracking-widest">
+              <div className="flex flex-col sm:flex-row gap-6 mt-4 items-center w-full justify-center px-4">
+                <Link
+                  href="/register"
+                  className="group px-8 py-4 bg-brand-primary text-brand-on-primary border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] hover:shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-3 cursor-pointer w-full sm:w-auto"
+                >
+                  <span className="font-display text-lg font-black uppercase tracking-widest">Start Hunt</span>
+                  <QrCode className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="/login"
+                  className="group px-8 py-4 bg-brand-surface text-brand-on-surface border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] hover:shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-3 cursor-pointer w-full sm:w-auto"
+                >
+                  <span className="font-display text-lg font-black uppercase tracking-widest">Resume Session</span>
+                  <LogIn className="h-5 w-5" />
+                </Link>
+              </div>
+              <p className="font-mono text-[10px] text-brand-on-surface-variant uppercase mt-6 tracking-widest">
                 Camera permission required for local scanning
               </p>
             </section>

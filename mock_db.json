@@ -2084,17 +2084,27 @@
       "started_at": "2026-05-30T11:50:34.561Z",
       "submitted_at": "2026-05-30T11:50:44.858Z",
       "is_completed": true
+    },
+    {
+      "id": "attempt-9ampxaiom",
+      "participant_id": "part-chsyzzcwi",
+      "quiz_id": "quiz-uuid-1",
+      "score": 10,
+      "time_taken_seconds": 18,
+      "started_at": "2026-05-30T12:12:29.076Z",
+      "submitted_at": "2026-05-30T12:12:47.153Z",
+      "is_completed": true
     }
   ],
   "participant_progress": [
     {
       "participant_id": "part-chsyzzcwi",
-      "completed_quizzes": 1,
-      "total_score": 20,
-      "total_time": 10,
-      "next_barrel_id": 1,
+      "completed_quizzes": 2,
+      "total_score": 30,
+      "total_time": 28,
+      "next_barrel_id": 7,
       "current_attempt_id": null,
-      "updated_at": "2026-05-30T11:50:44.861Z"
+      "updated_at": "2026-05-30T12:12:47.157Z"
     }
   ],
   "audit_logs": [
@@ -2129,6 +2139,38 @@
       "ip_address": "::1",
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
       "created_at": "2026-05-30T11:50:44.863Z"
+    },
+    {
+      "id": "audit-cn460qtg4",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Successfully scanned Barrel #1 and unlocked Quiz: \"Charminar & Qutb Shahi Dynasty\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:12:29.080Z"
+    },
+    {
+      "id": "audit-xjhoxkv4h",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Successfully scanned Barrel #1 and unlocked Quiz: \"Charminar & Qutb Shahi Dynasty\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:12:29.128Z"
+    },
+    {
+      "id": "audit-zdgfrmgy3",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Submitted Quiz \"Charminar & Qutb Shahi Dynasty\" (Barrel #1). Score: 10/50, Time: 18s. Next assigned: #7",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:12:47.159Z"
+    },
+    {
+      "id": "audit-67sd712bc",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Participant logged in: VARAD PATIL (123)",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:22:28.945Z"
     }
   ]
 }
