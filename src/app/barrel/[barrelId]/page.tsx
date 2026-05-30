@@ -269,15 +269,15 @@ export default function BarrelQuizPage({
             <div className="pt-2 flex flex-col sm:flex-row gap-4">
               <Link
                 href="/"
-                className="flex-1 py-3.5 bg-brand-surface border-2 border-brand-on-surface font-display font-bold text-xs uppercase hover:bg-brand-surface-low transition-all"
+                className="flex-1 py-3.5 bg-brand-surface border-2 border-brand-on-surface font-display font-bold text-xs uppercase hover:bg-brand-surface-low transition-all text-center"
               >
                 Dashboard
               </Link>
               <Link
-                href={`/barrel/${assignedBarrel}`}
-                className="flex-1 py-3.5 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-display font-bold text-xs uppercase shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-primary-container active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(28,27,27,1)] transition-all"
+                href="/?scan=true"
+                className="flex-1 py-3.5 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-display font-bold text-xs uppercase shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-primary-container active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(28,27,27,1)] transition-all text-center"
               >
-                Skip to #{assignedBarrel}
+                Scan QR
               </Link>
             </div>
           </div>

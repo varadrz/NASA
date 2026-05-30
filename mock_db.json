@@ -2133,6 +2133,16 @@
       "started_at": "2026-05-30T12:36:00.683Z",
       "submitted_at": "2026-05-30T12:36:22.805Z",
       "is_completed": true
+    },
+    {
+      "id": "attempt-y878s892q",
+      "participant_id": "part-v5dpkk9sf",
+      "quiz_id": "quiz-uuid-3",
+      "score": 20,
+      "time_taken_seconds": 10,
+      "started_at": "2026-05-30T12:44:21.788Z",
+      "submitted_at": "2026-05-30T12:44:31.388Z",
+      "is_completed": true
     }
   ],
   "participant_progress": [
@@ -2147,12 +2157,12 @@
     },
     {
       "participant_id": "part-v5dpkk9sf",
-      "completed_quizzes": 0,
-      "total_score": 0,
-      "total_time": 0,
-      "next_barrel_id": 3,
+      "completed_quizzes": 1,
+      "total_score": 20,
+      "total_time": 10,
+      "next_barrel_id": 2,
       "current_attempt_id": null,
-      "updated_at": "2026-05-30T12:39:10.863Z"
+      "updated_at": "2026-05-30T12:44:31.392Z"
     }
   ],
   "audit_logs": [
@@ -2355,6 +2365,54 @@
       "ip_address": "::1",
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
       "created_at": "2026-05-30T12:41:05.211Z"
+    },
+    {
+      "id": "audit-yj7qoron4",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Participant logged in: VARAD PATIL (12345)",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:42:31.244Z"
+    },
+    {
+      "id": "audit-oj488a1uq",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Scanned wrong barrel. Attempted: #2, Assigned: #3",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:44:17.515Z"
+    },
+    {
+      "id": "audit-bng3boybo",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Scanned wrong barrel. Attempted: #2, Assigned: #3",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:44:17.566Z"
+    },
+    {
+      "id": "audit-nhzi8gwus",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Successfully scanned Barrel #3 and unlocked Quiz: \"Chowmahalla Palace & Nizams\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:44:21.791Z"
+    },
+    {
+      "id": "audit-cbswup865",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Successfully scanned Barrel #3 and unlocked Quiz: \"Chowmahalla Palace & Nizams\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:44:21.855Z"
+    },
+    {
+      "id": "audit-056gv4sx6",
+      "participant_id": "part-v5dpkk9sf",
+      "action": "Submitted Quiz \"Chowmahalla Palace & Nizams\" (Barrel #3). Score: 20/50, Time: 10s. Next assigned: #2",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:44:31.394Z"
     }
   ]
 }
