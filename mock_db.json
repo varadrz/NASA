@@ -2094,17 +2094,27 @@
       "started_at": "2026-05-30T12:12:29.076Z",
       "submitted_at": "2026-05-30T12:12:47.153Z",
       "is_completed": true
+    },
+    {
+      "id": "attempt-3qp129bth",
+      "participant_id": "part-chsyzzcwi",
+      "quiz_id": "quiz-uuid-7",
+      "score": 20,
+      "time_taken_seconds": 39,
+      "started_at": "2026-05-30T12:27:01.108Z",
+      "submitted_at": "2026-05-30T12:27:40.373Z",
+      "is_completed": true
     }
   ],
   "participant_progress": [
     {
       "participant_id": "part-chsyzzcwi",
-      "completed_quizzes": 2,
-      "total_score": 30,
-      "total_time": 28,
-      "next_barrel_id": 7,
+      "completed_quizzes": 3,
+      "total_score": 50,
+      "total_time": 67,
+      "next_barrel_id": 2,
       "current_attempt_id": null,
-      "updated_at": "2026-05-30T12:12:47.157Z"
+      "updated_at": "2026-05-30T12:27:40.376Z"
     }
   ],
   "audit_logs": [
@@ -2187,6 +2197,38 @@
       "ip_address": "::1",
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
       "created_at": "2026-05-30T12:23:50.540Z"
+    },
+    {
+      "id": "audit-waltojych",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Participant logged in: VARAD PATIL (123)",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:26:54.972Z"
+    },
+    {
+      "id": "audit-578plsnls",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Successfully scanned Barrel #7 and unlocked Quiz: \"Qutb Shahi Tombs\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:27:01.110Z"
+    },
+    {
+      "id": "audit-1pcqhqw8o",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Successfully scanned Barrel #7 and unlocked Quiz: \"Qutb Shahi Tombs\"",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:27:01.152Z"
+    },
+    {
+      "id": "audit-s3v68j9az",
+      "participant_id": "part-chsyzzcwi",
+      "action": "Submitted Quiz \"Qutb Shahi Tombs\" (Barrel #7). Score: 20/50, Time: 39s. Next assigned: #2",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "created_at": "2026-05-30T12:27:40.377Z"
     }
   ]
 }

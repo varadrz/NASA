@@ -4,7 +4,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navbar from '@/components/Navbar';
+import AdminNavbar from '@/components/AdminNavbar';
+import { useRouter } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   AlertOctagon, 
@@ -88,6 +89,16 @@ export default function AdminPage() {
   // Confirmation states
   const [wiping, setWiping] = useState(false);
   const [seeding, setSeeding] = useState(false);
+
+  const router = useRouter();
+
+  const handleAdminLogout = () => {
+    sessionStorage.removeItem('admin_pw');
+    setIsAuthenticated(false);
+    setPassword('');
+    document.cookie = "admin_session=; path=/; max-age=0";
+    router.refresh();
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -259,7 +270,7 @@ export default function AdminPage() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex flex-col bg-brand-surface text-brand-on-surface">
-        <Navbar />
+        <AdminNavbar isAuthenticated={false} />
         <div className="flex-1 flex items-center justify-center p-4">
           <form onSubmit={handleLogin} className="bg-brand-surface p-8 border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] max-w-md w-full space-y-6">
             <div className="text-center space-y-2">
@@ -320,7 +331,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen flex flex-col bg-brand-surface print:bg-white print:text-black">
       <div className="print:hidden">
-        <Navbar />
+        <AdminNavbar isAuthenticated={true} onLogout={handleAdminLogout} />
       </div>
 
       <main className="flex-grow max-w-7xl mx-auto w-full px-4 py-8 space-y-8 print:py-0 print:px-0 pb-32">
