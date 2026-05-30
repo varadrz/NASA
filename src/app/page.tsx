@@ -237,6 +237,12 @@ export default function Home() {
         window.history.replaceState({}, document.title, newUrl);
       }
     }
+
+    const handleOpenScanner = () => setIsScannerOpen(true);
+    window.addEventListener('open-scanner', handleOpenScanner);
+    return () => {
+      window.removeEventListener('open-scanner', handleOpenScanner);
+    };
   }, [loading]);
 
   const formatTime = (secs: number) => {
