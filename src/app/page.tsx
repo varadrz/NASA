@@ -1037,26 +1037,6 @@ export default function Home() {
                     </button>
                   </div>
                 </form>
-
-                {/* Helper details showing testing keys */}
-                <div className="p-3 bg-brand-surface-low border border-brand-on-surface text-[9px] font-mono text-brand-on-surface-variant space-y-1">
-                  <span className="font-bold text-brand-primary uppercase block">TESTING SIMULATOR PASSWORDS:</span>
-                  <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
-                    <span>Barrel 1: NASA0801</span>
-                    <span>Barrel 2: NASA0802</span>
-                    <span>Barrel 3: NASA0803</span>
-                    <span>Barrel 4: NASA0804</span>
-                    <span>Barrel 5: NASA0805</span>
-                    <span>Barrel 6: NASA0806</span>
-                    <span>Barrel 7: NASA0807</span>
-                    <span>Barrel 8: NASA0808</span>
-                    <span>Barrel 9: NASA0809</span>
-                    <span>Barrel 10: NASA0810</span>
-                  </div>
-                  <span className="block mt-1 font-bold text-[8px] text-brand-on-surface-variant opacity-85">
-                    * Use uppercase keys to simulate successful barrel physical locates.
-                  </span>
-                </div>
               </div>
             )}
           </div>
