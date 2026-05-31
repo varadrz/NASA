@@ -1001,7 +1001,7 @@ export default function Home() {
                       maxLength={8}
                       value={manualCode}
                       onChange={(e) => setManualCode(e.target.value.slice(0, 8))}
-                      placeholder="NASAXXXX (OR NUMERIC)"
+                      placeholder="8-DIGIT CODE"
                       className="w-full input-brutalist px-4 py-3 text-center text-base font-mono font-black uppercase tracking-widest placeholder:text-brand-outline-variant placeholder:opacity-40"
                       required
                       autoFocus
