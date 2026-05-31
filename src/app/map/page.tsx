@@ -387,12 +387,12 @@ export default function CampusMapPage() {
           </div>
 
           {/* Day selection tabs */}
-          <div className="grid grid-cols-2 md:grid-cols-4 border-b-4 border-brand-on-surface bg-brand-surface-highest">
+          <div className="flex overflow-x-auto border-b-4 border-brand-on-surface bg-brand-surface-highest md:grid md:grid-cols-4 scrollbar-none whitespace-nowrap">
             {SCHEDULE_DATA.map((day, idx) => (
               <button
                 key={idx}
                 onClick={() => setSelectedDayIdx(idx)}
-                className={`py-4 px-6 text-center font-display font-black text-xs md:text-sm uppercase tracking-wider transition-all border-r last:border-r-0 border-brand-on-surface cursor-pointer ${
+                className={`py-4 px-6 text-center font-display font-black text-xs md:text-sm uppercase tracking-wider transition-all border-r last:border-r-0 border-brand-on-surface cursor-pointer shrink-0 min-w-[130px] md:min-w-0 md:w-full ${
                   selectedDayIdx === idx 
                     ? 'bg-brand-primary text-brand-on-primary font-extrabold shadow-inner' 
                     : 'bg-brand-surface-highest text-brand-on-surface hover:bg-brand-surface-high'
@@ -408,7 +408,7 @@ export default function CampusMapPage() {
           <div className="p-4 bg-brand-surface-low border-b-2 border-brand-on-surface flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
             
              {/* Category selection */}
-             <div className="flex flex-wrap gap-2">
+             <div className="flex overflow-x-auto gap-2 scrollbar-none whitespace-nowrap pb-1 md:pb-0">
                {[
                  { value: 'ALL', label: 'ALL' },
                  { value: 'MASTERCLASS', label: 'MASTERCLASSES' },
@@ -419,7 +419,7 @@ export default function CampusMapPage() {
                  <button
                    key={type.value}
                    onClick={() => setSelectedType(type.value)}
-                   className={`px-3 py-1.5 border-2 border-brand-on-surface font-mono text-[10px] font-bold uppercase transition-all tracking-wider cursor-pointer ${
+                   className={`px-3 py-1.5 border-2 border-brand-on-surface font-mono text-[10px] font-bold uppercase transition-all tracking-wider cursor-pointer shrink-0 ${
                      selectedType === type.value
                        ? 'bg-brand-secondary text-brand-on-secondary'
                        : 'bg-brand-surface text-brand-on-surface hover:bg-brand-surface-high'
