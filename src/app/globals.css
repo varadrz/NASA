@@ -204,3 +204,23 @@ body {
   size: A3 portrait;
   margin: 0;
 }
+
+/* Blinking & Pulsing Animation for 3D Isometric Map Venues */
+@keyframes active-venue-pulse {
+  0% {
+    fill: #e03131; /* brand primary red */
+    filter: drop-shadow(0 0 4px #e03131);
+  }
+  50% {
+    fill: #fcc419; /* brand mustard yellow */
+    filter: drop-shadow(0 0 12px #fcc419);
+  }
+  100% {
+    fill: #0c8599; /* brand cyan */
+    filter: drop-shadow(0 0 4px #0c8599);
+  }
+}
+
+.animate-active-venue {
+  animation: active-venue-pulse 1s infinite alternate;
+}
