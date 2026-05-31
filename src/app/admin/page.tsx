@@ -372,7 +372,7 @@ export default function AdminPage() {
         </div>
 
         {/* Console Navigation Tab Controls */}
-        <div className="flex flex-wrap gap-2 border-b-2 border-brand-on-surface pb-4 print:hidden">
+        <div className="flex overflow-x-auto gap-2 border-b-2 border-brand-on-surface pb-4 scrollbar-none whitespace-nowrap print:hidden">
           {[
             { id: 'stats', label: 'Overview Analytics', icon: BarChart3 },
             { id: 'participants', label: 'Participant Roster', icon: Users },
@@ -386,7 +386,7 @@ export default function AdminPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-4 py-2.5 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer flex items-center gap-2 ${
+                className={`px-4 py-2.5 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
                   isSelected
                     ? 'bg-brand-mustard text-brand-on-surface border-brand-on-surface shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] translate-x-[1px] translate-y-[1px]'
                     : 'bg-brand-surface border-transparent text-brand-on-surface-variant hover:border-brand-on-surface'

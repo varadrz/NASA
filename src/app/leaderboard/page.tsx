@@ -164,13 +164,13 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Tab Controls Bar */}
-        <div className="flex flex-wrap items-center gap-4 border-b-2 border-brand-on-surface pb-4">
+        <div className="flex overflow-x-auto items-center gap-4 border-b-2 border-brand-on-surface pb-4 scrollbar-none whitespace-nowrap">
           <button
             onClick={() => {
               setActiveTab('overall');
               setSearchQuery('');
             }}
-            className={`px-5 py-3 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer ${
+            className={`px-5 py-3 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer shrink-0 ${
               activeTab === 'overall'
                 ? 'bg-brand-primary text-brand-on-primary border-brand-on-surface shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] translate-x-[1px] translate-y-[1px]'
                 : 'bg-brand-surface border-transparent text-brand-on-surface-variant hover:border-brand-on-surface'
@@ -184,7 +184,7 @@ export default function LeaderboardPage() {
               setActiveTab('zone');
               setSearchQuery('');
             }}
-            className={`px-5 py-3 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer ${
+            className={`px-5 py-3 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer shrink-0 ${
               activeTab === 'zone'
                 ? 'bg-brand-primary text-brand-on-primary border-brand-on-surface shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] translate-x-[1px] translate-y-[1px]'
                 : 'bg-brand-surface border-transparent text-brand-on-surface-variant hover:border-brand-on-surface'
@@ -198,7 +198,7 @@ export default function LeaderboardPage() {
               setActiveTab('quiz');
               setSearchQuery('');
             }}
-            className={`px-5 py-3 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer ${
+            className={`px-5 py-3 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer shrink-0 ${
               activeTab === 'quiz'
                 ? 'bg-brand-primary text-brand-on-primary border-brand-on-surface shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] translate-x-[1px] translate-y-[1px]'
                 : 'bg-brand-surface border-transparent text-brand-on-surface-variant hover:border-brand-on-surface'
@@ -211,7 +211,7 @@ export default function LeaderboardPage() {
             <select
               value={selectedBarrel}
               onChange={(e) => setSelectedBarrel(Number(e.target.value))}
-              className="ml-auto input-brutalist px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider bg-brand-surface cursor-pointer"
+              className="ml-auto input-brutalist px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider bg-brand-surface cursor-pointer shrink-0"
             >
               {barrelOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
