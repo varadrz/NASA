@@ -24,12 +24,7 @@ import {
 } from 'lucide-react';
 
 const getBarrelIdFromCode = (code: string): number | null => {
-  const normalized = code.trim().toUpperCase();
-  // Check NASA08xx style:
-  if (normalized.startsWith('NASA08')) {
-    const numPart = parseInt(normalized.slice(6), 10);
-    if (numPart >= 1 && numPart <= 10) return numPart;
-  }
+  const normalized = code.trim();
   // Check numeric mappings:
   const numericMap: { [code: string]: number } = {
     '48392015': 1,

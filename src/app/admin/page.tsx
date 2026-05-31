@@ -28,17 +28,17 @@ import {
   Clock
 } from 'lucide-react';
 
-const BARREL_CODES: { [key: number]: { alpha: string; numeric: string } } = {
-  1: { alpha: 'NASA0801', numeric: '48392015' },
-  2: { alpha: 'NASA0802', numeric: '89201543' },
-  3: { alpha: 'NASA0803', numeric: '31548920' },
-  4: { alpha: 'NASA0804', numeric: '54389201' },
-  5: { alpha: 'NASA0805', numeric: '92015438' },
-  6: { alpha: 'NASA0806', numeric: '15438920' },
-  7: { alpha: 'NASA0807', numeric: '83920154' },
-  8: { alpha: 'NASA0808', numeric: '43892015' },
-  9: { alpha: 'NASA0809', numeric: '20154389' },
-  10: { alpha: 'NASA0810', numeric: '71543892' }
+const BARREL_CODES: { [key: number]: string } = {
+  1: '48392015',
+  2: '89201543',
+  3: '31548920',
+  4: '54389201',
+  5: '92015438',
+  6: '15438920',
+  7: '83920154',
+  8: '43892015',
+  9: '20154389',
+  10: '71543892'
 };
 
 interface StatsSummary {
@@ -690,13 +690,10 @@ export default function AdminPage() {
                         {/* Big Access Key display below QR */}
                         <div className="py-2 px-6 border-2 border-dashed border-brand-on-surface bg-brand-surface-low rounded-none w-full max-w-[280px] mx-auto">
                           <span className="font-mono text-[9px] font-bold text-brand-on-surface-variant block uppercase tracking-wide mb-1">
-                            Access Keys (Fallback)
+                            Access Key (Fallback)
                           </span>
                           <div className="font-mono text-2xl font-black text-brand-primary uppercase tracking-widest print:text-black">
-                            {BARREL_CODES[barrelNum].alpha}
-                          </div>
-                          <div className="font-mono text-lg font-black text-brand-secondary uppercase tracking-widest mt-0.5 print:text-black">
-                            {BARREL_CODES[barrelNum].numeric}
+                            {BARREL_CODES[barrelNum]}
                           </div>
                         </div>
 

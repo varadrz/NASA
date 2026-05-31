@@ -5,17 +5,17 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Printer, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-const BARREL_CODES: { [key: number]: { alpha: string; numeric: string } } = {
-  1: { alpha: 'NASA0801', numeric: '48392015' },
-  2: { alpha: 'NASA0802', numeric: '89201543' },
-  3: { alpha: 'NASA0803', numeric: '31548920' },
-  4: { alpha: 'NASA0804', numeric: '54389201' },
-  5: { alpha: 'NASA0805', numeric: '92015438' },
-  6: { alpha: 'NASA0806', numeric: '15438920' },
-  7: { alpha: 'NASA0807', numeric: '83920154' },
-  8: { alpha: 'NASA0808', numeric: '43892015' },
-  9: { alpha: 'NASA0809', numeric: '20154389' },
-  10: { alpha: 'NASA0810', numeric: '71543892' }
+const BARREL_CODES: { [key: number]: string } = {
+  1: '48392015',
+  2: '89201543',
+  3: '31548920',
+  4: '54389201',
+  5: '92015438',
+  6: '15438920',
+  7: '83920154',
+  8: '43892015',
+  9: '20154389',
+  10: '71543892'
 };
 
 export default function AdminPrintPage() {
@@ -106,21 +106,13 @@ export default function AdminPrintPage() {
                 </div>
 
                 {/* Big physical fallback access key displays */}
-                <div className="w-full max-w-xl p-6 border-4 border-brand-on-surface bg-brand-surface-low rounded-none space-y-4 shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] print:shadow-none">
+                <div className="w-full max-w-xl p-6 border-4 border-brand-on-surface bg-brand-surface-low rounded-none space-y-2 shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] print:shadow-none">
                   <div>
                     <span className="font-mono text-xs font-black text-brand-on-surface-variant uppercase tracking-widest block mb-2">
                       PHYSICAL ACCESS KEY (MANUAL FALLBACK)
                     </span>
                     <div className="font-mono text-5xl font-black text-brand-primary uppercase tracking-widest leading-none">
-                      {BARREL_CODES[barrelNum].alpha}
-                    </div>
-                  </div>
-                  <div className="border-t-2 border-dashed border-brand-on-surface/40 pt-4">
-                    <span className="font-mono text-[10px] font-black text-brand-on-surface-variant uppercase tracking-widest block mb-1">
-                      NUMERIC ALIAS CODE
-                    </span>
-                    <div className="font-mono text-3xl font-black text-brand-secondary uppercase tracking-widest leading-none">
-                      {BARREL_CODES[barrelNum].numeric}
+                      {BARREL_CODES[barrelNum]}
                     </div>
                   </div>
                 </div>
