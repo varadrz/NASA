@@ -645,13 +645,14 @@ export default function AdminPage() {
                       Render physical placard labels for all 10 campus checkpoint barrels. Use the print command below to print directly onto card stock paper. Target paths are compiled dynamically.
                     </p>
                   </div>
-                  <button
-                    onClick={printQRCodes}
+                  <a
+                    href="/admin/print"
+                    target="_blank"
                     className="px-6 py-3.5 bg-brand-on-surface text-brand-surface border-2 border-brand-on-surface font-display font-black text-xs uppercase tracking-widest shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-x-[2px] active:translate-y-[2px] transition-all flex items-center gap-2 cursor-pointer"
                   >
                     <Printer className="h-4.5 w-4.5" />
-                    PRINT QR CODES
-                  </button>
+                    OPEN PRINT DASHBOARD (A3)
+                  </a>
                 </div>
 
                 {/* Printable placat nodes */}
