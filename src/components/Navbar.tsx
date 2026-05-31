@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Award, Compass, LayoutDashboard, LogOut, QrCode, User, Shield, X } from 'lucide-react';
+import { Award, Compass, LayoutDashboard, LogOut, QrCode, User, Shield, X, Calendar } from 'lucide-react';
 
 interface ParticipantSession {
   id: string;
@@ -137,8 +137,8 @@ export default function Navbar() {
                 href="/map"
                 className="flex items-center gap-2 px-3 py-1.5 border-2 text-xs uppercase font-mono font-bold tracking-wider transition text-brand-on-surface-variant border-transparent hover:border-brand-on-surface hover:text-brand-on-surface"
               >
-                <Compass className="h-3.5 w-3.5" />
-                Timeline and Campus Map
+                <Calendar className="h-3.5 w-3.5" />
+                Schedule
               </Link>
             </div>
 
@@ -261,7 +261,7 @@ export default function Navbar() {
           <QrCode className="h-6 w-6 font-bold" />
         </button>
 
-        {/* Tab 4: Campus Map */}
+        {/* Tab 4: Schedule */}
         <Link
           href="/map"
           onClick={() => setProfileOpen(false)}
@@ -270,8 +270,8 @@ export default function Navbar() {
             : 'text-brand-on-surface-variant opacity-80'
             }`}
         >
-          <Compass className="h-5 w-5" />
-          <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Timeline & Map</span>
+          <Calendar className="h-5 w-5" />
+          <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Schedule</span>
         </Link>
 
         {/* Tab 5: Profile Sheet Trigger */}
