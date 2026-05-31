@@ -138,7 +138,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 px-3 py-1.5 border-2 text-xs uppercase font-mono font-bold tracking-wider transition text-brand-on-surface-variant border-transparent hover:border-brand-on-surface hover:text-brand-on-surface"
               >
                 <Compass className="h-3.5 w-3.5" />
-                Campus Map
+                Timeline and Campus Map
               </Link>
             </div>
 
@@ -249,7 +249,7 @@ export default function Navbar() {
             }`}
         >
           <Award className="h-5 w-5" />
-          <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Scores</span>
+          <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Leaderboard</span>
         </Link>
 
         {/* Tab 3: Centered QR Scan Trigger Button */}
@@ -271,7 +271,7 @@ export default function Navbar() {
             }`}
         >
           <Compass className="h-5 w-5" />
-          <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Map</span>
+          <span className="text-[9px] font-mono font-bold uppercase tracking-tighter mt-0.5">Timeline & Map</span>
         </Link>
 
         {/* Tab 5: Profile Sheet Trigger */}

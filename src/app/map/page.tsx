@@ -250,7 +250,7 @@ export default function CampusMapPage() {
             </span>
             <h1 className="font-display text-3xl md:text-4xl font-black uppercase text-brand-on-surface flex items-center gap-2 tracking-tight">
               <Compass className="h-8 w-8 text-brand-secondary animate-spin-slow" />
-              Woxsen Campus Map
+              Timeline and Campus Map
             </h1>
             <p className="text-brand-on-surface-variant text-sm mt-2 font-sans font-medium">
               High-resolution spatial guide of campus sectors, academic blocks, and checkpoints.
