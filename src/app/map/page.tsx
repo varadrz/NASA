@@ -107,9 +107,18 @@ const SCHEDULE_DATA: ScheduleDay[] = [
   }
 ];
 
+const HOTSPOTS = [
+  { id: 'academic-block', label: 'Academic Block', x: 560, y: 260 },
+  { id: 'admin-block', label: 'Admin Block', x: 560, y: 450 },
+  { id: 'trade-tower', label: 'Trade Tower', x: 670, y: 340 },
+  { id: 'library', label: 'Central Library', x: 670, y: 180 },
+  { id: 'the-league', label: 'The League (Shed/SportX)', x: 1240, y: 180 },
+  { id: 'race-field', label: 'RACE / Field', x: 1110, y: 180 }
+];
+
 export default function CampusMapPage() {
   // Map Zoom & Pan State
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(0.7);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -141,7 +150,7 @@ export default function CampusMapPage() {
   const zoomIn = () => setScale(prev => Math.min(prev + 0.25, 3));
   const zoomOut = () => setScale(prev => Math.max(prev - 0.25, 0.5));
   const resetMap = () => {
-    setScale(1);
+    setScale(0.7);
     setPosition({ x: 0, y: 0 });
     setActiveVenue(null);
     setFilterVenue(null);
@@ -150,26 +159,24 @@ export default function CampusMapPage() {
   // Map venue names to map block IDs
   const mapVenueToBlockId = (venue: string): string => {
     const v = venue.toUpperCase();
-    if (v.includes('OUTDOOR SHED')) return 'outdoor-shed';
-    if (v.includes('OUTDOOR FIELD')) return 'outdoor-field';
-    if (v.includes('D-103') || v.includes('D-101') || v.includes('D-105') || v.includes('DESIGN BLOCK')) return 'block-d';
-    if (v.includes('F-102') || v.includes('F-002') || v.includes('LAB BLOCK')) return 'block-f';
-    if (v.includes('LECTURE THEATRE') || v.includes('LT')) return 'admin-lt';
+    if (v.includes('OUTDOOR SHED') || v.includes('THE LEAGUE') || v.includes('SPORTX')) return 'the-league';
+    if (v.includes('OUTDOOR FIELD') || v.includes('RACE') || v.includes('CRICKET') || v.includes('FIELD')) return 'race-field';
+    if (v.includes('D-103') || v.includes('D-101') || v.includes('D-105') || v.includes('DESIGN BLOCK') || v.includes('ACADEMIC BLOCK')) return 'academic-block';
+    if (v.includes('F-102') || v.includes('F-002') || v.includes('LAB BLOCK') || v.includes('TRADE TOWER')) return 'trade-tower';
+    if (v.includes('LECTURE THEATRE') || v.includes('LT') || v.includes('ADMIN BLOCK')) return 'admin-block';
     if (v.includes('LIBRARY LAWN') || v.includes('LIBRARY')) return 'library';
-    if (v.includes('E-012') || v.includes('E-015') || v.includes('E-302') || v.includes('E-104') || v.includes('LAW BLOCK') || v.includes('SEMINAR ROOM')) return 'block-e';
-    if (v.includes('ADMIN LAWN')) return 'admin-lawn';
+    if (v.includes('E-012') || v.includes('E-015') || v.includes('E-302') || v.includes('E-104') || v.includes('LAW BLOCK') || v.includes('SEMINAR ROOM')) return 'academic-block';
+    if (v.includes('ADMIN LAWN')) return 'admin-block';
     return '';
   };
 
   const VENUE_COORDS: { [key: string]: { x: number; y: number } } = {
-    'block-d': { x: 320, y: 180 },
-    'block-f': { x: 540, y: 140 },
-    'block-e': { x: 720, y: 240 },
-    'library': { x: 520, y: 340 },
-    'admin-lt': { x: 280, y: 420 },
-    'outdoor-shed': { x: 830, y: 330 },
-    'outdoor-field': { x: 840, y: 460 },
-    'admin-lawn': { x: 370, y: 470 }
+    'academic-block': { x: 560, y: 260 },
+    'admin-block': { x: 560, y: 450 },
+    'trade-tower': { x: 670, y: 340 },
+    'library': { x: 670, y: 180 },
+    'the-league': { x: 1240, y: 180 },
+    'race-field': { x: 1110, y: 180 }
   };
 
   const handleLocateVenue = (venueName: string) => {
@@ -182,8 +189,8 @@ export default function CampusMapPage() {
       setFilterVenue(venueId); // Also filter by this venue
       setScale(1.4);
       setPosition({
-        x: 500 - coords.x * 1.4,
-        y: 250 - coords.y * 1.4
+        x: 800 - coords.x * 1.4,
+        y: 335 - coords.y * 1.4
       });
 
       // Smooth scroll to map container
@@ -401,407 +408,342 @@ export default function CampusMapPage() {
               transition: isDragging ? 'none' : 'transform 0.1s ease-out'
             }}
           >
-            <svg
-              viewBox="0 0 1000 600"
-              className="w-[1000px] h-[600px] shrink-0 pointer-events-auto select-none"
-              style={{ minWidth: '1000px', minHeight: '600px' }}
-            >
-              {/* Gradients Defs */}
-              <defs>
-                <linearGradient id="roof-mustard" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ffd43b" />
-                  <stop offset="100%" stopColor="#fab005" />
-                </linearGradient>
-                <linearGradient id="wall-mustard-l" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#fab005" />
-                  <stop offset="100%" stopColor="#f59f00" />
-                </linearGradient>
-                <linearGradient id="wall-mustard-r" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#f59f00" />
-                  <stop offset="100%" stopColor="#e67700" />
-                </linearGradient>
-
-                <linearGradient id="roof-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#22b8cf" />
-                  <stop offset="100%" stopColor="#15aabf" />
-                </linearGradient>
-                <linearGradient id="wall-cyan-l" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#15aabf" />
-                  <stop offset="100%" stopColor="#0c8599" />
-                </linearGradient>
-                <linearGradient id="wall-cyan-r" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#0c8599" />
-                  <stop offset="100%" stopColor="#0b7285" />
-                </linearGradient>
-
-                <linearGradient id="roof-primary" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ff8787" />
-                  <stop offset="100%" stopColor="#fa5252" />
-                </linearGradient>
-                <linearGradient id="wall-primary-l" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#fa5252" />
-                  <stop offset="100%" stopColor="#e03131" />
-                </linearGradient>
-                <linearGradient id="wall-primary-r" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#e03131" />
-                  <stop offset="100%" stopColor="#c92a2a" />
-                </linearGradient>
-
-                <linearGradient id="roof-sand" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="100%" stopColor="#f1f3f5" />
-                </linearGradient>
-                <linearGradient id="wall-sand-l" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#e9ecef" />
-                  <stop offset="100%" stopColor="#dee2e6" />
-                </linearGradient>
-                <linearGradient id="wall-sand-r" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#dee2e6" />
-                  <stop offset="100%" stopColor="#ced4da" />
-                </linearGradient>
-
-                <linearGradient id="roof-purple" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#e5dbff" />
-                  <stop offset="100%" stopColor="#cc5de8" />
-                </linearGradient>
-                <linearGradient id="wall-purple-l" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#be4bdb" />
-                  <stop offset="100%" stopColor="#ae3ec9" />
-                </linearGradient>
-                <linearGradient id="wall-purple-r" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#ae3ec9" />
-                  <stop offset="100%" stopColor="#862e9c" />
-                </linearGradient>
-              </defs>
-
-              {/* Grid Background Pattern */}
-              <rect width="100%" height="100%" fill="#f4f0ea" />
-              <path d="M 0,0 L 1000,600 M 0,100 L 800,600 M 0,200 L 600,600 M 0,300 L 400,600 M 0,400 L 200,600 M 200,0 L 1000,480 M 400,0 L 1000,360 M 600,0 L 1000,240 M 800,0 L 1000,120" stroke="#eae5db" strokeWidth="1.5" />
-              <path d="M 0,600 L 1000,0 M 0,500 L 833,0 M 0,400 L 666,0 M 0,300 L 500,0 M 0,200 L 333,0 M 0,100 L 166,0 M 166,600 L 1000,100 M 333,600 L 1000,200 M 500,600 L 1000,300 M 666,600 L 1000,400 M 833,600 L 1000,500" stroke="#eae5db" strokeWidth="1.5" />
-
-              {/* Walkway Paths */}
-              <path d="M 280,440 L 320,180 L 540,140 L 720,240 L 830,330 L 840,460 L 520,340 Z" fill="none" stroke="#e3ded4" strokeWidth="24" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M 280,440 L 320,180 L 540,140 L 720,240 L 830,330 L 840,460 L 520,340 Z" fill="none" stroke="#ffffff" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="6 6" />
-
-              {/* Grass Lawns */}
-              <polygon 
-                points="430,375 490,340 550,375 490,410" 
-                fill="#d8f5a2" 
-                stroke="#a7db58" 
-                strokeWidth="2.5" 
-                className="cursor-pointer hover:fill-[#c0eb75] transition-all"
-                onClick={() => handleBlockClick('library')}
-              />
-              <polygon 
-                points="330,470 375,445 420,470 375,495" 
-                fill="#d8f5a2" 
-                stroke="#a7db58" 
-                strokeWidth="2.5" 
-                className="cursor-pointer hover:fill-[#c0eb75] transition-all"
-                onClick={() => handleBlockClick('admin-lawn')}
-              />
-              <polygon 
-                points="740,465 840,415 940,465 840,515" 
-                fill="#c3fae8" 
-                stroke="#63e6be" 
-                strokeWidth="2.5" 
-                className="cursor-pointer hover:fill-[#96f2d7] transition-all"
-                onClick={() => handleBlockClick('outdoor-field')}
-              />
-
-              {/* ---------------- 3D ISOMETRIC BUILDINGS ---------------- */}
-
-              {/* 1. Classroom Block D */}
-              <g 
-                className="cursor-pointer group animate-slide-up"
-                onClick={() => handleBlockClick('block-d')}
+            <div className="relative w-[1600px] h-[670px] shrink-0 pointer-events-auto select-none bg-[#F2EDE4] border-4 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] overflow-hidden">
+              {/* Vector SVG Campus Background & Landmark Graphics */}
+              <svg
+                viewBox="0 0 1600 670"
+                className="w-full h-full absolute inset-0 pointer-events-none"
               >
-                {/* Left Wall */}
-                <polygon 
-                  points="240,180 240,240 320,280 320,220" 
-                  fill="url(#wall-mustard-l)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-d' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Right Wall */}
-                <polygon 
-                  points="320,220 320,280 400,240 400,180" 
-                  fill="url(#wall-mustard-r)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-d' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Top Roof */}
-                <polygon 
-                  points="240,180 320,140 400,180 320,220" 
-                  fill="url(#roof-mustard)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-d' ? 'animate-active-venue' : 'group-hover:brightness-105'}
-                />
-                
-                {/* Windows */}
-                <line x1="260" y1="200" x2="260" y2="230" stroke="#1c1b1b" strokeWidth="2.5" strokeDasharray="3 3" />
-                <line x1="280" y1="210" x2="280" y2="240" stroke="#1c1b1b" strokeWidth="2.5" strokeDasharray="3 3" />
-                <line x1="300" y1="220" x2="300" y2="250" stroke="#1c1b1b" strokeWidth="2.5" strokeDasharray="3 3" />
-                <line x1="340" y1="220" x2="340" y2="250" stroke="#1c1b1b" strokeWidth="2.5" strokeDasharray="3 3" />
-                <line x1="360" y1="210" x2="360" y2="240" stroke="#1c1b1b" strokeWidth="2.5" strokeDasharray="3 3" />
-                <line x1="380" y1="200" x2="380" y2="230" stroke="#1c1b1b" strokeWidth="2.5" strokeDasharray="3 3" />
+                {/* Defs for Gradients */}
+                <defs>
+                  <pattern id="dot-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="1.5" fill="#E2D9CD" />
+                  </pattern>
 
-                {/* Tag */}
-                <g transform="translate(320, 120)">
-                  <rect x="-60" y="-12" width="120" height="24" fill="#1c1b1b" stroke="#ffffff" strokeWidth="1.5" />
-                  <text x="0" y="4" fill="#ffffff" className="font-display font-black text-[9px] uppercase tracking-widest text-center" textAnchor="middle">
-                    DESIGN BLOCK D
-                  </text>
+                  {/* Academic Block Colors */}
+                  <linearGradient id="academic-roof" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ffd43b" />
+                    <stop offset="100%" stopColor="#fab005" />
+                  </linearGradient>
+                  <linearGradient id="academic-wall" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#fab005" />
+                    <stop offset="100%" stopColor="#f59f00" />
+                  </linearGradient>
+
+                  {/* Admin Block Colors */}
+                  <linearGradient id="admin-roof" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ff8787" />
+                    <stop offset="100%" stopColor="#fa5252" />
+                  </linearGradient>
+                  <linearGradient id="admin-wall" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#fa5252" />
+                    <stop offset="100%" stopColor="#e03131" />
+                  </linearGradient>
+
+                  {/* Trade Tower Colors */}
+                  <linearGradient id="trade-roof" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#22b8cf" />
+                    <stop offset="100%" stopColor="#15aabf" />
+                  </linearGradient>
+                  <linearGradient id="trade-wall" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#15aabf" />
+                    <stop offset="100%" stopColor="#0c8599" />
+                  </linearGradient>
+
+                  {/* Library Colors */}
+                  <linearGradient id="lib-roof" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ffffff" />
+                    <stop offset="100%" stopColor="#f1f3f5" />
+                  </linearGradient>
+                  <linearGradient id="lib-wall" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#e9ecef" />
+                    <stop offset="100%" stopColor="#dee2e6" />
+                  </linearGradient>
+
+                  {/* Hostels Colors */}
+                  <linearGradient id="hostel-roof" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#e5dbff" />
+                    <stop offset="100%" stopColor="#cc5de8" />
+                  </linearGradient>
+                  <linearGradient id="hostel-wall" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#be4bdb" />
+                    <stop offset="100%" stopColor="#ae3ec9" />
+                  </linearGradient>
+                </defs>
+
+                {/* Dot Grid Background */}
+                <rect width="100%" height="100%" fill="url(#dot-grid)" />
+
+                {/* Styled Grid Lines for Tech Aesthetic */}
+                <path d="M 0,0 L 1600,670 M 0,100 L 1400,670 M 0,200 L 1200,670 M 200,0 L 1600,570" stroke="#ECE5D8" strokeWidth="1" strokeDasharray="5 5" />
+
+                {/* ---------------- CAMPUS WINDING PATH / MAIN ROAD ---------------- */}
+                {/* Thick under-road shadow */}
+                <path 
+                  d="M 50,550 C 150,510 200,480 280,470 C 350,460 380,410 440,390 C 500,370 480,320 540,300 C 600,280 620,290 670,300 C 720,310 740,360 800,360 C 860,360 900,320 960,300 C 1020,280 1050,260 1110,260 C 1170,260 1200,280 1260,280 C 1320,280 1380,260 1450,260" 
+                  fill="none" 
+                  stroke="#1c1b1b" 
+                  strokeWidth="22" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                />
+                {/* Main Road Surface */}
+                <path 
+                  d="M 50,550 C 150,510 200,480 280,470 C 350,460 380,410 440,390 C 500,370 480,320 540,300 C 600,280 620,290 670,300 C 720,310 740,360 800,360 C 860,360 900,320 960,300 C 1020,280 1050,260 1110,260 C 1170,260 1200,280 1260,280 C 1320,280 1380,260 1450,260" 
+                  fill="none" 
+                  stroke="#EBE5DA" 
+                  strokeWidth="16" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                />
+                {/* Dash Center Line */}
+                <path 
+                  d="M 50,550 C 150,510 200,480 280,470 C 350,460 380,410 440,390 C 500,370 480,320 540,300 C 600,280 620,290 670,300 C 720,310 740,360 800,360 C 860,360 900,320 960,300 C 1020,280 1050,260 1110,260 C 1170,260 1200,280 1260,280 C 1320,280 1380,260 1450,260" 
+                  fill="none" 
+                  stroke="#1c1b1b" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeDasharray="6 6" 
+                />
+
+                {/* ---------------- LANDMARK: MAIN ENTRANCE (Left End) ---------------- */}
+                <g transform="translate(50, 520)">
+                  {/* Base / Guardhouse */}
+                  <rect x="-15" y="-10" width="30" height="20" fill="#1c1b1b" />
+                  <rect x="-13" y="-12" width="26" height="20" fill="#e9ecef" stroke="#1c1b1b" strokeWidth="2" />
+                  {/* Gate pillars */}
+                  <line x1="-25" y1="20" x2="-25" y2="-20" stroke="#1c1b1b" strokeWidth="3" />
+                  <line x1="25" y1="20" x2="25" y2="-20" stroke="#1c1b1b" strokeWidth="3" />
+                  <text x="0" y="25" fill="#1c1b1b" className="font-mono text-[8px] font-black uppercase text-center" textAnchor="middle">ENTRANCE</text>
                 </g>
-              </g>
 
-              {/* 2. Lab Block F */}
-              <g 
-                className="cursor-pointer group animate-slide-up"
-                onClick={() => handleBlockClick('block-f')}
-              >
-                {/* Left Wall */}
-                <polygon 
-                  points="480,140 480,190 540,220 540,170" 
-                  fill="url(#wall-cyan-l)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-f' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Right Wall */}
-                <polygon 
-                  points="540,170 540,220 600,190 600,140" 
-                  fill="url(#wall-cyan-r)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-f' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Top Roof */}
-                <polygon 
-                  points="480,140 540,110 600,140 540,170" 
-                  fill="url(#roof-cyan)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-f' ? 'animate-active-venue' : 'group-hover:brightness-105'}
-                />
-
-                <line x1="510" y1="135" x2="570" y2="165" stroke="#1c1b1b" strokeWidth="1" opacity="0.4" />
-                <line x1="500" y1="145" x2="560" y2="175" stroke="#1c1b1b" strokeWidth="1" opacity="0.4" />
-
-                {/* Tag */}
-                <g transform="translate(540, 90)">
-                  <rect x="-50" y="-12" width="100" height="24" fill="#1c1b1b" stroke="#ffffff" strokeWidth="1.5" />
-                  <text x="0" y="4" fill="#ffffff" className="font-display font-black text-[9px] uppercase tracking-widest text-center" textAnchor="middle">
-                    LAB BLOCK F
-                  </text>
+                {/* ---------------- LANDMARK: PARKING LOT ---------------- */}
+                <g transform="translate(280, 480)">
+                  {/* Grid Lot Area */}
+                  <polygon points="-40,-20 40,-20 30,20 -50,20" fill="#E5DEC9" stroke="#1c1b1b" strokeWidth="2.5" />
+                  {/* Parking Lines */}
+                  <line x1="-30" y1="-15" x2="-38" y2="15" stroke="#1c1b1b" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <line x1="-15" y1="-15" x2="-22" y2="15" stroke="#1c1b1b" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <line x1="0" y1="-15" x2="-6" y2="15" stroke="#1c1b1b" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <line x1="15" y1="-15" x2="10" y2="15" stroke="#1c1b1b" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <line x1="30" y1="-15" x2="25" y2="15" stroke="#1c1b1b" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <text x="-5" y="32" fill="#1c1b1b" className="font-mono text-[8px] font-black uppercase tracking-wider" textAnchor="middle">PARKING LOT</text>
                 </g>
-              </g>
 
-              {/* 3. Academic Block E */}
-              <g 
-                className="cursor-pointer group animate-slide-up"
-                onClick={() => handleBlockClick('block-e')}
-              >
-                {/* Left Wall */}
-                <polygon 
-                  points="650,240 650,300 720,340 720,280" 
-                  fill="url(#wall-purple-l)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-e' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Right Wall */}
-                <polygon 
-                  points="720,280 720,340 790,300 790,240" 
-                  fill="url(#wall-purple-r)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-e' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Top Roof */}
-                <polygon 
-                  points="650,240 720,200 790,240 720,280" 
-                  fill="url(#roof-purple)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'block-e' ? 'animate-active-venue' : 'group-hover:brightness-105'}
-                />
-
-                <line x1="670" y1="265" x2="670" y2="285" stroke="#1c1b1b" strokeWidth="2" />
-                <line x1="690" y1="275" x2="690" y2="295" stroke="#1c1b1b" strokeWidth="2" />
-                <line x1="750" y1="275" x2="750" y2="295" stroke="#1c1b1b" strokeWidth="2" />
-                <line x1="770" y1="265" x2="770" y2="285" stroke="#1c1b1b" strokeWidth="2" />
-
-                {/* Tag */}
-                <g transform="translate(720, 180)">
-                  <rect x="-60" y="-12" width="120" height="24" fill="#1c1b1b" stroke="#ffffff" strokeWidth="1.5" />
-                  <text x="0" y="4" fill="#ffffff" className="font-display font-black text-[9px] uppercase tracking-widest text-center" textAnchor="middle">
-                    ACADEMIC BLOCK E
-                  </text>
+                {/* ---------------- LANDMARK: AMPHITHEATRE ---------------- */}
+                <g transform="translate(440, 360)">
+                  {/* Concentric Step Arcs */}
+                  <path d="M -35,5 A 35,25 0 0,1 35,5" fill="none" stroke="#1c1b1b" strokeWidth="6" />
+                  <path d="M -25,0 A 25,18 0 0,1 25,0" fill="none" stroke="#1c1b1b" strokeWidth="5" />
+                  <path d="M -15,-5 A 15,10 0 0,1 15,-5" fill="none" stroke="#1c1b1b" strokeWidth="4" />
+                  {/* Stage Base */}
+                  <ellipse cx="0" cy="12" rx="18" ry="8" fill="#ffdeeb" stroke="#1c1b1b" strokeWidth="2.5" />
+                  <text x="0" y="28" fill="#1c1b1b" className="font-mono text-[8px] font-black uppercase tracking-wider" textAnchor="middle">AMPHITHEATRE</text>
                 </g>
-              </g>
 
-              {/* 4. Central Library */}
-              <g 
-                className="cursor-pointer group animate-slide-up"
-                onClick={() => handleBlockClick('library')}
-              >
-                {/* Left Wall */}
-                <polygon 
-                  points="450,340 450,400 520,440 520,380" 
-                  fill="url(#wall-sand-l)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'library' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Right Wall */}
-                <polygon 
-                  points="520,380 520,440 590,400 590,340" 
-                  fill="url(#wall-sand-r)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'library' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Top Roof */}
-                <polygon 
-                  points="450,340 520,300 590,340 520,380" 
-                  fill="url(#roof-sand)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'library' ? 'animate-active-venue' : 'group-hover:brightness-105'}
-                />
-
-                <line x1="475" y1="365" x2="475" y2="395" stroke="#1c1b1b" strokeWidth="1.5" opacity="0.6" />
-                <line x1="495" y1="375" x2="495" y2="405" stroke="#1c1b1b" strokeWidth="1.5" opacity="0.6" />
-                <line x1="545" y1="375" x2="545" y2="405" stroke="#1c1b1b" strokeWidth="1.5" opacity="0.6" />
-                <line x1="565" y1="365" x2="565" y2="395" stroke="#1c1b1b" strokeWidth="1.5" opacity="0.6" />
-
-                {/* Tag */}
-                <g transform="translate(520, 280)">
-                  <rect x="-60" y="-12" width="120" height="24" fill="#1c1b1b" stroke="#ffffff" strokeWidth="1.5" />
-                  <text x="0" y="4" fill="#ffffff" className="font-display font-black text-[9px] uppercase tracking-widest text-center" textAnchor="middle">
-                    CENTRAL LIBRARY & LAWN
-                  </text>
+                {/* ---------------- LANDMARK: CENTRAL LIBRARY ---------------- */}
+                <g transform="translate(670, 180)">
+                  {/* Shadow base */}
+                  <ellipse cx="0" cy="15" rx="35" ry="18" fill="#1c1b1b" />
+                  {/* Dome cylinder walls */}
+                  <rect x="-30" y="-15" width="60" height="25" fill="url(#lib-wall)" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Dome roof */}
+                  <path d="M -30,-15 A 30,22 0 0,1 30,-15 Z" fill="url(#lib-roof)" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Column pillars details */}
+                  <line x1="-20" y1="-15" x2="-20" y2="10" stroke="#1c1b1b" strokeWidth="1.5" />
+                  <line x1="-10" y1="-15" x2="-10" y2="10" stroke="#1c1b1b" strokeWidth="1.5" />
+                  <line x1="10" y1="-15" x2="10" y2="10" stroke="#1c1b1b" strokeWidth="1.5" />
+                  <line x1="20" y1="-15" x2="20" y2="10" stroke="#1c1b1b" strokeWidth="1.5" />
                 </g>
-              </g>
 
-              {/* 5. Admin Block & LT */}
-              <g 
-                className="cursor-pointer group animate-slide-up"
-                onClick={() => handleBlockClick('admin-lt')}
-              >
-                {/* Left Wall */}
-                <polygon 
-                  points="200,420 200,490 280,530 280,460" 
-                  fill="url(#wall-primary-l)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'admin-lt' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Right Wall */}
-                <polygon 
-                  points="280,460 280,530 360,490 360,420" 
-                  fill="url(#wall-primary-r)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'admin-lt' ? 'animate-active-venue' : 'group-hover:fill-opacity-90'}
-                />
-                {/* Top Roof */}
-                <polygon 
-                  points="200,420 280,370 360,420 280,460" 
-                  fill="url(#roof-primary)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'admin-lt' ? 'animate-active-venue' : 'group-hover:brightness-105'}
-                />
-
-                <polygon points="240,410 280,385 320,410 280,430" fill="#c92a2a" stroke="#1c1b1b" strokeWidth="2" />
-                <line x1="240" y1="410" x2="240" y2="430" stroke="#1c1b1b" strokeWidth="2" />
-                <line x1="320" y1="410" x2="320" y2="430" stroke="#1c1b1b" strokeWidth="2" />
-                <line x1="280" y1="430" x2="280" y2="450" stroke="#1c1b1b" strokeWidth="2" />
-
-                {/* Tag */}
-                <g transform="translate(280, 350)">
-                  <rect x="-65" y="-12" width="130" height="24" fill="#1c1b1b" stroke="#ffffff" strokeWidth="1.5" />
-                  <text x="0" y="4" fill="#ffffff" className="font-display font-black text-[8.5px] uppercase tracking-widest text-center" textAnchor="middle">
-                    ADMIN & LECTURE THEATRE
-                  </text>
+                {/* ---------------- LANDMARK: ACADEMIC BLOCK (D & E) ---------------- */}
+                <g transform="translate(560, 260)">
+                  {/* Shadow polygon */}
+                  <polygon points="-45,20 0,40 45,20 45,-20 0,-40 -45,-20" fill="#1c1b1b" transform="translate(4, 4)" />
+                  {/* Left block wall */}
+                  <polygon points="-40,0 -40,30 0,50 0,20" fill="url(#academic-wall)" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Right block wall */}
+                  <polygon points="0,20 0,50 40,30 40,0" fill="#f59f00" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Top roof */}
+                  <polygon points="-40,0 0,-20 40,0 0,20" fill="url(#academic-roof)" stroke="#1c1b1b" strokeWidth="3" />
+                  
+                  {/* Inner courtyard details */}
+                  <polygon points="-20,-5 0,-15 20,-5 0,5" fill="#f4f0ea" stroke="#1c1b1b" strokeWidth="1.5" />
                 </g>
-              </g>
 
-              {/* 6. Outdoor Shed */}
-              <g 
-                className="cursor-pointer group animate-slide-up"
-                onClick={() => handleBlockClick('outdoor-shed')}
-              >
-                <line x1="790" y1="330" x2="790" y2="365" stroke="#1c1b1b" strokeWidth="3" />
-                <line x1="830" y1="360" x2="830" y2="395" stroke="#1c1b1b" strokeWidth="3" />
-                <line x1="870" y1="330" x2="870" y2="365" stroke="#1c1b1b" strokeWidth="3" />
-                
-                <polygon 
-                  points="790,330 830,300 870,330 830,360" 
-                  fill="url(#roof-sand)" 
-                  stroke="#1c1b1b" 
-                  strokeWidth="3.5" 
-                  className={activeVenue === 'outdoor-shed' ? 'animate-active-venue' : 'group-hover:brightness-105'}
-                />
-
-                <g transform="translate(830, 280)">
-                  <rect x="-45" y="-10" width="90" height="20" fill="#1c1b1b" stroke="#ffffff" strokeWidth="1.5" />
-                  <text x="0" y="3" fill="#ffffff" className="font-display font-black text-[8px] uppercase tracking-widest text-center" textAnchor="middle">
-                    OUTDOOR SHED
-                  </text>
+                {/* ---------------- LANDMARK: TRADE TOWER ---------------- */}
+                <g transform="translate(670, 340)">
+                  {/* Shadow */}
+                  <polygon points="-25,45 25,45 25,-10 -25,-10" fill="#1c1b1b" transform="translate(3, 3)" />
+                  {/* Left wall */}
+                  <polygon points="-20,20 -20,60 0,70 0,30" fill="url(#trade-wall)" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Right wall */}
+                  <polygon points="0,30 0,70 20,60 20,20" fill="#0b7285" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Top slanted roof */}
+                  <polygon points="-20,20 0,-15 20,20 0,30" fill="url(#trade-roof)" stroke="#1c1b1b" strokeWidth="3" />
+                  
+                  {/* Glass pane details */}
+                  <line x1="-10" y1="25" x2="-10" y2="55" stroke="#1c1b1b" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <line x1="10" y1="25" x2="10" y2="55" stroke="#1c1b1b" strokeWidth="1.5" strokeDasharray="3 3" />
                 </g>
-              </g>
 
-              {/* 7. Outdoor Field Label */}
-              <g 
-                className="cursor-pointer"
-                onClick={() => handleBlockClick('outdoor-field')}
-              >
-                <g transform="translate(840, 450)">
-                  <rect x="-45" y="-10" width="90" height="20" fill="#1c1b1b" stroke="#ffffff" strokeWidth="1.5" />
-                  <text x="0" y="3" fill="#ffffff" className="font-display font-black text-[8px] uppercase tracking-widest text-center" textAnchor="middle">
-                    OUTDOOR FIELD
-                  </text>
+                {/* ---------------- LANDMARK: ADMIN BLOCK & LT ---------------- */}
+                <g transform="translate(560, 450)">
+                  {/* Shadow */}
+                  <polygon points="-35,15 35,15 35,-15 -35,-15" fill="#1c1b1b" transform="translate(3, 3)" />
+                  {/* Left wall */}
+                  <polygon points="-30,10 -30,40 0,50 0,20" fill="url(#admin-wall)" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Right wall */}
+                  <polygon points="0,20 0,50 30,40 30,10" fill="#c92a2a" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Top roof */}
+                  <polygon points="-30,10 0,-10 30,10 0,20" fill="url(#admin-roof)" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Tiered upper tower */}
+                  <polygon points="-15,0 0,-10 15,0 0,10" fill="#ffd43b" stroke="#1c1b1b" strokeWidth="2" />
+                  <line x1="0" y1="10" x2="0" y2="25" stroke="#1c1b1b" strokeWidth="2" />
                 </g>
-              </g>
 
-              {/* 8. Admin Lawn Label */}
-              <g 
-                className="cursor-pointer"
-                onClick={() => handleBlockClick('admin-lawn')}
-              >
-                <g transform="translate(375, 460)">
-                  <rect x="-45" y="-10" width="90" height="20" fill="#1c1b1b" stroke="#ffffff" strokeWidth="1.5" />
-                  <text x="0" y="3" fill="#ffffff" className="font-display font-black text-[8px] uppercase tracking-widest text-center" textAnchor="middle">
-                    ADMIN LAWN
-                  </text>
+                {/* ---------------- LANDMARK: HOSTEL TOWERS ---------------- */}
+                <g transform="translate(1000, 200)">
+                  {/* Shadow */}
+                  <rect x="-35" y="-35" width="70" height="70" fill="#1c1b1b" transform="translate(4, 4)" />
+                  {/* Tower 1 */}
+                  <rect x="-30" y="-30" width="25" height="60" fill="url(#hostel-wall)" stroke="#1c1b1b" strokeWidth="3" />
+                  <rect x="-30" y="-35" width="25" height="5" fill="url(#hostel-roof)" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Tower 2 */}
+                  <rect x="5" y="-15" width="25" height="45" fill="url(#hostel-wall)" stroke="#1c1b1b" strokeWidth="3" />
+                  <rect x="5" y="-20" width="25" height="5" fill="url(#hostel-roof)" stroke="#1c1b1b" strokeWidth="3" />
+                  
+                  {/* Window Grid lines */}
+                  <line x1="-22" y1="-20" x2="-22" y2="20" stroke="#1c1b1b" strokeWidth="1" strokeDasharray="2 4" />
+                  <line x1="-12" y1="-20" x2="-12" y2="20" stroke="#1c1b1b" strokeWidth="1" strokeDasharray="2 4" />
+                  <line x1="12" y1="-5" x2="12" y2="25" stroke="#1c1b1b" strokeWidth="1" strokeDasharray="2 4" />
+                  <line x1="22" y1="-5" x2="22" y2="25" stroke="#1c1b1b" strokeWidth="1" strokeDasharray="2 4" />
+                  <text x="0" y="42" fill="#1c1b1b" className="font-mono text-[8px] font-black uppercase text-center" textAnchor="middle">HOSTEL TOWERS</text>
                 </g>
-              </g>
+
+                {/* ---------------- LANDMARK: RACE ATHLETIC TRACK ---------------- */}
+                <g transform="translate(1140, 160)">
+                  {/* Track base */}
+                  <ellipse cx="0" cy="0" rx="75" ry="40" fill="#db706f" stroke="#1c1b1b" strokeWidth="4.5" />
+                  {/* Inner soccer field green */}
+                  <ellipse cx="0" cy="0" rx="58" ry="25" fill="#52b788" stroke="#1c1b1b" strokeWidth="3" />
+                  {/* Soccer field white outline details */}
+                  <ellipse cx="0" cy="0" rx="40" ry="15" fill="none" stroke="#ffffff" strokeWidth="1.5" opacity="0.6" />
+                  <line x1="0" y1="-25" x2="0" y2="25" stroke="#ffffff" strokeWidth="1.5" opacity="0.6" />
+                  <circle cx="0" cy="0" r="8" fill="none" stroke="#ffffff" strokeWidth="1.5" opacity="0.6" />
+                </g>
+
+                {/* ---------------- LANDMARK: OVAL DINING HALL ---------------- */}
+                <g transform="translate(1180, 230)">
+                  <circle cx="0" cy="0" r="22" fill="#1c1b1b" transform="translate(2, 2)" />
+                  <circle cx="0" cy="0" r="22" fill="#ffe3e3" stroke="#1c1b1b" strokeWidth="3" />
+                  <circle cx="0" cy="0" r="16" fill="url(#lib-roof)" stroke="#1c1b1b" strokeWidth="2" />
+                  <text x="0" y="32" fill="#1c1b1b" className="font-mono text-[7px] font-black text-center" textAnchor="middle">OVAL DINING</text>
+                </g>
+
+                {/* ---------------- LANDMARK: THE LEAGUE / SPORTX ---------------- */}
+                <g transform="translate(1260, 160)">
+                  {/* Shadow */}
+                  <rect x="-35" y="-25" width="70" height="50" fill="#1c1b1b" transform="translate(3, 3)" />
+                  {/* Sports court arena */}
+                  <rect x="-35" y="-25" width="70" height="50" fill="#4ea8de" stroke="#1c1b1b" strokeWidth="3.5" />
+                  {/* Grid layouts inside */}
+                  <line x1="-35" y1="0" x2="35" y2="0" stroke="#ffffff" strokeWidth="2" />
+                  <line x1="0" y1="-25" x2="0" y2="25" stroke="#ffffff" strokeWidth="1.5" />
+                  <rect x="-25" y="-18" width="50" height="36" fill="none" stroke="#ffffff" strokeWidth="1" opacity="0.8" />
+                </g>
+
+                {/* ---------------- LANDMARK: CRICKET GROUND (Right End) ---------------- */}
+                <g transform="translate(1450, 240)">
+                  {/* Large outfield circle */}
+                  <circle cx="0" cy="0" r="70" fill="#1c1b1b" transform="translate(3, 3)" />
+                  <circle cx="0" cy="0" r="70" fill="#74c69d" stroke="#1c1b1b" strokeWidth="4" />
+                  {/* Pitch square */}
+                  <rect x="-10" y="-18" width="20" height="36" fill="#e9ecef" stroke="#1c1b1b" strokeWidth="2" />
+                  <line x1="-10" y1="0" x2="10" y2="0" stroke="#1c1b1b" strokeWidth="1.5" />
+                  <text x="0" y="82" fill="#1c1b1b" className="font-mono text-[8px] font-black uppercase text-center" textAnchor="middle">CRICKET GROUND</text>
+                </g>
+
+                {/* ---------------- LANDMARK: STUDENT HOSTELS ---------------- */}
+                <g transform="translate(1220, 340)">
+                  {/* Shadow */}
+                  <polygon points="-40,10 40,10 20,45 -20,45" fill="#1c1b1b" transform="translate(3, 3)" />
+                  {/* Hostel cluster building shapes */}
+                  <rect x="-35" y="0" width="30" height="25" fill="url(#hostel-wall)" stroke="#1c1b1b" strokeWidth="3" />
+                  <rect x="5" y="0" width="30" height="25" fill="url(#hostel-wall)" stroke="#1c1b1b" strokeWidth="3" />
+                  <polygon points="-35,0 -20,-15 5,-15 -10,0" fill="url(#hostel-roof)" stroke="#1c1b1b" strokeWidth="3" />
+                  <polygon points="5,0 20,-15 45,-15 30,0" fill="url(#hostel-roof)" stroke="#1c1b1b" strokeWidth="3" />
+                </g>
+              </svg>
+
+              {/* Interactive Hotspots Overlaid on Vector Map Coordinates */}
+              {HOTSPOTS.map((spot) => {
+                const isBlinking = activeVenue === spot.id;
+                const isSelected = filterVenue === spot.id;
+
+                return (
+                  <button
+                    key={spot.id}
+                    onClick={() => handleBlockClick(spot.id)}
+                    className="absolute group pointer-events-auto cursor-pointer"
+                    style={{
+                      left: `${spot.x}px`,
+                      top: `${spot.y}px`,
+                      transform: 'translate(-50%, -50%)',
+                      zIndex: isBlinking || isSelected ? 50 : 30
+                    }}
+                  >
+                    {/* Pulsing Target Ring */}
+                    <span className={`absolute -inset-6 rounded-full border-4 border-dashed border-brand-primary opacity-0 group-hover:opacity-75 group-hover:animate-spin-slow transition-all duration-300 ${isBlinking ? 'opacity-100 animate-spin-slow' : ''}`}></span>
+                    
+                    {/* Outer Blinking pulse radar */}
+                    {isBlinking && (
+                      <span className="absolute -inset-8 rounded-full bg-brand-primary opacity-25 animate-ping"></span>
+                    )}
+
+                    {/* Badge pin button */}
+                    <div className={`px-3 py-1.5 border-2 border-brand-on-surface font-display font-black text-[9px] uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] transition-all ${
+                      isSelected || isBlinking
+                        ? 'bg-brand-primary text-brand-on-primary scale-110'
+                        : 'bg-brand-surface text-brand-on-surface group-hover:bg-brand-mustard group-hover:text-brand-on-surface'
+                    }`}>
+                      {spot.label}
+                    </div>
+
+                    {/* Point Marker dot */}
+                    <div className={`w-3.5 h-3.5 rounded-full border-2 border-brand-on-surface mx-auto mt-1 transition-all ${
+                      isSelected || isBlinking
+                        ? 'bg-brand-primary animate-bounce'
+                        : 'bg-brand-secondary group-hover:bg-brand-primary'
+                    }`} />
+                  </button>
+                );
+              })}
 
               {/* Bouncing Pin and Pulse Ring for Located/Active venue */}
               {activeVenue && VENUE_COORDS[activeVenue] && (
-                <g transform={`translate(${VENUE_COORDS[activeVenue].x}, ${VENUE_COORDS[activeVenue].y - 30})`} className="pointer-events-none">
+                <div 
+                  className="absolute pointer-events-none z-50 flex flex-col items-center font-mono"
+                  style={{
+                    left: `${VENUE_COORDS[activeVenue].x}px`,
+                    top: `${VENUE_COORDS[activeVenue].y - 35}px`,
+                    transform: 'translate(-50%, -100%)'
+                  }}
+                >
                   {/* Sonar Ring */}
-                  <circle cx="0" cy="30" r="30" className="fill-none stroke-brand-primary stroke-2 animate-ping" />
+                  <span className="absolute w-16 h-16 -bottom-8 rounded-full border-4 border-brand-primary animate-ping" />
                   
                   {/* Bouncing Pin */}
-                  <g className="animate-bounce">
-                    <path 
-                      d="M -12 -12 C -12 -24, 12 -24, 12 -12 C 12 0, 0 12, 0 12 C 0 12, -12 0, -12 -12 Z" 
-                      fill="#e03131" 
-                      stroke="#1c1b1b" 
-                      strokeWidth="3.5" 
-                    />
-                    <circle cx="0" cy="-12" r="5" fill="#ffffff" stroke="#1c1b1b" strokeWidth="2" />
-                  </g>
-                </g>
+                  <div className="animate-bounce flex flex-col items-center">
+                    <div className="bg-[#e03131] border-2 border-brand-on-surface p-1 px-2 text-[8px] font-black text-white uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]">
+                      LOCKED TARGET
+                    </div>
+                    <div className="w-3 h-3 bg-[#e03131] border-r-2 border-b-2 border-brand-on-surface rotate-45 -mt-1.5" />
+                  </div>
+                </div>
               )}
-            </svg>
+            </div>
           </div>
         </div>
 
