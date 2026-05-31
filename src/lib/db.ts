@@ -17,6 +17,12 @@ const isRealSupabaseConfigured = (): boolean => {
 
 export const IS_REAL_DB = isRealSupabaseConfigured();
 
+const checkProductionDbGuard = () => {
+  if (process.env.NODE_ENV === 'production' && !IS_REAL_DB) {
+    throw new Error('CRITICAL CONFIGURATION ERROR: Supabase database is not configured. Mock DB cannot be used in production environments to prevent data loss. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Vercel settings.');
+  }
+};
+
 // Initialize real Supabase client if configured (using service role key to act as admin/bypass RLS on server side)
 export const supabase = IS_REAL_DB 
   ? createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
@@ -73,6 +79,7 @@ export const DB = {
     registration_id: string;
     instagram_id?: string;
   }) {
+    checkProductionDbGuard();
     if (!IS_REAL_DB || !supabase) return await MockDB.createParticipant(pData);
 
     // 1. Insert participant
@@ -133,6 +140,7 @@ export const DB = {
   },
 
   async updateParticipantStatus(id: string, isDisabled: boolean) {
+    checkProductionDbGuard();
     if (!IS_REAL_DB || !supabase) return await MockDB.updateParticipantStatus(id, isDisabled);
 
     const { error } = await supabase
@@ -173,6 +181,7 @@ export const DB = {
     current_attempt_id: string | null;
     peer_targets?: any;
   }) {
+    checkProductionDbGuard();
     if (!IS_REAL_DB || !supabase) {
       await MockDB.updateParticipantProgress(progress as any);
       return;
@@ -231,6 +240,7 @@ export const DB = {
 
   // Attempts
   async createAttempt(participantId: string, quizId: string) {
+    checkProductionDbGuard();
     if (!IS_REAL_DB || !supabase) return await MockDB.createAttempt(participantId, quizId);
 
     // Check for existing active attempt
@@ -292,6 +302,7 @@ export const DB = {
   },
 
   async submitAttempt(attemptId: string, score: number, timeTaken: number) {
+    checkProductionDbGuard();
     if (!IS_REAL_DB || !supabase) return await MockDB.submitAttempt(attemptId, score, timeTaken);
 
     const { data, error } = await supabase
@@ -410,6 +421,7 @@ export const DB = {
 
   // Audit Logs
   async logAudit(participantId: string | null, action: string, ip: string, ua: string) {
+    checkProductionDbGuard();
     if (!IS_REAL_DB || !supabase) {
       await MockDB.logAudit(participantId, action, ip, ua);
       return;
@@ -463,6 +475,7 @@ export const DB = {
 
   // Event Reset
   async resetEvent() {
+    checkProductionDbGuard();
     if (!IS_REAL_DB || !supabase) {
       await MockDB.resetEvent();
       return;

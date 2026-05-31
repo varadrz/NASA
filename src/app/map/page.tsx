@@ -447,30 +447,33 @@ export default function CampusMapPage() {
           </div>
 
           {/* Schedule Events List */}
-          <div className="divide-y-4 divide-brand-on-surface bg-brand-surface-low min-h-[300px]">
+          <div className="bg-brand-surface-low border-2 border-brand-on-surface min-h-[300px] overflow-hidden">
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event, idx) => {
                 const status = getEventStatus(event, selectedDayIdx);
-                
+                const isLive = status === 'LIVE';
+
                 return (
                   <div 
                     key={idx} 
                     className={`p-6 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 ${
-                      status === 'LIVE' ? 'bg-brand-primary bg-opacity-[0.03] border-l-8 border-brand-primary' : 'bg-brand-surface'
+                      isLive 
+                        ? 'bg-brand-mustard text-brand-on-surface border-4 border-brand-on-surface my-1.5 relative z-10 shadow-[3px_3px_0px_0px_rgba(28,27,27,1)]' 
+                        : 'bg-brand-surface text-brand-on-surface border-b-4 border-brand-on-surface last:border-b-0'
                     }`}
                   >
                     
                     {/* Time & Status Column */}
                     <div className="md:w-1/4 space-y-3 shrink-0">
                       <div className="flex items-center gap-2 text-brand-on-surface">
-                        <Clock className="h-4.5 w-4.5 text-brand-primary shrink-0" />
+                        <Clock className={`h-4.5 w-4.5 shrink-0 ${isLive ? 'text-brand-primary' : 'text-brand-secondary'}`} />
                         <span className="font-mono text-xs md:text-sm font-black tracking-tight">{event.time}</span>
                       </div>
                       
                       {/* Status Badges */}
                       <div>
                         {status === 'COMPLETED' && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 font-mono text-[9px] font-bold bg-brand-surface-highest text-brand-on-surface-variant border border-brand-on-surface border-opacity-30 uppercase">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 font-mono text-[9px] font-bold bg-brand-surface-highest text-brand-on-surface-variant border border-brand-on-surface border-opacity-50 uppercase shadow-[1.5px_1.5px_0px_0px_rgba(28,27,27,1)]">
                             <CheckCircle2 className="h-3 w-3 text-brand-secondary" />
                             COMPLETED EVENT
                           </span>
@@ -482,7 +485,7 @@ export default function CampusMapPage() {
                           </span>
                         )}
                         {status === 'UPCOMING' && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 font-mono text-[9px] font-bold bg-brand-secondary text-brand-on-secondary border border-brand-on-surface border-opacity-50 uppercase">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 font-mono text-[9px] font-bold bg-brand-secondary text-brand-on-secondary border-2 border-brand-on-surface uppercase shadow-[1.5px_1.5px_0px_0px_rgba(28,27,27,1)]">
                             <Clock className="h-3 w-3" />
                             UPCOMING
                           </span>
@@ -493,7 +496,7 @@ export default function CampusMapPage() {
                     {/* Description Column */}
                     <div className="flex-1 space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 font-mono text-[8px] font-bold uppercase tracking-widest text-white ${
+                        <span className={`px-2 py-0.5 font-mono text-[8px] font-bold uppercase tracking-widest text-brand-on-primary ${
                           event.type === 'Masterclass' ? 'bg-brand-primary' :
                           event.type === 'Seminar' ? 'bg-brand-secondary' :
                           event.type === 'Workshop' ? 'bg-brand-tertiary' : 'bg-brand-on-surface-variant'
@@ -506,7 +509,7 @@ export default function CampusMapPage() {
                       </h3>
                       {event.speaker && (
                         <div className="flex items-center gap-2 text-brand-on-surface-variant font-sans text-xs md:text-sm font-bold">
-                          <Users className="h-4 w-4 opacity-75" />
+                          <Users className="h-4 w-4 opacity-75 shrink-0" />
                           <span>Speaker: {event.speaker}</span>
                         </div>
                       )}
