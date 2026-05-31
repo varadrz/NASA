@@ -11,6 +11,7 @@ interface Participant {
   college_name: string;
   phone_number: string;
   registration_id: string;
+  instagram_id?: string;
   is_disabled: boolean;
   created_at: string;
 }
@@ -51,6 +52,7 @@ interface ParticipantProgress {
   total_time: number;
   next_barrel_id: number | null;
   current_attempt_id: string | null;
+  peer_targets?: any;
   updated_at: string;
 }
 
@@ -124,6 +126,28 @@ export function getDB(): DBStructure {
       const parsed = JSON.parse(fileContent);
       // Validate structure contains quizzes
       if (parsed.quizzes && parsed.quizzes.length > 0) {
+        // Self-healing migration for new global architecture questions
+        if (parsed.quizzes[0] && parsed.quizzes[0].title.includes('Charminar')) {
+          console.log('Migrating mock_db.json to new Global Architecture questions pool...');
+          const fresh = initializeDB();
+          parsed.quizzes = fresh.quizzes;
+          parsed.questions = fresh.questions;
+          parsed.quiz_attempts = [];
+          parsed.participant_progress = (parsed.participant_progress || []).map((p: any) => ({
+            ...p,
+            completed_quizzes: 0,
+            total_score: 0,
+            total_time: 0,
+            next_barrel_id: Math.floor(Math.random() * 10) + 1,
+            current_attempt_id: null,
+            peer_targets: null
+          }));
+          try {
+            fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2));
+          } catch (writeErr) {
+            console.error('Failed to write migrated mock_db.json:', writeErr);
+          }
+        }
         memoryDB = parsed;
         return memoryDB!;
       }
@@ -172,6 +196,7 @@ export const MockDB = {
       college_name: pData.college_name,
       phone_number: pData.phone_number,
       registration_id: pData.registration_id,
+      instagram_id: pData.instagram_id || '',
       is_disabled: false,
       created_at: new Date().toISOString()
     };
@@ -187,6 +212,7 @@ export const MockDB = {
       total_time: 0,
       next_barrel_id: firstBarrelId,
       current_attempt_id: null,
+      peer_targets: null,
       updated_at: new Date().toISOString()
     };
     db.participant_progress.push(newProgress);
@@ -311,6 +337,7 @@ export const MockDB = {
           full_name: participant?.full_name || 'Unknown',
           college_name: participant?.college_name || 'Unknown',
           registration_id: participant?.registration_id || '',
+          instagram_id: participant?.instagram_id || '',
           completed_quizzes: p.completed_quizzes,
           total_score: p.total_score,
           total_time: p.total_time,
@@ -343,6 +370,7 @@ export const MockDB = {
           participant_id: a.participant_id,
           full_name: participant?.full_name || 'Unknown',
           college_name: participant?.college_name || 'Unknown',
+          instagram_id: participant?.instagram_id || '',
           score: a.score,
           time_taken_seconds: a.time_taken_seconds,
           submitted_at: a.submitted_at,

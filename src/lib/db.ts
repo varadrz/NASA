@@ -71,6 +71,7 @@ export const DB = {
     college_name: string;
     phone_number: string;
     registration_id: string;
+    instagram_id?: string;
   }) {
     if (!IS_REAL_DB || !supabase) return await MockDB.createParticipant(pData);
 
@@ -82,6 +83,7 @@ export const DB = {
         college_name: pData.college_name,
         phone_number: pData.phone_number,
         registration_id: pData.registration_id,
+        instagram_id: pData.instagram_id || '',
         is_disabled: false
       })
       .select()
@@ -169,6 +171,7 @@ export const DB = {
     total_time: number;
     next_barrel_id: number | null;
     current_attempt_id: string | null;
+    peer_targets?: any;
   }) {
     if (!IS_REAL_DB || !supabase) {
       await MockDB.updateParticipantProgress(progress as any);
@@ -184,6 +187,7 @@ export const DB = {
         total_time: progress.total_time,
         next_barrel_id: progress.next_barrel_id,
         current_attempt_id: progress.current_attempt_id,
+        peer_targets: progress.peer_targets,
         updated_at: new Date().toISOString()
       });
 
@@ -337,7 +341,7 @@ export const DB = {
         completed_quizzes,
         total_score,
         total_time,
-        participants!inner(full_name, college_name, registration_id, is_disabled)
+        participants!inner(full_name, college_name, registration_id, instagram_id, is_disabled)
       `)
       .eq('participants.is_disabled', false)
       .order('total_score', { ascending: false })
@@ -353,6 +357,7 @@ export const DB = {
       full_name: row.participants?.full_name || 'Unknown',
       college_name: row.participants?.college_name || 'Unknown',
       registration_id: row.participants?.registration_id || '',
+      instagram_id: row.participants?.instagram_id || '',
       completed_quizzes: row.completed_quizzes,
       total_score: row.total_score,
       total_time: row.total_time,
@@ -378,7 +383,7 @@ export const DB = {
         score,
         time_taken_seconds,
         submitted_at,
-        participants!inner(full_name, college_name, is_disabled)
+        participants!inner(full_name, college_name, instagram_id, is_disabled)
       `)
       .eq('quiz_id', quiz.id)
       .eq('is_completed', true)
@@ -395,6 +400,7 @@ export const DB = {
       participant_id: row.participant_id,
       full_name: row.participants?.full_name || 'Unknown',
       college_name: row.participants?.college_name || 'Unknown',
+      instagram_id: row.participants?.instagram_id || '',
       score: row.score,
       time_taken_seconds: row.time_taken_seconds,
       submitted_at: row.submitted_at,
@@ -471,16 +477,25 @@ export const DB = {
     if (aError) console.error('Error during audit logs wipe:', aError);
   },
 
-  // Admin Database Seeding helper (inserts 200 questions to Supabase)
+  // Admin Database Seeding helper (inserts questions to Supabase)
   async seedQuestions(questions: any[]) {
-    if (!IS_REAL_DB || !supabase) return { success: true, count: 200 };
+    if (!IS_REAL_DB || !supabase) return { success: true, count: 100 };
 
     try {
-      // 1. Double check if quizzes are seeded
-      const { data: quizzesCount } = await supabase.from('quizzes').select('id');
-      if (!quizzesCount || quizzesCount.length === 0) {
-        console.error('Quizzes tables not seeded yet! Please run SQL seed script first.');
-        return { success: false, error: 'Quizzes must be populated first.' };
+      // 1. Seed or update quizzes
+      for (const qSeed of questions) {
+        const { error: qError } = await supabase
+          .from('quizzes')
+          .upsert({
+            barrel_id: qSeed.barrel_id,
+            title: qSeed.title,
+            description: qSeed.description
+          }, { onConflict: 'barrel_id' });
+
+        if (qError) {
+          console.error(`Error seeding quiz for barrel ${qSeed.barrel_id}:`, qError);
+          return { success: false, error: `Failed to seed quiz for barrel ${qSeed.barrel_id}: ${qError.message}` };
+        }
       }
 
       // 2. Clear existing questions to prevent duplicates

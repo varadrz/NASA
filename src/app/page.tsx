@@ -53,12 +53,18 @@ interface Participant {
   registration_id: string;
 }
 
+interface PeerTarget {
+  name: string;
+  found: boolean;
+}
+
 interface Progress {
   completed_quizzes: number;
   total_score: number;
   total_time: number;
   next_barrel_id: number | null;
   current_attempt_id: string | null;
+  peer_targets?: PeerTarget[];
 }
 
 export default function Home() {
@@ -73,6 +79,13 @@ export default function Home() {
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [manualCode, setManualCode] = useState('');
   const [manualCodeError, setManualCodeError] = useState<string | null>(null);
+
+  // Peer hunt states
+  const [selectedPeer, setSelectedPeer] = useState<string | null>(null);
+  const [zIdInput, setZIdInput] = useState('');
+  const [peerVerifyError, setPeerVerifyError] = useState<string | null>(null);
+  const [peerVerifySuccess, setPeerVerifySuccess] = useState<string | null>(null);
+  const [peerSubmitting, setPeerSubmitting] = useState(false);
 
   const resetScannerState = () => {
     setScannerError(null);
@@ -252,6 +265,50 @@ export default function Home() {
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
+  const handleVerifyPeer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPeer || !zIdInput.trim()) return;
+
+    setPeerSubmitting(true);
+    setPeerVerifyError(null);
+    setPeerVerifySuccess(null);
+
+    try {
+      const res = await fetch('/api/peer-hunt/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: selectedPeer,
+          zId: zIdInput.trim()
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setPeerVerifyError(data.error || 'Verification failed. Try again.');
+      } else {
+        setPeerVerifySuccess(data.message || 'Peer verified! +25 XP awarded.');
+        if (progress) {
+          setProgress({
+            ...progress,
+            total_score: data.newScore,
+            peer_targets: data.peer_targets
+          });
+        }
+        setZIdInput('');
+        setTimeout(() => {
+          setSelectedPeer(null);
+          setPeerVerifySuccess(null);
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Peer verification error:', err);
+      setPeerVerifyError('Connection error. Verify your network status.');
+    } finally {
+      setPeerSubmitting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-brand-surface flex flex-col items-center justify-center text-brand-on-surface">
@@ -351,6 +408,109 @@ export default function Home() {
                         {progress.next_barrel_id === 10 && "Final destination, positioned near the Moazzam Jahi exhibition dome."}
                       </p>
                     </div>
+
+                    {/* Dynamic Campus Map with Blinking Target Node */}
+                    <div className="border-4 border-brand-on-surface bg-brand-surface-low p-4 relative overflow-hidden">
+                      <div className="font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase mb-2 tracking-wider flex items-center justify-between">
+                        <span>WOXSEN CAMPUS INTERACTIVE BLUEPRINT</span>
+                        <span className="flex items-center gap-1.5">
+                          <span className="inline-block w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+                          LIVE TARGET RADAR
+                        </span>
+                      </div>
+                      
+                      <div className="w-full aspect-[5/3] relative">
+                        <svg viewBox="0 0 500 300" className="w-full h-full border-2 border-brand-on-surface bg-brand-surface">
+                          {/* Grid Background */}
+                          <defs>
+                            <pattern id="mapGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(28,27,27,0.07)" strokeWidth="1" />
+                            </pattern>
+                          </defs>
+                          <rect width="100%" height="100%" fill="url(#mapGrid)" />
+                          
+                          {/* Campus Path networks */}
+                          <path 
+                            d="M 50,50 L 150,80 L 280,60 L 420,90 M 100,170 L 230,160 L 350,150 L 450,220 M 50,50 L 100,170 L 180,240 M 150,80 L 230,160 L 320,250 M 280,60 L 350,150 L 320,250 M 420,90 L 450,220" 
+                            fill="none" 
+                            stroke="rgba(28,27,27,0.25)" 
+                            strokeWidth="2" 
+                            strokeDasharray="4 4" 
+                          />
+                          
+                          {/* Zone labels */}
+                          <text x="35" y="32" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Lobby</text>
+                          <text x="135" y="65" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">SPA Studio</text>
+                          <text x="260" y="45" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Amphi</text>
+                          <text x="390" y="75" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Arcade</text>
+                          <text x="80" y="155" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Courtyard</text>
+                          <text x="210" y="145" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Gallery</text>
+                          <text x="330" y="135" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Shed</text>
+                          <text x="420" y="205" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Concrete</text>
+                          <text x="150" y="225" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Stepwell</text>
+                          <text x="290" y="235" className="text-[8px] font-mono font-bold fill-brand-on-surface-variant uppercase">Dome</text>
+
+                          {/* Render the 10 Target Nodes */}
+                          {[
+                            { id: 1, x: 50, y: 50 },
+                            { id: 2, x: 150, y: 80 },
+                            { id: 3, x: 280, y: 60 },
+                            { id: 4, x: 420, y: 90 },
+                            { id: 5, x: 100, y: 170 },
+                            { id: 6, x: 230, y: 160 },
+                            { id: 7, x: 350, y: 150 },
+                            { id: 8, x: 450, y: 220 },
+                            { id: 9, x: 180, y: 240 },
+                            { id: 10, x: 320, y: 250 }
+                          ].map((node) => {
+                            const isActive = progress.next_barrel_id === node.id;
+                            return (
+                              <g key={node.id} className="cursor-pointer">
+                                {isActive && (
+                                  <>
+                                    {/* Double pulsing radar ring */}
+                                    <circle 
+                                      cx={node.x} 
+                                      cy={node.y} 
+                                      r="16" 
+                                      className="fill-brand-primary/20 stroke-brand-primary stroke-[1.5] animate-ping" 
+                                    />
+                                    <circle 
+                                      cx={node.x} 
+                                      cy={node.y} 
+                                      r="24" 
+                                      className="fill-none stroke-brand-primary/30 stroke-[1] animate-pulse" 
+                                    />
+                                  </>
+                                )}
+                                
+                                {/* Core Node point */}
+                                <circle 
+                                  cx={node.x} 
+                                  cy={node.y} 
+                                  r={isActive ? "9" : "6"} 
+                                  className={`stroke-brand-on-surface stroke-2 transition-all ${
+                                    isActive ? 'fill-brand-primary animate-pulse' : 'fill-brand-surface-highest'
+                                  }`} 
+                                />
+
+                                {/* Mini label text inside node */}
+                                <text 
+                                  x={node.x} 
+                                  y={node.y + 3} 
+                                  textAnchor="middle" 
+                                  className={`font-mono font-bold text-[8px] select-none ${
+                                    isActive ? 'fill-brand-on-primary' : 'fill-brand-on-surface-variant'
+                                  }`}
+                                >
+                                  {node.id}
+                                </text>
+                              </g>
+                            );
+                          })}
+                        </svg>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Card Actions/Footer */}
@@ -419,7 +579,7 @@ export default function Home() {
 
                   {/* Footnote block */}
                   <div className="p-4 bg-brand-surface-container border-t-2 border-brand-on-surface font-mono text-[10px] text-center text-brand-on-surface-variant">
-                    68th ANNUAL CONVENTION • WOXSEN UNIVERSITY
+                    68th YEAR ANNUAL NASA HERITAGE HUNT • WOXSEN UNIVERSITY
                   </div>
                 </div>
               </div>
@@ -466,6 +626,132 @@ export default function Home() {
               </div>
             )}
 
+
+            {/* ------------------------------------------------------------- */}
+            {/* NETWORKING QUEST: FIND YOUR PEERS (250 XP POTENTIAL) */}
+            {/* ------------------------------------------------------------- */}
+            {progress.peer_targets && progress.peer_targets.length > 0 && (
+              <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] flex flex-col justify-between">
+                {/* Header */}
+                <div className="bg-brand-mustard p-4 border-b-4 border-brand-on-surface flex justify-between items-center text-brand-on-surface">
+                  <h3 className="font-mono text-xs font-bold tracking-widest flex items-center gap-2 uppercase">
+                    <span className="inline-block w-2.5 h-2.5 bg-brand-primary border border-brand-on-surface animate-ping" />
+                    CAMPUS PEER QUEST • NETWORKING MODULE
+                  </h3>
+                  <span className="font-mono text-xs font-bold bg-brand-on-surface text-brand-surface px-2 py-0.5 border border-brand-on-surface">
+                    +25 XP EACH
+                  </span>
+                </div>
+
+                {/* Body */}
+                <div className="p-6 md:p-8 space-y-6">
+                  <div>
+                    <h2 className="font-display text-2xl font-black text-brand-on-surface uppercase leading-none">
+                      Find Peers & Validate Z-IDs
+                    </h2>
+                    <p className="font-sans text-brand-on-surface-variant text-sm mt-2 leading-relaxed">
+                      Randomly assigned peers are currently roaming the campus. Locate them, strike a conversation, learn their registration <strong className="text-brand-secondary">Z-ID</strong>, and submit it below to unlock bonus XP!
+                    </p>
+                  </div>
+
+                  {/* Targets grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                    {progress.peer_targets.map((peer) => (
+                      <div 
+                        key={peer.name}
+                        className={`p-4 border-2 border-brand-on-surface flex flex-col justify-between items-stretch text-center transition ${
+                          peer.found 
+                            ? 'bg-brand-surface-low border-dashed opacity-75' 
+                            : 'bg-brand-surface shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]'
+                        }`}
+                      >
+                        <div className="font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-widest mb-2 border-b border-brand-outline-variant pb-1">
+                          {peer.found ? '✓ VERIFIED' : '✖ SEEKING'}
+                        </div>
+                        
+                        <div className="font-display font-black text-xs text-brand-on-surface uppercase truncate mb-3" title={peer.name}>
+                          {peer.name}
+                        </div>
+
+                        {peer.found ? (
+                          <div className="py-1 bg-brand-secondary-container text-brand-secondary text-[10px] font-mono font-bold uppercase border border-brand-on-surface">
+                            +25 XP SECURED
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setSelectedPeer(peer.name);
+                              setZIdInput('');
+                              setPeerVerifyError(null);
+                              setPeerVerifySuccess(null);
+                            }}
+                            className="w-full py-1.5 bg-brand-primary text-brand-on-primary border border-brand-on-surface text-[10px] font-display font-black uppercase tracking-wider shadow-[1.5px_1.5px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none transition-all cursor-pointer"
+                          >
+                            Verify Z-ID
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Verification drawer / modal inside dashboard */}
+                  {selectedPeer && (
+                    <div className="p-6 border-4 border-brand-on-surface bg-brand-surface-high shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] animate-fade-in relative">
+                      <button 
+                        onClick={() => setSelectedPeer(null)}
+                        className="absolute top-4 right-4 text-brand-on-surface hover:text-brand-error cursor-pointer"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+
+                      <h4 className="font-display text-sm font-black uppercase text-brand-on-surface tracking-wider">
+                        PEER IDENTITY AUDIT: {selectedPeer}
+                      </h4>
+                      <p className="text-xs text-brand-on-surface-variant mt-1">
+                        Enter the exact 8-character unique Z-Id retrieved from this participant.
+                      </p>
+
+                      {peerVerifyError && (
+                        <div className="mt-3 p-3 bg-red-50 border-2 border-brand-error text-brand-error font-mono text-[10px] font-bold uppercase">
+                          ERROR: {peerVerifyError}
+                        </div>
+                      )}
+
+                      {peerVerifySuccess && (
+                        <div className="mt-3 p-3 bg-brand-secondary-container border-2 border-brand-secondary text-brand-on-secondary font-mono text-[10px] font-bold uppercase">
+                          SUCCESS: {peerVerifySuccess}
+                        </div>
+                      )}
+
+                      <form onSubmit={handleVerifyPeer} className="mt-4 flex flex-col sm:flex-row gap-3 items-stretch">
+                        <input
+                          type="text"
+                          value={zIdInput}
+                          onChange={(e) => {
+                            setZIdInput(e.target.value);
+                            setPeerVerifyError(null);
+                          }}
+                          placeholder="ENTER 8-DIGIT Z-ID"
+                          maxLength={12}
+                          disabled={peerSubmitting}
+                          className="flex-1 input-brutalist px-4 py-2.5 text-xs uppercase placeholder:opacity-50 font-mono font-bold"
+                          required
+                          autoFocus
+                        />
+                        <button
+                          type="submit"
+                          disabled={peerSubmitting}
+                          className="px-6 py-2.5 bg-brand-on-surface text-brand-surface border border-brand-on-surface font-display font-black text-xs uppercase tracking-wider hover:bg-opacity-90 active:translate-x-[1px] active:translate-y-[1px] cursor-pointer disabled:opacity-50"
+                        >
+                          {peerSubmitting ? 'VALIDATING...' : 'SUBMIT VERIFICATION'}
+                        </button>
+                      </form>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* General Rules Info Cards */}
             <div className="bg-brand-surface-container border-2 border-brand-on-surface p-6">
               <h3 className="font-display text-lg font-bold text-brand-on-surface mb-4 flex items-center gap-2">
@@ -506,11 +792,12 @@ export default function Home() {
                   Woxsen University x NASA India
                 </span>
                 <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black text-brand-on-primary mb-6 leading-none uppercase">
-                  QR QUIZ <br />
-                  HUNT 2026
+                  68th Year <br />
+                  Annual Nasa <br />
+                  Heritage Hunt
                 </h1>
                 <p className="font-sans text-brand-surface-highest text-sm sm:text-base max-w-xl leading-relaxed">
-                  Embark on an immersive architectural discovery contest across the Woxsen campus. Decode structural blueprints, scan hidden physical barrel nodes, and resolve Deccani heritage quizzes.
+                  Embark on an immersive, campus-wide treasure hunt. Decode architectural clues, scan physical barrel nodes, and solve structural design quizzes to win!
                 </p>
               </div>
 
@@ -572,36 +859,6 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Map Area */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <div className="relative">
-                <div className="border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] aspect-video bg-brand-surface-highest overflow-hidden">
-                  <img 
-                    alt="Campus site map rendering" 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk5BF-a4hKn9rDY40ynd6mV0BK79zCaRJaK7aIa5mqq-B216r95i9MnNeRRcNSfPwBHwYqtGOOB7UNOMK1zcQTM84l_Wbwzm9vg9dXEQdcHoacDiKCNMwvy3E6BNcaP-Bp1lvwTwPbLgZTOQ-jlOGLCAOUJ09EdAs5nQ8B05vVgRiHFDAZtAm01s7Suqe4l5QU8OtGl_45SOJH7FvwItVJazc7ON0xqebq--EMdVJN8d04BZ_bq360PgZBAVAzQAJXQZ0k4tfWMak"
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500" 
-                  />
-                </div>
-                <div className="absolute -bottom-4 -left-4 bg-brand-on-surface text-brand-surface px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest border border-brand-on-surface">
-                  Hyderabad Campus Sector 4
-                </div>
-              </div>
-              <div>
-                <h3 className="font-display text-2xl font-black text-brand-on-surface uppercase mb-4 underline decoration-brand-secondary decoration-8">
-                  THE CANVAS
-                </h3>
-                <p className="text-brand-on-surface-variant leading-relaxed text-base mb-6">
-                  Woxsen University's architecture is a testament to sustainable modernism. The hunt spans the central library, the design studios, stepwells, and open-air amphitheaters. Decode structural history in place!
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {["Sustainability", "Geometry", "Modernism", "Acoustics"].map((tag) => (
-                    <span key={tag} className="px-3 py-1 border border-brand-on-surface font-mono text-xs font-bold uppercase text-brand-on-surface-variant">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </section>
           </div>
         )}
       </main>
@@ -609,22 +866,36 @@ export default function Home() {
       {/* Footer Sponsor Strips */}
       <footer className="bg-brand-surface-highest border-t-4 border-brand-on-surface py-12">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-6 text-center">
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-90 transition-opacity">
-            <div className="flex flex-col items-center">
-              <span className="font-mono text-[10px] text-brand-on-surface-variant mb-1 uppercase">HOSTED BY</span>
-              <span className="font-display font-black text-brand-on-surface text-lg">WOXSEN UNIVERSITY</span>
+          <div className="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-8 md:gap-16 w-full max-w-4xl">
+            {/* Hosted By Card */}
+            <div className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between">
+              <span className="font-mono text-[9px] text-brand-on-surface-variant mb-2 uppercase tracking-wider font-bold">HOSTED BY</span>
+              <div className="h-10 flex items-center justify-center">
+                <img src="/woxsen-logo.png" alt="Woxsen University" className="h-8 md:h-10 object-contain" />
+              </div>
+              <span className="font-display font-bold text-[10px] uppercase text-brand-outline mt-2 tracking-wider">Woxsen University</span>
             </div>
-            <div className="flex flex-col items-center">
-              <span className="font-mono text-[10px] text-brand-on-surface-variant mb-1 uppercase">POWERED BY</span>
-              <span className="font-display font-black text-brand-on-surface text-lg uppercase text-brand-secondary">Catalyse</span>
+            
+            {/* Powered By Card */}
+            <div className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between">
+              <span className="font-mono text-[9px] text-brand-on-surface-variant mb-2 uppercase tracking-wider font-bold">POWERED BY</span>
+              <div className="h-10 flex items-center justify-center">
+                <img src="/catalyse-logo.png" alt="Catalyse" className="h-8 md:h-10 object-contain" />
+              </div>
+              <span className="font-display font-bold text-[10px] uppercase text-brand-outline mt-2 tracking-wider">Catalyse</span>
             </div>
-            <div className="flex flex-col items-center">
-              <span className="font-mono text-[10px] text-brand-on-surface-variant mb-1 uppercase">ORGANIZED BY</span>
-              <span className="font-display font-black text-brand-on-surface text-lg">NASA INDIA</span>
+
+            {/* Organized By Card */}
+            <div className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between">
+              <span className="font-mono text-[9px] text-brand-on-surface-variant mb-2 uppercase tracking-wider font-bold">ORGANIZED BY</span>
+              <div className="h-10 flex items-center justify-center">
+                <img src="/nasa-logo.png" alt="NASA India" className="h-8 md:h-10 object-contain" />
+              </div>
+              <span className="font-display font-bold text-[10px] uppercase text-brand-outline mt-2 tracking-wider">NASA India</span>
             </div>
           </div>
           
-          <div className="flex gap-6 mt-4">
+          <div className="flex gap-6 mt-6">
             <a href="#" className="font-mono text-[10px] text-brand-on-surface-variant hover:text-brand-secondary font-bold uppercase">NASA India</a>
             <span className="text-brand-outline-variant">•</span>
             <a href="#" className="font-mono text-[10px] text-brand-on-surface-variant hover:text-brand-secondary font-bold uppercase">Catalyse</a>
@@ -633,7 +904,7 @@ export default function Home() {
           </div>
 
           <p className="font-mono text-[10px] text-brand-on-surface-variant mt-4 font-bold">
-            68th ANNUAL NASA CONVENTION x WOXSEN UNIVERSITY © 2026
+            68th Year Annual Nasa Heritage Hunt x Woxsen University © 2026
           </p>
         </div>
       </footer>

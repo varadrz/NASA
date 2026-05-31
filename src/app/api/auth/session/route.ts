@@ -59,6 +59,65 @@ export async function GET(request: NextRequest) {
 
     // 5. Fetch participant progress
     const progress = await DB.getParticipantProgress(participant.id);
+    
+    let peerTargets = [];
+    if (progress) {
+      if (progress.peer_targets && Array.isArray(progress.peer_targets) && progress.peer_targets.length > 0) {
+        peerTargets = progress.peer_targets;
+      } else {
+        // Initialize targets
+        const allParts = await DB.getAllParticipants();
+        const others = allParts.filter((p: any) => p.id !== participant.id && !p.is_disabled);
+
+        const shuffled = others.sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 10);
+
+        const targets = selected.map((p: any) => ({
+          name: p.full_name,
+          reg_id: p.registration_id.trim().toUpperCase(),
+          found: false
+        }));
+
+        if (targets.length < 10) {
+          const paddingNeeded = 10 - targets.length;
+          const PADDING_POOL = [
+            { name: "Aarav Mehta", reg_id: "NASA08P1" },
+            { name: "Aditi Rao", reg_id: "NASA08P2" },
+            { name: "Vihaan Sharma", reg_id: "NASA08P3" },
+            { name: "Ananya Iyer", reg_id: "NASA08P4" },
+            { name: "Kabir Sen", reg_id: "NASA08P5" },
+            { name: "Ishaan Verma", reg_id: "NASA08P6" },
+            { name: "Diya Joshi", reg_id: "NASA08P7" },
+            { name: "Rohan Gupta", reg_id: "NASA08P8" },
+            { name: "Zara Khan", reg_id: "NASA08P9" },
+            { name: "Sai Pranav", reg_id: "NASA08P10" }
+          ];
+          
+          const shuffledPadding = PADDING_POOL.sort(() => 0.5 - Math.random());
+
+          for (let i = 0; i < paddingNeeded; i++) {
+            const pad = shuffledPadding[i % shuffledPadding.length];
+            targets.push({
+              name: pad.name,
+              reg_id: pad.reg_id,
+              found: false
+            });
+          }
+        }
+
+        peerTargets = targets;
+        progress.peer_targets = targets;
+        await DB.updateParticipantProgress({
+          participant_id: progress.participant_id,
+          completed_quizzes: progress.completed_quizzes,
+          total_score: progress.total_score,
+          total_time: progress.total_time,
+          next_barrel_id: progress.next_barrel_id,
+          current_attempt_id: progress.current_attempt_id,
+          peer_targets: targets
+        });
+      }
+    }
 
     return NextResponse.json({
       authenticated: true,
@@ -73,7 +132,11 @@ export async function GET(request: NextRequest) {
         total_score: progress.total_score,
         total_time: progress.total_time,
         next_barrel_id: progress.next_barrel_id,
-        current_attempt_id: progress.current_attempt_id
+        current_attempt_id: progress.current_attempt_id,
+        peer_targets: peerTargets.map((t: any) => ({
+          name: t.name,
+          found: t.found
+        }))
       } : null
     });
   } catch (error) {

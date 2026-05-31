@@ -19,6 +19,7 @@ CREATE TABLE participants (
     college_name VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     registration_id VARCHAR(50) UNIQUE NOT NULL,
+    instagram_id VARCHAR(100) NULL,
     is_disabled BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -63,6 +64,7 @@ CREATE TABLE participant_progress (
     total_time INTEGER DEFAULT 0, -- accumulated time_taken_seconds
     next_barrel_id INTEGER NULL CHECK (next_barrel_id IS NULL OR next_barrel_id BETWEEN 1 AND 10),
     current_attempt_id UUID REFERENCES quiz_attempts(id) ON DELETE SET NULL,
+    peer_targets JSONB DEFAULT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -88,16 +90,16 @@ CREATE INDEX idx_leaderboard_sorting ON participant_progress(total_score DESC, t
 -- -------------------------------------------------------------
 
 INSERT INTO quizzes (barrel_id, title, description) VALUES
-(1, 'Charminar & Qutb Shahi Dynasty', 'Explore the architectural genius and structural elements of the Charminar and early Islamic structures of Hyderabad.'),
-(2, 'Golconda Fort & Acoustics', 'Uncover the military engineering, acoustic systems, and water supply structures of the Golconda Fort.'),
-(3, 'Chowmahalla Palace & Nizams', 'Delve into the European-styled neoclassical architectures, courtyards, and grand chandeliers of Chowmahalla.'),
-(4, 'Falaknuma Palace', 'Study the "Mirror of the Sky," Palladian architectural style, and the legendary dining hall details.'),
-(5, 'Kalasiguda & British Residency', 'Learn about the colonial Palladian villas, military cantonments, and the historic British Residency building in Koti.'),
-(6, 'Deccan Vernacular Dwellings', 'Discover the layout, courtyards (Aangan), wooden lintels, and climatic response of traditional Hyderabadi houses.'),
-(7, 'Qutb Shahi Tombs', 'Analyze the unique blend of Persian, Hindu, and Pathan architectural styles in the royal necropolis.'),
-(8, 'Modernist Hyderabad', 'Examine the post-independence modern architectures, iconic institutional campuses, and concrete designs of Hyderabad.'),
-(9, 'Stepwells of Hyderabad', 'Dive into the historic stepwells (Baolis), their engineering, stone carvings, and water-harvesting systems.'),
-(10, 'Moazzam Jahi Market & Public Buildings', 'Investigate the Indo-Saracenic public structures built during the Nizams reign using granite and arches.');
+(1, 'Ancient Wonders & Egypt', 'Explore the structural genius, monumental masonry, and alignment of Giza, Luxor, and ancient dry-stone monuments.'),
+(2, 'Classical Greek & Roman', 'Examine the proportions of Greek orders and the revolutionary concrete and vaulting systems of the Roman Empire.'),
+(3, 'Gothic Cathedrals & Medieval Europe', 'Investigate structural engineering breakthroughs: pointed arches, flying buttresses, and rib vaulting.'),
+(4, 'Renaissance & Baroque Masterpieces', 'Analyze the revival of classicism, perspective, and the dramatic curves and optical illusions of the Baroque period.'),
+(5, 'Islamic & Indian Marvels', 'Explore the structural engineering and spatial layouts of Islamic domes, Taj Mahal, and South Indian temple gopurams.'),
+(6, 'East Asian Temple Architecture', 'Discover the wooden joinery systems, bracket complexes, and pagodas of China, Japan, and Southeast Asia.'),
+(7, 'Pre-Columbian & Mesoamerican', 'Explore the stone carving, dry-stone masonry, and solar alignments of the Maya, Aztecs, and Incas.'),
+(8, 'Modernism & Bauhaus Movement', 'Analyze the architectural philosophies of Le Corbusier, Frank Lloyd Wright, Mies van der Rohe, and Walter Gropius.'),
+(9, 'Postmodern & Contemporary Giants', 'Explore the reactions against modernism, deconstructivism, and iconic landmarks of the late 20th and early 21st century.'),
+(10, 'Sustainable & Vernacular Structures', 'Discover passive heating and cooling, organic building materials, and cutting-edge ecological architecture designs.');
 
 -- We will insert a comprehensive set of 200 architectural questions in the application initialization or direct DB seed.
 -- For the SQL schema script, we will define 2-3 sample questions per quiz, and then write a seed router/api to load all 200 questions to avoid huge SQL command executions.

@@ -22,12 +22,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { full_name, college_name, phone_number, registration_id } = body;
+    const { full_name, college_name, phone_number, registration_id, instagram_id } = body;
 
     // 3. Validation
-    if (!full_name || !college_name || !phone_number || !registration_id) {
+    if (!full_name || !college_name || !phone_number || !registration_id || !instagram_id) {
       return NextResponse.json(
-        { error: 'All fields (Full Name, Zone No., Phone, Z-Id) are required.' },
+        { error: 'All fields (Full Name, Zone No., Phone, Z-Id, Instagram ID) are required.' },
         { status: 400 }
       );
     }
@@ -54,7 +54,8 @@ export async function POST(request: NextRequest) {
       full_name: full_name.trim(),
       college_name: college_name.trim(),
       phone_number: phone_number.trim(),
-      registration_id: trimmedRegId
+      registration_id: trimmedRegId,
+      instagram_id: instagram_id.trim()
     });
 
     // 6. Generate JWT Session Token

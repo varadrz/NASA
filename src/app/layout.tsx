@@ -19,13 +19,13 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "68th NASA CONVENTION | QR Hunt Quiz",
-  description: "A large-scale QR-based architectural treasure hunt & quiz for NASA India architectural students. Explore Hyderabad's monuments, stepwells, palaces, and modernist campuses.",
+  title: "68th Year Annual Nasa Heritage Hunt",
+  description: "An immersive, large-scale campus-wide architectural treasure hunt and heritage quiz for the 68th Year Annual Nasa Heritage Hunt, hosted at Woxsen University.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "NASA Quiz Hunt",
+    title: "NASA Heritage Hunt",
   },
   icons: {
     icon: [

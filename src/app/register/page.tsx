@@ -18,7 +18,8 @@ function RegisterForm() {
     full_name: '',
     college_name: '',
     phone_number: '',
-    registration_id: ''
+    registration_id: '',
+    instagram_id: ''
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +38,7 @@ function RegisterForm() {
     setSubmitting(true);
     setError(null);
 
-    if (!formData.full_name.trim() || !formData.college_name.trim() || !formData.phone_number.trim() || !formData.registration_id.trim()) {
+    if (!formData.full_name.trim() || !formData.college_name.trim() || !formData.phone_number.trim() || !formData.registration_id.trim() || !formData.instagram_id.trim()) {
       setError('All fields are required.');
       setSubmitting(false);
       return;
@@ -191,6 +192,24 @@ function RegisterForm() {
             </div>
           </div>
 
+          {/* Instagram Handle */}
+          <div>
+            <label htmlFor="instagram_id" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
+              Instagram Handle
+            </label>
+            <input
+              type="text"
+              id="instagram_id"
+              name="instagram_id"
+              value={formData.instagram_id}
+              onChange={handleChange}
+              placeholder="ENTER INSTAGRAM HANDLE (e.g. @username)"
+              disabled={submitting}
+              className="w-full input-brutalist px-4 py-3.5 text-sm placeholder:text-brand-outline-variant placeholder:opacity-50"
+              required
+            />
+          </div>
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -221,7 +240,7 @@ function RegisterForm() {
         </div>
 
         <p className="mt-8 font-mono text-[10px] text-brand-on-surface-variant text-center tracking-wide leading-relaxed">
-          By joining, you agree to the 68th Convention Code of Conduct. Accounts are bound to one active session.
+          By joining, you agree to the 68th Year Annual Nasa Heritage Hunt Code of Conduct. Accounts are bound to one active session.
         </p>
       </div>
     </div>

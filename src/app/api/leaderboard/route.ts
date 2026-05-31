@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
           rank: item.rank,
           name: item.full_name,
           college: item.college_name,
+          instagram: item.instagram_id,
           score: item.score,
           time: item.time_taken_seconds
         }))
@@ -53,6 +54,7 @@ export async function GET(request: NextRequest) {
         rank: item.rank,
         name: item.full_name,
         college: item.college_name,
+        instagram: item.instagram_id,
         score: item.total_score,
         time: item.total_time,
         completed: item.completed_quizzes

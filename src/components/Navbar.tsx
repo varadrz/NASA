@@ -109,7 +109,7 @@ export default function Navbar() {
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-2 group">
                 <span className="font-display font-black text-lg md:text-xl tracking-tighter uppercase text-brand-on-surface">
-                  68th ANNUAL NASA CONVENTION
+                  68th Year Annual Nasa Heritage Hunt
                 </span>
               </Link>
             </div>

@@ -22,6 +22,7 @@ interface LeaderboardItem {
   score: number;
   time: number;
   completed?: number;
+  instagram?: string;
 }
 
 export default function LeaderboardPage() {
@@ -454,8 +455,18 @@ export default function LeaderboardPage() {
                             </div>
                           )}
                         </td>
-                        <td className="py-4 px-6 font-display font-bold text-brand-on-surface uppercase">
-                          {item.name}
+                        <td className="py-4 px-6 font-sans">
+                          <div className="font-display font-bold text-brand-on-surface uppercase">{item.name}</div>
+                          {item.instagram && (
+                            <a 
+                              href={`https://instagram.com/${item.instagram.replace(/^@/, '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] font-mono text-brand-secondary hover:underline lowercase block mt-0.5"
+                            >
+                              @{item.instagram.replace(/^@/, '')}
+                            </a>
+                          )}
                         </td>
                         <td className="py-4 px-6 text-brand-on-surface-variant uppercase font-mono text-xs font-bold">
                           {item.college}
