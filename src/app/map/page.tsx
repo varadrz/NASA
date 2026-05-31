@@ -4,6 +4,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import { 
   Compass, 
@@ -108,12 +109,18 @@ const SCHEDULE_DATA: ScheduleDay[] = [
 ];
 
 const HOTSPOTS = [
-  { id: 'academic-block', label: 'Academic Block', x: 560, y: 260 },
-  { id: 'admin-block', label: 'Admin Block', x: 560, y: 450 },
-  { id: 'trade-tower', label: 'Trade Tower', x: 670, y: 340 },
-  { id: 'library', label: 'Central Library', x: 670, y: 180 },
-  { id: 'the-league', label: 'The League (Shed/SportX)', x: 1240, y: 180 },
-  { id: 'race-field', label: 'RACE / Field', x: 1110, y: 180 }
+  { id: 'main_entrance', label: 'Main Entrance', x: 4.2, y: 72.4 },
+  { id: 'parking', label: 'Parking', x: 17.8, y: 63.5 },
+  { id: 'amphitheatre', label: 'Amphitheatre', x: 30.4, y: 43.7 },
+  { id: 'academic_block', label: 'Academic Block', x: 38.8, y: 30.5 },
+  { id: 'central_library', label: 'Central Library', x: 45.1, y: 40.8 },
+  { id: 'trade_tower', label: 'Trade Tower', x: 49.4, y: 55.8 },
+  { id: 'hostel_towers', label: 'Hostel Towers', x: 66.4, y: 30.8 },
+  { id: 'race', label: 'RACE Field', x: 73.2, y: 18.5 },
+  { id: 'oval_dining', label: 'Oval Dining Hall', x: 77.3, y: 26.4 },
+  { id: 'the_league', label: 'The League', x: 81.5, y: 20.2 },
+  { id: 'sportx', label: 'SportX', x: 85.6, y: 26.0 },
+  { id: 'cricket_ground', label: 'Cricket Ground', x: 95.2, y: 34.7 }
 ];
 
 export default function CampusMapPage() {
@@ -159,24 +166,31 @@ export default function CampusMapPage() {
   // Map venue names to map block IDs
   const mapVenueToBlockId = (venue: string): string => {
     const v = venue.toUpperCase();
-    if (v.includes('OUTDOOR SHED') || v.includes('THE LEAGUE') || v.includes('SPORTX')) return 'the-league';
-    if (v.includes('OUTDOOR FIELD') || v.includes('RACE') || v.includes('CRICKET') || v.includes('FIELD')) return 'race-field';
-    if (v.includes('D-103') || v.includes('D-101') || v.includes('D-105') || v.includes('DESIGN BLOCK') || v.includes('ACADEMIC BLOCK')) return 'academic-block';
-    if (v.includes('F-102') || v.includes('F-002') || v.includes('LAB BLOCK') || v.includes('TRADE TOWER')) return 'trade-tower';
-    if (v.includes('LECTURE THEATRE') || v.includes('LT') || v.includes('ADMIN BLOCK')) return 'admin-block';
-    if (v.includes('LIBRARY LAWN') || v.includes('LIBRARY')) return 'library';
-    if (v.includes('E-012') || v.includes('E-015') || v.includes('E-302') || v.includes('E-104') || v.includes('LAW BLOCK') || v.includes('SEMINAR ROOM')) return 'academic-block';
-    if (v.includes('ADMIN LAWN')) return 'admin-block';
+    if (v.includes('OUTDOOR SHED') || v.includes('THE LEAGUE')) return 'the-league';
+    if (v.includes('SPORTX')) return 'sportx';
+    if (v.includes('CRICKET')) return 'cricket_ground';
+    if (v.includes('OUTDOOR FIELD') || v.includes('RACE') || v.includes('FIELD')) return 'race';
+    if (v.includes('D-103') || v.includes('D-101') || v.includes('D-105') || v.includes('DESIGN BLOCK') || v.includes('ACADEMIC BLOCK')) return 'academic_block';
+    if (v.includes('F-102') || v.includes('F-002') || v.includes('LAB BLOCK') || v.includes('TRADE TOWER')) return 'trade_tower';
+    if (v.includes('LECTURE THEATRE') || v.includes('LT') || v.includes('ADMIN BLOCK') || v.includes('ADMIN LAWN')) return 'academic_block';
+    if (v.includes('LIBRARY LAWN') || v.includes('LIBRARY')) return 'central_library';
+    if (v.includes('E-012') || v.includes('E-015') || v.includes('E-302') || v.includes('E-104') || v.includes('LAW BLOCK') || v.includes('SEMINAR ROOM')) return 'academic_block';
     return '';
   };
 
   const VENUE_COORDS: { [key: string]: { x: number; y: number } } = {
-    'academic-block': { x: 560, y: 260 },
-    'admin-block': { x: 560, y: 450 },
-    'trade-tower': { x: 670, y: 340 },
-    'library': { x: 670, y: 180 },
-    'the-league': { x: 1240, y: 180 },
-    'race-field': { x: 1110, y: 180 }
+    'main_entrance': { x: 67.2, y: 485.08 },
+    'parking': { x: 284.8, y: 425.45 },
+    'amphitheatre': { x: 486.4, y: 292.79 },
+    'academic_block': { x: 620.8, y: 204.35 },
+    'central_library': { x: 721.6, y: 273.36 },
+    'trade_tower': { x: 790.4, y: 373.86 },
+    'hostel_towers': { x: 1062.4, y: 206.36 },
+    'race': { x: 1171.2, y: 123.95 },
+    'oval_dining': { x: 1236.8, y: 176.88 },
+    'the_league': { x: 1304.0, y: 135.34 },
+    'sportx': { x: 1369.6, y: 174.2 },
+    'cricket_ground': { x: 1523.2, y: 232.49 }
   };
 
   const handleLocateVenue = (venueName: string) => {
@@ -288,6 +302,17 @@ export default function CampusMapPage() {
     } else {
       return 'UPCOMING';
     }
+  };
+
+  const getVenueStatus = (venueId: string) => {
+    const dayEvents = SCHEDULE_DATA[selectedDayIdx].events;
+    const venueEvents = dayEvents.filter(e => mapVenueToBlockId(e.venue) === venueId);
+    if (venueEvents.length === 0) return 'UPCOMING';
+
+    const statuses = venueEvents.map(e => getEventStatus(e, selectedDayIdx));
+    if (statuses.every(s => s === 'COMPLETED')) return 'COMPLETED';
+    if (statuses.some(s => s === 'LIVE')) return 'LIVE';
+    return 'UPCOMING';
   };
 
   // Filter events based on active tab, type filter, and showPastEvents toggle
@@ -409,172 +434,131 @@ export default function CampusMapPage() {
             }}
           >
             <div className="relative w-[1600px] h-[670px] shrink-0 pointer-events-auto select-none bg-[#F2EDE4] border-4 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] overflow-hidden">
-              {/* SVG Vector Canvas containing high-fidelity map and HUD overlays */}
+              {/* CSS Animations for Traveling Dot and Beacon glows */}
+              <style>{`
+                .traveling-dot {
+                  offset-path: path('M 67.2 485.08 L 284.8 425.45 L 486.4 292.79 L 620.8 204.35 L 721.6 273.36 L 790.4 373.86 L 1062.4 206.36 L 1171.2 123.95 L 1236.8 176.88 L 1304.0 135.34 L 1369.6 174.2 L 1523.2 232.49');
+                  animation: travel 15s linear infinite;
+                }
+                @keyframes travel {
+                  0% { offset-distance: 0%; }
+                  100% { offset-distance: 100%; }
+                }
+              `}</style>
+
+              {/* 100% EXACT ORIGINAL UNMODIFIED MAP PHOTO BASE LAYER */}
+              <img
+                alt="Woxsen Campus Map"
+                src="/campus-map.png"
+                className="w-full h-full object-fill pointer-events-none absolute inset-0"
+              />
+
+              {/* ROUTE LAYER: SVG Sequence Path connecting campus locations */}
               <svg
                 viewBox="0 0 1600 670"
-                className="w-full h-full absolute inset-0 pointer-events-none"
+                className="w-full h-full absolute inset-0 pointer-events-none z-10"
               >
-                {/* Defs for Grid Pattern and Filters */}
-                <defs>
-                  <pattern id="dot-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <circle cx="2" cy="2" r="1.5" fill="#E2D9CD" />
-                  </pattern>
-                </defs>
-
-                {/* Dot Grid Background */}
-                <rect width="100%" height="100%" fill="url(#dot-grid)" />
-
-                {/* High-fidelity Photo campus map backdrop to preserve exact detailing */}
-                <image
-                  href="/campus-map.png"
-                  x="0"
-                  y="0"
-                  width="1600"
-                  height="670"
-                  className="pointer-events-none"
+                {/* SVG Route Line connecting entrance to cricket ground */}
+                <path
+                  d="M 67.2 485.08 L 284.8 425.45 L 486.4 292.79 L 620.8 204.35 L 721.6 273.36 L 790.4 373.86 L 1062.4 206.36 L 1171.2 123.95 L 1236.8 176.88 L 1304.0 135.34 L 1369.6 174.2 L 1523.2 232.49"
+                  fill="none"
+                  stroke="#1c1b1b"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.45"
                 />
-
-                {/* Vector HUD Highlighting Polygons layered over key buildings */}
-                {/* 1. Academic Block */}
-                <polygon
-                  points="510,230 630,230 620,295 490,295"
-                  fill="url(#academic-roof)"
-                  className={`transition-all duration-300 ${
-                    activeVenue === 'academic-block' || filterVenue === 'academic-block'
-                      ? 'fill-brand-primary fill-opacity-20 stroke-brand-primary stroke-[3px]'
-                      : 'fill-transparent stroke-transparent hover:fill-brand-mustard hover:fill-opacity-10'
-                  }`}
-                  style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                  onClick={() => handleBlockClick('academic-block')}
-                />
-
-                {/* 2. Admin Block */}
-                <polygon
-                  points="490,300 610,300 580,410 470,410"
-                  className={`transition-all duration-300 ${
-                    activeVenue === 'admin-block' || filterVenue === 'admin-block'
-                      ? 'fill-brand-secondary fill-opacity-20 stroke-brand-secondary stroke-[3px]'
-                      : 'fill-transparent stroke-transparent hover:fill-brand-mustard hover:fill-opacity-10'
-                  }`}
-                  style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                  onClick={() => handleBlockClick('admin-block')}
-                />
-
-                {/* 3. Trade Tower */}
-                <polygon
-                  points="635,310 725,310 705,370 615,370"
-                  className={`transition-all duration-300 ${
-                    activeVenue === 'trade-tower' || filterVenue === 'trade-tower'
-                      ? 'fill-brand-primary fill-opacity-20 stroke-brand-primary stroke-[3px]'
-                      : 'fill-transparent stroke-transparent hover:fill-brand-mustard hover:fill-opacity-10'
-                  }`}
-                  style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                  onClick={() => handleBlockClick('trade-tower')}
-                />
-
-                {/* 4. Central Library */}
-                <polygon
-                  points="620,165 710,165 725,225 635,225"
-                  className={`transition-all duration-300 ${
-                    activeVenue === 'library' || filterVenue === 'library'
-                      ? 'fill-brand-secondary fill-opacity-20 stroke-brand-secondary stroke-[3px]'
-                      : 'fill-transparent stroke-transparent hover:fill-brand-mustard hover:fill-opacity-10'
-                  }`}
-                  style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                  onClick={() => handleBlockClick('library')}
-                />
-
-                {/* 5. RACE / Field */}
-                <polygon
-                  points="1060,140 1200,140 1200,210 1060,210"
-                  className={`transition-all duration-300 ${
-                    activeVenue === 'race-field' || filterVenue === 'race-field'
-                      ? 'fill-brand-primary fill-opacity-20 stroke-brand-primary stroke-[3px]'
-                      : 'fill-transparent stroke-transparent hover:fill-brand-mustard hover:fill-opacity-10'
-                  }`}
-                  style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                  onClick={() => handleBlockClick('race-field')}
-                />
-
-                {/* 6. The League */}
-                <polygon
-                  points="1190,140 1310,140 1310,210 1190,210"
-                  className={`transition-all duration-300 ${
-                    activeVenue === 'the-league' || filterVenue === 'the-league'
-                      ? 'fill-brand-secondary fill-opacity-20 stroke-brand-secondary stroke-[3px]'
-                      : 'fill-transparent stroke-transparent hover:fill-brand-mustard hover:fill-opacity-10'
-                  }`}
-                  style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                  onClick={() => handleBlockClick('the-league')}
+                <path
+                  d="M 67.2 485.08 L 284.8 425.45 L 486.4 292.79 L 620.8 204.35 L 721.6 273.36 L 790.4 373.86 L 1062.4 206.36 L 1171.2 123.95 L 1236.8 176.88 L 1304.0 135.34 L 1369.6 174.2 L 1523.2 232.49"
+                  fill="none"
+                  stroke="#52b788"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeDasharray="6 8"
                 />
               </svg>
 
-              {/* Interactive Hotspots Overlaid on Vector Map Coordinates */}
+              {/* Route Traveling Dot Layer */}
+              <div 
+                className="traveling-dot absolute w-5 h-5 rounded-full bg-brand-primary border-2 border-brand-on-surface shadow-[0_0_12px_#ff4757] flex items-center justify-center z-15"
+                style={{ transform: 'translate(-50%, -50%)' }}
+              >
+                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+              </div>
+
+              {/* INTERACTIVE MARKERS, PROGRESS, BEACONS, AND TOOLTIPS LAYER */}
               {HOTSPOTS.map((spot) => {
                 const isBlinking = activeVenue === spot.id;
                 const isSelected = filterVenue === spot.id;
+                const venueStatus = getVenueStatus(spot.id);
+
+                // Check number of events at this venue
+                const dayEvents = SCHEDULE_DATA[selectedDayIdx].events;
+                const venueEventsCount = dayEvents.filter(e => mapVenueToBlockId(e.venue) === spot.id).length;
 
                 return (
-                  <button
+                  <div
                     key={spot.id}
-                    onClick={() => handleBlockClick(spot.id)}
-                    className="absolute group pointer-events-auto cursor-pointer"
+                    className="absolute group pointer-events-auto z-20"
                     style={{
-                      left: `${spot.x}px`,
-                      top: `${spot.y}px`,
-                      transform: 'translate(-50%, -50%)',
-                      zIndex: isBlinking || isSelected ? 50 : 30
+                      left: `${spot.x}%`,
+                      top: `${spot.y}%`,
+                      transform: 'translate(-50%, -50%)'
                     }}
                   >
-                    {/* Pulsing Target Ring */}
-                    <span className={`absolute -inset-6 rounded-full border-4 border-dashed border-brand-primary opacity-0 group-hover:opacity-75 group-hover:animate-spin-slow transition-all duration-300 ${isBlinking ? 'opacity-100 animate-spin-slow' : ''}`}></span>
-                    
-                    {/* Outer Blinking pulse radar */}
+                    {/* Hover Tooltip Layer */}
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 pointer-events-none bg-brand-on-surface text-brand-surface p-2.5 border border-brand-on-surface shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] whitespace-nowrap z-50 rounded-none flex flex-col items-center gap-1 font-mono text-[9px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-brand-mustard uppercase tracking-wider">{spot.label}</span>
+                      <div className="flex gap-2 text-[8px] opacity-90 uppercase">
+                        <span>{venueEventsCount} Event(s)</span>
+                        <span className="text-white">•</span>
+                        <span className={
+                          venueStatus === 'COMPLETED' ? 'text-emerald-400' :
+                          venueStatus === 'LIVE' ? 'text-red-400 animate-pulse' : 'text-sky-300'
+                        }>
+                          Status: {venueStatus}
+                        </span>
+                      </div>
+                      <div className="w-2 h-2 bg-brand-on-surface border-r border-b border-brand-on-surface rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2" />
+                    </div>
+
+                    {/* OBJECTIVE BEACON: Radar pulse ring */}
                     {isBlinking && (
-                      <span className="absolute -inset-8 rounded-full bg-brand-primary opacity-25 animate-ping"></span>
+                      <span className="absolute -inset-10 rounded-full border-4 border-[#e03131] opacity-75 pointer-events-none animate-ping" />
                     )}
 
-                    {/* Badge pin button */}
-                    <div className={`px-3 py-1.5 border-2 border-brand-on-surface font-display font-black text-[9px] uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] transition-all ${
-                      isSelected || isBlinking
-                        ? 'bg-brand-primary text-brand-on-primary scale-110'
-                        : 'bg-brand-surface text-brand-on-surface group-hover:bg-brand-mustard group-hover:text-brand-on-surface'
-                    }`}>
-                      {spot.label}
-                    </div>
+                    {/* Marker Hotspot Pin Button */}
+                    <button
+                      onClick={() => handleBlockClick(spot.id)}
+                      className={`relative flex items-center justify-center p-1 cursor-pointer transition-all duration-300 ${
+                        isSelected || isBlinking ? 'scale-110' : 'hover:scale-105'
+                      }`}
+                    >
+                      {/* Progress Glow Rings based on status */}
+                      <span className={`absolute -inset-4 rounded-full border-2 border-dashed opacity-0 group-hover:opacity-100 group-hover:animate-spin-slow transition-all duration-300 ${
+                        venueStatus === 'COMPLETED' ? 'border-emerald-500 bg-emerald-500 bg-opacity-5' :
+                        venueStatus === 'LIVE' ? 'border-[#e03131] bg-[#e03131] bg-opacity-5' : 'border-brand-primary'
+                      }`} />
 
-                    {/* Point Marker dot */}
-                    <div className={`w-3.5 h-3.5 rounded-full border-2 border-brand-on-surface mx-auto mt-1 transition-all ${
-                      isSelected || isBlinking
-                        ? 'bg-brand-primary animate-bounce'
-                        : 'bg-brand-secondary group-hover:bg-brand-primary'
-                    }`} />
-                  </button>
+                      {/* Main Pin Vector Emblem */}
+                      <div className={`w-8 h-8 rounded-full border-2 border-brand-on-surface flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] transition-all ${
+                        venueStatus === 'COMPLETED' ? 'bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]' :
+                        venueStatus === 'LIVE' ? 'bg-[#e03131] text-white animate-pulse shadow-[0_0_12px_rgba(224,49,49,0.5)]' :
+                        'bg-brand-mustard text-brand-on-surface'
+                      }`}>
+                        {venueStatus === 'COMPLETED' ? (
+                          <CheckCircle2 className="h-4 w-4 stroke-[3px]" />
+                        ) : venueStatus === 'LIVE' ? (
+                          <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping" />
+                        ) : (
+                          <MapPin className="h-4.5 w-4.5" />
+                        )}
+                      </div>
+                    </button>
+                  </div>
                 );
               })}
-
-              {/* Bouncing Pin and Pulse Ring for Located/Active venue */}
-              {activeVenue && VENUE_COORDS[activeVenue] && (
-                <div 
-                  className="absolute pointer-events-none z-50 flex flex-col items-center font-mono"
-                  style={{
-                    left: `${VENUE_COORDS[activeVenue].x}px`,
-                    top: `${VENUE_COORDS[activeVenue].y - 35}px`,
-                    transform: 'translate(-50%, -100%)'
-                  }}
-                >
-                  {/* Sonar Ring */}
-                  <span className="absolute w-16 h-16 -bottom-8 rounded-full border-4 border-brand-primary animate-ping" />
-                  
-                  {/* Bouncing Pin */}
-                  <div className="animate-bounce flex flex-col items-center">
-                    <div className="bg-[#e03131] border-2 border-brand-on-surface p-1 px-2 text-[8px] font-black text-white uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]">
-                      LOCKED TARGET
-                    </div>
-                    <div className="w-3 h-3 bg-[#e03131] border-r-2 border-b-2 border-brand-on-surface rotate-45 -mt-1.5" />
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
