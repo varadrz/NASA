@@ -1102,8 +1102,59 @@
       "total_time": 0,
       "next_barrel_id": 9,
       "current_attempt_id": null,
-      "updated_at": "2026-05-30T13:02:23.776Z",
-      "peer_targets": null
+      "peer_targets": [
+        {
+          "name": "VARAD PATIL",
+          "reg_id": "123",
+          "found": false
+        },
+        {
+          "name": "Diya Joshi",
+          "reg_id": "NASA08P7",
+          "found": false
+        },
+        {
+          "name": "Ananya Iyer",
+          "reg_id": "NASA08P4",
+          "found": false
+        },
+        {
+          "name": "Ishaan Verma",
+          "reg_id": "NASA08P6",
+          "found": false
+        },
+        {
+          "name": "Aarav Mehta",
+          "reg_id": "NASA08P1",
+          "found": false
+        },
+        {
+          "name": "Zara Khan",
+          "reg_id": "NASA08P9",
+          "found": false
+        },
+        {
+          "name": "Aditi Rao",
+          "reg_id": "NASA08P2",
+          "found": false
+        },
+        {
+          "name": "Kabir Sen",
+          "reg_id": "NASA08P5",
+          "found": false
+        },
+        {
+          "name": "Rohan Gupta",
+          "reg_id": "NASA08P8",
+          "found": false
+        },
+        {
+          "name": "Vihaan Sharma",
+          "reg_id": "NASA08P3",
+          "found": false
+        }
+      ],
+      "updated_at": "2026-05-31T06:09:21.120Z"
     }
   ],
   "audit_logs": [
