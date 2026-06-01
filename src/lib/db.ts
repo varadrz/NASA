@@ -19,7 +19,22 @@ export const IS_REAL_DB = isRealSupabaseConfigured();
 
 const checkProductionDbGuard = () => {
   if (process.env.NODE_ENV === 'production' && !IS_REAL_DB) {
-    throw new Error('CRITICAL CONFIGURATION ERROR: Supabase database is not configured. Mock DB cannot be used in production environments to prevent data loss. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Vercel settings.');
+    const reasons: string[] = [];
+    if (!SUPABASE_URL) {
+      reasons.push("NEXT_PUBLIC_SUPABASE_URL is missing or empty");
+    } else {
+      if (SUPABASE_URL.includes('your-project-id')) reasons.push("NEXT_PUBLIC_SUPABASE_URL contains placeholder 'your-project-id'");
+      reasons.push(`NEXT_PUBLIC_SUPABASE_URL length: ${SUPABASE_URL.length}`);
+    }
+
+    if (!SUPABASE_SERVICE_KEY) {
+      reasons.push("SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_ANON_KEY are both missing or empty");
+    } else {
+      if (SUPABASE_SERVICE_KEY.includes('your-')) reasons.push("SUPABASE_SERVICE_KEY contains placeholder 'your-'");
+      reasons.push(`SUPABASE_SERVICE_KEY length: ${SUPABASE_SERVICE_KEY.length}`);
+    }
+
+    throw new Error(`CRITICAL CONFIGURATION ERROR: Supabase database is not configured. Mock DB cannot be used in production environments to prevent data loss. Details: [${reasons.join(', ')}]. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Vercel settings.`);
   }
 };
 
