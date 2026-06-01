@@ -101,8 +101,8 @@ export const DB = {
       throw new Error(pError?.message || 'Failed to create participant');
     }
 
-    // 2. Initialize progress with a random first barrel (1 to 10)
-    const firstBarrelId = Math.floor(Math.random() * 10) + 1;
+    // 2. Initialize progress with a random first barrel (1 to 20)
+    const firstBarrelId = Math.floor(Math.random() * 20) + 1;
     const { error: progError } = await supabase
       .from('participant_progress')
       .insert({

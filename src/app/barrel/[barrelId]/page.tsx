@@ -511,7 +511,7 @@ export default function BarrelQuizPage({
 
                 <div className="py-3 border-t border-b border-brand-on-surface flex justify-between items-center text-xs font-mono font-bold uppercase text-brand-on-surface-variant px-4">
                   <span>Completed Barrels:</span>
-                  <span className="text-brand-on-surface">{submittedResult.progress.completed_quizzes} / 10</span>
+                  <span className="text-brand-on-surface">{submittedResult.progress.completed_quizzes} / 20</span>
                 </div>
 
                 {/* Next target or finish message */}
@@ -533,7 +533,7 @@ export default function BarrelQuizPage({
                     <span className="font-mono text-[10px] text-brand-secondary uppercase font-bold block">MISSION DECODED</span>
                     <h3 className="font-display text-xl font-black text-brand-on-surface uppercase">CONGRATULATIONS</h3>
                     <p className="text-[10px] text-brand-on-surface-variant leading-relaxed max-w-xs mx-auto">
-                      All 10 physical location sequences completed. Proceed to main lobby.
+                      All 20 physical location sequences completed. Proceed to main lobby.
                     </p>
                   </div>
                 )}

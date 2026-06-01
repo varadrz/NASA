@@ -24,10 +24,10 @@ CREATE TABLE participants (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Quizzes Table (Corresponds to 10 Barrels)
+-- 2. Quizzes Table (Corresponds to 20 Barrels)
 CREATE TABLE quizzes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    barrel_id INTEGER UNIQUE NOT NULL CHECK (barrel_id BETWEEN 1 AND 10),
+    barrel_id INTEGER UNIQUE NOT NULL CHECK (barrel_id BETWEEN 1 AND 20),
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL
 );
@@ -62,7 +62,7 @@ CREATE TABLE participant_progress (
     completed_quizzes INTEGER DEFAULT 0,
     total_score INTEGER DEFAULT 0,
     total_time INTEGER DEFAULT 0, -- accumulated time_taken_seconds
-    next_barrel_id INTEGER NULL CHECK (next_barrel_id IS NULL OR next_barrel_id BETWEEN 1 AND 10),
+    next_barrel_id INTEGER NULL CHECK (next_barrel_id IS NULL OR next_barrel_id BETWEEN 1 AND 20),
     current_attempt_id UUID REFERENCES quiz_attempts(id) ON DELETE SET NULL,
     peer_targets JSONB DEFAULT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -86,7 +86,7 @@ CREATE INDEX idx_quiz_attempts_participant_quiz ON quiz_attempts(participant_id,
 CREATE INDEX idx_leaderboard_sorting ON participant_progress(total_score DESC, total_time ASC);
 
 -- -------------------------------------------------------------
--- Seed Data for 10 Quizzes (Barrels 1 to 10)
+-- Seed Data for 20 Quizzes (Barrels 1 to 20)
 -- -------------------------------------------------------------
 
 INSERT INTO quizzes (barrel_id, title, description) VALUES
@@ -99,7 +99,17 @@ INSERT INTO quizzes (barrel_id, title, description) VALUES
 (7, 'Pre-Columbian & Mesoamerican', 'Explore the stone carving, dry-stone masonry, and solar alignments of the Maya, Aztecs, and Incas.'),
 (8, 'Modernism & Bauhaus Movement', 'Analyze the architectural philosophies of Le Corbusier, Frank Lloyd Wright, Mies van der Rohe, and Walter Gropius.'),
 (9, 'Postmodern & Contemporary Giants', 'Explore the reactions against modernism, deconstructivism, and iconic landmarks of the late 20th and early 21st century.'),
-(10, 'Sustainable & Vernacular Structures', 'Discover passive heating and cooling, organic building materials, and cutting-edge ecological architecture designs.');
+(10, 'Sustainable & Vernacular Structures', 'Discover passive heating and cooling, organic building materials, and cutting-edge ecological architecture designs.'),
+(11, 'Classic Columns & Greek Architecture', 'Delve into the orders, proportions, and details of classical columns from Doric to Composite.'),
+(12, 'Mud-Brick Arches & Vaulting', 'Explore the structural principles and vernacular traditions of mud-brick arching.'),
+(13, 'Central Lake Court & Landscaping', 'Discover principles of courtyard gardens, stepwell designs, and landscape features.'),
+(14, 'Acoustic Chamber & Spatial Sounds', 'Investigate how space shapes sound, reverberation calculations, and absorption strategies.'),
+(15, 'Digital Fabrication & Parametric Design', 'Explore 3D printing, parametric models, and CNC routing in modern building construction.'),
+(16, 'Space Frames & Large Span Engineering', 'Understand structural grids, tetrahedral shapes, and static equilibrium.'),
+(17, 'History Museums & Spatial Curation', 'Explore circulation flows, gallery lighting design, and historic displays.'),
+(18, 'Solar Passive Chimneys & Natural Venting', 'Investigate convective airflow, stack effects, and passive cooling.'),
+(19, 'Bamboo Joinery & Organic Pavilions', 'Discover the material properties, joint details, and designs of bamboo architectures.'),
+(20, 'Central Dome Galleries & Vaults', 'Explore the geometries of Pantheon-style oculus domes, pendentives, and squinches.');
 
 -- We will insert a comprehensive set of 200 architectural questions in the application initialization or direct DB seed.
 -- For the SQL schema script, we will define 2-3 sample questions per quiz, and then write a seed router/api to load all 200 questions to avoid huge SQL command executions.

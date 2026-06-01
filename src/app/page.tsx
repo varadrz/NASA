@@ -36,7 +36,17 @@ const getBarrelIdFromCode = (code: string): number | null => {
     '83920154': 7,
     '43892015': 8,
     '20154389': 9,
-    '71543892': 10
+    '71543892': 10,
+    '62940183': 11,
+    '30958174': 12,
+    '84920173': 13,
+    '15948302': 14,
+    '93018472': 15,
+    '48201937': 16,
+    '75039182': 17,
+    '29481037': 18,
+    '58392014': 19,
+    '10394827': 20
   };
   return numericMap[normalized] || null;
 };
@@ -99,7 +109,7 @@ export default function Home() {
     const match = decodedText.match(/\/barrel\/(\d+)/);
     if (match) {
       const bId = parseInt(match[1], 10);
-      if (bId >= 1 && bId <= 10) {
+      if (bId >= 1 && bId <= 20) {
         setIsScannerOpen(false);
         resetScannerState();
         router.push(`/barrel/${bId}`);
@@ -109,7 +119,7 @@ export default function Home() {
 
     // Try parsing raw number (e.g. 3)
     const rawNum = parseInt(decodedText.trim(), 10);
-    if (!isNaN(rawNum) && rawNum >= 1 && rawNum <= 10) {
+    if (!isNaN(rawNum) && rawNum >= 1 && rawNum <= 20) {
       setIsScannerOpen(false);
       resetScannerState();
       router.push(`/barrel/${rawNum}`);
@@ -365,7 +375,7 @@ export default function Home() {
             </div>
 
             {/* Progress & Targets Area */}
-            {progress.completed_quizzes < 10 && progress.next_barrel_id ? (
+            {progress.completed_quizzes < 20 && progress.next_barrel_id ? (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* 1. Next Target Clue Card (8 cols) */}
                 <div className="lg:col-span-8 bg-brand-surface border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] flex flex-col justify-between">
@@ -400,7 +410,17 @@ export default function Home() {
                         {progress.next_barrel_id === 7 && "Located near the masonry restoration and material testing shed."}
                         {progress.next_barrel_id === 8 && "Find this near the modernist concrete framing structural models."}
                         {progress.next_barrel_id === 9 && "Check the hydraulic model stepwell structure replica on campus."}
-                        {progress.next_barrel_id === 10 && "Final destination, positioned near the Moazzam Jahi exhibition dome."}
+                        {progress.next_barrel_id === 10 && "Positioned near the Moazzam Jahi exhibition dome."}
+                        {progress.next_barrel_id === 11 && "Positioned close to the classic columns exhibition at the main plaza."}
+                        {progress.next_barrel_id === 12 && "Located near the sustainable mud-brick arches workshop."}
+                        {progress.next_barrel_id === 13 && "Check the landscape design court overlooking the central lake."}
+                        {progress.next_barrel_id === 14 && "Near the acoustic design chamber and audio labs."}
+                        {progress.next_barrel_id === 15 && "Located outside the digital fabrication lab."}
+                        {progress.next_barrel_id === 16 && "Positioned near the space frames structural installation."}
+                        {progress.next_barrel_id === 17 && "Look close to the architectural history museum entrance."}
+                        {progress.next_barrel_id === 18 && "Located near the solar passive chimney cooling tower."}
+                        {progress.next_barrel_id === 19 && "Look near the bamboo pavilion structure."}
+                        {progress.next_barrel_id === 20 && "Final destination, situated at the central dome gallery."}
                       </p>
                     </div>
 
@@ -456,7 +476,17 @@ export default function Home() {
                             { id: 7, x: 350, y: 150 },
                             { id: 8, x: 450, y: 220 },
                             { id: 9, x: 180, y: 240 },
-                            { id: 10, x: 320, y: 250 }
+                            { id: 10, x: 320, y: 250 },
+                            { id: 11, x: 80, y: 110 },
+                            { id: 12, x: 180, y: 120 },
+                            { id: 13, x: 300, y: 100 },
+                            { id: 14, x: 400, y: 140 },
+                            { id: 15, x: 130, y: 200 },
+                            { id: 16, x: 270, y: 200 },
+                            { id: 17, x: 390, y: 180 },
+                            { id: 18, x: 460, y: 150 },
+                            { id: 19, x: 230, y: 270 },
+                            { id: 20, x: 400, y: 260 }
                           ].map((node) => {
                             const isActive = progress.next_barrel_id === node.id;
                             return (
@@ -541,13 +571,13 @@ export default function Home() {
                         Barrels Decoded
                       </span>
                       <span className="font-display text-2xl font-black text-brand-on-surface">
-                        {progress.completed_quizzes} / 10
+                        {progress.completed_quizzes} / 20
                       </span>
                     </div>
 
                     {/* Step-block progress bar */}
                     <div className="flex gap-1 h-8">
-                      {Array.from({ length: 10 }).map((_, i) => {
+                      {Array.from({ length: 20 }).map((_, i) => {
                         const isDone = i < progress.completed_quizzes;
                         return (
                           <div 
@@ -596,7 +626,7 @@ export default function Home() {
                 </h2>
                 
                 <p className="font-sans text-brand-on-surface-variant text-base leading-relaxed max-w-md mx-auto">
-                  Outstanding performance, <strong className="text-brand-primary uppercase">{participant.full_name}</strong>! You successfully located and scanned all 10 heritage barrels on campus.
+                  Outstanding performance, <strong className="text-brand-primary uppercase">{participant.full_name}</strong>! You successfully located and scanned all 20 heritage barrels on campus.
                 </p>
 
                 <div className="grid grid-cols-2 gap-4 max-w-md mx-auto py-4">
@@ -802,7 +832,7 @@ export default function Home() {
                   <h3 className="font-display text-lg font-black uppercase tracking-wider">The Challenge</h3>
                 </div>
                 <div className="bg-brand-mustard p-6 border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] flex flex-col items-center justify-center text-center text-brand-on-surface">
-                  <h2 className="font-display text-5xl font-black mb-0">10</h2>
+                  <h2 className="font-display text-5xl font-black mb-0">20</h2>
                   <p className="font-mono text-xs font-bold uppercase tracking-wider">Barrel Stations</p>
                 </div>
               </div>

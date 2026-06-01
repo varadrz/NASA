@@ -23,13 +23,13 @@ export async function GET(request: NextRequest) {
     let totalScoreAll = 0;
     let totalTimeAll = 0;
     let completedCount = 0;
-    const completionStats = Array(11).fill(0); // index 0 to 10
+    const completionStats = Array(21).fill(0); // index 0 to 20
 
     leaderboard.forEach(p => {
       totalScoreAll += p.total_score || 0;
       totalTimeAll += p.total_time || 0;
-      if (p.completed_quizzes === 10) completedCount++;
-      if (p.completed_quizzes >= 0 && p.completed_quizzes <= 10) {
+      if (p.completed_quizzes === 20) completedCount++;
+      if (p.completed_quizzes >= 0 && p.completed_quizzes <= 20) {
         completionStats[p.completed_quizzes]++;
       }
     });
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     // Quiz by quiz stats (completions per barrel)
     const quizStats = [];
-    for (let barrelId = 1; barrelId <= 10; barrelId++) {
+    for (let barrelId = 1; barrelId <= 20; barrelId++) {
       const qLeaderboard = await DB.getQuizLeaderboard(barrelId);
       const quiz = await DB.getQuizByBarrelId(barrelId);
       
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
         total_participants: totalParticipants,
         active_participants: activeParticipants,
         disabled_participants: disabledParticipants,
-        completed_all_10: completedCount,
+        completed_all_20: completedCount,
         average_score: averageScore,
         average_time_seconds: averageTime
       },

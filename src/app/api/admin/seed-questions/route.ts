@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Successfully seeded ${result.count} questions across 10 quizzes into the database.`
+      message: `Successfully seeded ${result.count} questions across 20 quizzes into the database.`
     });
   } catch (error: any) {
     console.error('Seed API error:', error);

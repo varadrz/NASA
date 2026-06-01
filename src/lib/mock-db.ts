@@ -138,7 +138,7 @@ export function getDB(): DBStructure {
             completed_quizzes: 0,
             total_score: 0,
             total_time: 0,
-            next_barrel_id: Math.floor(Math.random() * 10) + 1,
+            next_barrel_id: Math.floor(Math.random() * 20) + 1,
             current_attempt_id: null,
             peer_targets: null
           }));
@@ -203,8 +203,8 @@ export const MockDB = {
     db.participants.push(newParticipant);
 
     // Also initialize progress
-    // Randomly assign first barrel (1 to 10)
-    const firstBarrelId = Math.floor(Math.random() * 10) + 1;
+    // Randomly assign first barrel (1 to 20)
+    const firstBarrelId = Math.floor(Math.random() * 20) + 1;
     const newProgress: ParticipantProgress = {
       participant_id: newParticipant.id,
       completed_quizzes: 0,

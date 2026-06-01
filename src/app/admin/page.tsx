@@ -605,7 +605,7 @@ export default function AdminPage() {
                             </td>
                             <td className="py-4 px-6 text-xs text-brand-on-surface-variant uppercase font-mono">{p.college_name}</td>
                             <td className="py-4 px-6 font-mono text-xs">{p.phone_number}</td>
-                            <td className="py-4 px-6 text-center font-mono text-xs">{p.completed_quizzes} / 10</td>
+                            <td className="py-4 px-6 text-center font-mono text-xs">{p.completed_quizzes} / 20</td>
                             <td className="py-4 px-6 text-center font-mono text-brand-primary text-sm">{p.total_score} XP</td>
                             <td className="py-4 px-6 text-center">
                               <span className={`inline-flex px-3 py-1 font-mono text-[9px] font-bold uppercase border ${

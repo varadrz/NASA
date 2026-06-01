@@ -130,7 +130,17 @@ export default function LeaderboardPage() {
     { value: 7, label: "Barrel 7: Qutb Shahi Tombs" },
     { value: 8, label: "Barrel 8: Modernist Hyderabad" },
     { value: 9, label: "Barrel 9: Stepwells" },
-    { value: 10, label: "Barrel 10: Moazzam Jahi Market" }
+    { value: 10, label: "Barrel 10: Moazzam Jahi Market" },
+    { value: 11, label: "Barrel 11: Classic Columns" },
+    { value: 12, label: "Barrel 12: Mud-Brick Arches" },
+    { value: 13, label: "Barrel 13: Central Lake Court" },
+    { value: 14, label: "Barrel 14: Acoustic Chamber" },
+    { value: 15, label: "Barrel 15: Digital Fabrication" },
+    { value: 16, label: "Barrel 16: Space Frames" },
+    { value: 17, label: "Barrel 17: History Museum" },
+    { value: 18, label: "Barrel 18: Solar Chimney" },
+    { value: 19, label: "Barrel 19: Bamboo Pavilion" },
+    { value: 20, label: "Barrel 20: Central Dome Gallery" }
   ];
 
   return (
@@ -473,7 +483,7 @@ export default function LeaderboardPage() {
                         </td>
                         {activeTab === 'overall' && (
                           <td className="py-4 px-6 text-center font-mono text-brand-secondary font-black text-xs">
-                            {item.completed} / 10
+                            {item.completed} / 20
                           </td>
                         )}
                         <td className="py-4 px-6 text-center font-mono font-black text-brand-primary text-sm">

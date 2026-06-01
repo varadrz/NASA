@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     const completedQuizIds = completedAttempts.map(a => a.quiz_id);
 
     // All barrels
-    const allBarrels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const allBarrels = Array.from({ length: 20 }, (_, i) => i + 1);
     
     // Find completed barrel IDs
     const completedBarrels: number[] = [];
@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
         total_score: nextTotalScore,
         total_time: nextTotalTime,
         next_barrel_id: nextBarrelId,
-        is_finished: nextCompletedQuizzes >= 10
+        is_finished: nextCompletedQuizzes >= 20
       }
     });
   } catch (error: any) {

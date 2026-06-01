@@ -887,5 +887,875 @@ export const questionsData: QuizSeed[] = [
         correct_answer: "A"
       }
     ]
+  },
+  {
+    barrel_id: 11,
+    title: "Classic Columns & Greek Architecture",
+    description: "Delve into the orders, proportions, and details of classical columns from Doric to Composite.",
+    questions: [
+      {
+        question: "Which classical order features volutes (scroll-like ornaments) on its capital?",
+        option_a: "Ionic",
+        option_b: "Doric",
+        option_c: "Corinthian",
+        option_d: "Tscan",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the triangular gable forming the end of the roof slope over a portico in classical architecture?",
+        option_a: "Pediment",
+        option_b: "Entablature",
+        option_c: "Architrave",
+        option_d: "Frieze",
+        correct_answer: "A"
+      },
+      {
+        question: "Which architectural order was developed by the Romans as a simplified version of the Greek Doric order?",
+        option_a: "Tuscan",
+        option_b: "Composite",
+        option_c: "Corinthian",
+        option_d: "Ionic",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the term for the slight convex curve applied to a classical column to correct the optical illusion of concavity?",
+        option_a: "Entasis",
+        option_b: "Fluting",
+        option_c: "Capital",
+        option_d: "Stylobate",
+        correct_answer: "A"
+      },
+      {
+        question: "Which classical order is characterized by its capital decorated with stylized acanthus leaves?",
+        option_a: "Corinthian",
+        option_b: "Ionic",
+        option_c: "Doric",
+        option_d: "Tuscan",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the horizontal superstructure of temples resting on classical columns, consisting of architrave, frieze, and cornice?",
+        option_a: "Entablature",
+        option_b: "Pediment",
+        option_c: "Plinth",
+        option_d: "Abacus",
+        correct_answer: "A"
+      },
+      {
+        question: "Which part of the classical column capital is the flat slab forming the uppermost member?",
+        option_a: "Abacus",
+        option_b: "Echinus",
+        option_c: "Volute",
+        option_d: "Shaft",
+        correct_answer: "A"
+      },
+      {
+        question: "The Composite order is a Roman development combining features of which two Greek orders?",
+        option_a: "Ionic and Corinthian",
+        option_b: "Doric and Ionic",
+        option_c: "Doric and Corinthian",
+        option_d: "Tuscan and Ionic",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the continuous base supporting a row of classical columns called?",
+        option_a: "Stylobate",
+        option_b: "Architrave",
+        option_c: "Pedestal",
+        option_d: "Cornice",
+        correct_answer: "A"
+      },
+      {
+        question: "What are the vertical grooves carved into the shaft of a classical column?",
+        option_a: "Fluting",
+        option_b: "Entasis",
+        option_c: "Fillets",
+        option_d: "Volutes",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 12,
+    title: "Mud-Brick Arches & Vaulting",
+    description: "Explore the structural principles and vernacular traditions of mud-brick arching.",
+    questions: [
+      {
+        question: "What structural technique uses overlapping layers of brick or stone projecting slightly inward to form an arch or dome?",
+        option_a: "Corbeling",
+        option_b: "Voussoir arching",
+        option_c: "Centering",
+        option_d: "Keystone reinforcement",
+        correct_answer: "A"
+      },
+      {
+        question: "Which architectural culture is famous for the Nubian vault, a mud-brick vault built without shuttering?",
+        option_a: "Nubian/Egyptian",
+        option_b: "Roman",
+        option_c: "Gothic",
+        option_d: "Mayan",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the wedge-shaped stone or brick used in constructing a true arch called?",
+        option_a: "Voussoir",
+        option_b: "Keystone",
+        option_c: "Impost",
+        option_d: "Spandrel",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the central wedge-shaped block at the crown of an arch that locks all the elements in place?",
+        option_a: "Keystone",
+        option_b: "Voussoir",
+        option_c: "Springer",
+        option_d: "Abacus",
+        correct_answer: "A"
+      },
+      {
+        question: "Which type of mortar is traditionally preferred for historical mud-brick preservation due to its breathability?",
+        option_a: "Lime-sand mortar",
+        option_b: "Portland cement",
+        option_c: "Gypsum plaster",
+        option_d: "Asphalt mastic",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the horizontal support member projecting from a wall to carry an arch load?",
+        option_a: "Corbel",
+        option_b: "Lintel",
+        option_c: "Purlin",
+        option_d: "Joist",
+        correct_answer: "A"
+      },
+      {
+        question: "What are the lower wedge-shaped blocks of an arch where the curve begins to rise from the support?",
+        option_a: "Springers",
+        option_b: "Keystones",
+        option_c: "Extrados",
+        option_d: "Intrados",
+        correct_answer: "A"
+      },
+      {
+        question: "The inner curve of an arch or vault is known by which architectural term?",
+        option_a: "Intrados",
+        option_b: "Extrados",
+        option_c: "Spandrel",
+        option_d: "Haunch",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the space between the outer curve of an arch and the rectangular frame surrounding it?",
+        option_a: "Spandrel",
+        option_b: "Tympanum",
+        option_c: "Architrave",
+        option_d: "Soffit",
+        correct_answer: "A"
+      },
+      {
+        question: "What temporary structural framework supports an arch during its construction until the keystone is placed?",
+        option_a: "Centering",
+        option_b: "Shoring",
+        option_c: "Scaffolding",
+        option_d: "Formwork",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 13,
+    title: "Central Lake Court & Landscaping",
+    description: "Discover principles of courtyard gardens, stepwell designs, and landscape features.",
+    questions: [
+      {
+        question: "What is the focal design element of a traditional Indian stepwell (baoli) that connects the surface to the water table?",
+        option_a: "Descending subterranean stairs",
+        option_b: "Tall minarets",
+        option_c: "Grand dome galleries",
+        option_d: "Massive fortification walls",
+        correct_answer: "A"
+      },
+      {
+        question: "The Court of the Lions at the Alhambra Palace in Spain is a supreme example of which style of Islamic garden courtyard?",
+        option_a: "Charbagh layout",
+        option_b: "Zen garden",
+        option_c: "English landscape",
+        option_d: "French formal",
+        correct_answer: "A"
+      },
+      {
+        question: "Which landscape element refers to the non-vegetative, hard materials like stone, concrete, and wood incorporated into a design?",
+        option_a: "Hardscape",
+        option_b: "Softscape",
+        option_c: "Xeriscape",
+        option_d: "Aquascape",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the design practice of using native, drought-resistant plants to minimize water consumption in landscaping?",
+        option_a: "Xeriscaping",
+        option_b: "Hydrozoning",
+        option_c: "Permaculture",
+        option_d: "Turfscaping",
+        correct_answer: "A"
+      },
+      {
+        question: "What is a semi-enclosed structural courtyard or garden room surrounded by colonnades in classical Roman houses?",
+        option_a: "Peristyle",
+        option_b: "Atrium",
+        option_c: "Vestibule",
+        option_d: "Triclinium",
+        correct_answer: "A"
+      },
+      {
+        question: "Which design principle involves creating a series of visual layers that frame a body of water or garden vistas?",
+        option_a: "Axis and focal alignment",
+        option_b: "Random asymmetry",
+        option_c: "Static monotony",
+        option_d: "Radial dispersion",
+        correct_answer: "A"
+      },
+      {
+        question: "The Persian garden layout divided into four quadrants by water channels is known as what?",
+        option_a: "Chahar Bagh",
+        option_b: "Bagh-e Fin",
+        option_c: "Shalimar",
+        option_d: "Bustan",
+        correct_answer: "A"
+      },
+      {
+        question: "What is a structure consisting of parallel colonnades supporting an open roof of girders and cross rafters, often covered in climbing plants?",
+        option_a: "Pergola",
+        option_b: "Gazebo",
+        option_c: "Pavilion",
+        option_d: "Veranda",
+        correct_answer: "A"
+      },
+      {
+        question: "What refers to the plant materials (trees, shrubs, lawns) used in a landscape design?",
+        option_a: "Softscape",
+        option_b: "Hardscape",
+        option_c: "Greenscape",
+        option_d: "Earthworks",
+        correct_answer: "A"
+      },
+      {
+        question: "Which historic style of garden design focuses on imitating nature with rolling lawns, clumps of trees, and irregular lakes?",
+        option_a: "English Landscape Garden",
+        option_b: "French Formal Garden",
+        option_c: "Italian Renaissance Garden",
+        option_d: "Moorish Courtyard",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 14,
+    title: "Acoustic Chamber & Spatial Sounds",
+    description: "Investigate how space shapes sound, reverberation calculations, and absorption strategies.",
+    questions: [
+      {
+        question: "What unit is used to measure the sound absorption capacity of a material or surface area in architectural acoustics?",
+        option_a: "Sabine",
+        option_b: "Decibel",
+        option_c: "Hertz",
+        option_d: "Pascal",
+        correct_answer: "A"
+      },
+      {
+        question: "What architectural acoustic phenomenon occurs when sound waves reflect off hard, concave surfaces and focus at a specific point?",
+        option_a: "Acoustic focusing",
+        option_b: "Flutter echo",
+        option_c: "Resonance",
+        option_d: "Reverberation",
+        correct_answer: "A"
+      },
+      {
+        question: "Which material is highly effective at absorbing mid-to-high frequency sound waves in auditorium design?",
+        option_a: "Open-cell acoustic foam",
+        option_b: "Polished marble slabs",
+        option_c: "Thick concrete panels",
+        option_d: "Tempered glass panels",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the persistent sound reflection that remains in a closed space after the source has stopped?",
+        option_a: "Reverberation",
+        option_b: "Echo",
+        option_c: "Decibel decay",
+        option_d: "Sound transmission",
+        correct_answer: "A"
+      },
+      {
+        question: "Which design shape is typically avoided for the rear walls of auditoriums to prevent late reflections and echo?",
+        option_a: "Concave curve",
+        option_b: "Convex curve",
+        option_c: "Flat plane",
+        option_d: "Segmented panels",
+        correct_answer: "A"
+      },
+      {
+        question: "What acoustic panel system utilizes a series of air cavities behind a perforated facing to absorb low frequencies?",
+        option_a: "Helmholtz resonator",
+        option_b: "Bass trap panel",
+        option_c: "Diffuser panel",
+        option_d: "Baffle system",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the term for scattering sound waves in many directions to prevent flutter echoes and improve sound distribution?",
+        option_a: "Diffusion",
+        option_b: "Absorption",
+        option_c: "Isolation",
+        option_d: "Attenuation",
+        correct_answer: "A"
+      },
+      {
+        question: "What index is used to measure the sound isolation performance of a wall or floor assembly?",
+        option_a: "Sound Transmission Class (STC)",
+        option_b: "Noise Reduction Coefficient (NRC)",
+        option_c: "Reverberation Time (RT60)",
+        option_d: "Impact Insulation Class (IIC)",
+        correct_answer: "A"
+      },
+      {
+        question: "Which type of ceiling baffle is hung vertically in open spaces to reduce reverberation?",
+        option_a: "Acoustic baffle",
+        option_b: "Diffuser cloud",
+        option_c: "Bass trap",
+        option_d: "Sound barrier",
+        correct_answer: "A"
+      },
+      {
+        question: "The Sabin formula is used to calculate which critical acoustic design parameter?",
+        option_a: "Reverberation Time (RT60)",
+        option_b: "Sound transmission loss",
+        option_c: "Noise criteria rating",
+        option_d: "Acoustic clarity index",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 15,
+    title: "Digital Fabrication & Parametric Design",
+    description: "Explore 3D printing, parametric models, and CNC routing in modern building construction.",
+    questions: [
+      {
+        question: "What is the computational design methodology where geometric forms are generated by defining rules and parameters rather than drawing them directly?",
+        option_a: "Parametric design",
+        option_b: "CAD sketching",
+        option_c: "Raster mapping",
+        option_d: "Isometric rendering",
+        correct_answer: "A"
+      },
+      {
+        question: "Which robotic manufacturing process builds architectural components layer-by-layer using concrete, clay, or polymers?",
+        option_a: "3D concrete printing",
+        option_b: "CNC milling",
+        option_c: "Subtractive sculpting",
+        option_d: "Vacuum forming",
+        correct_answer: "A"
+      },
+      {
+        question: "What subtractive manufacturing tool uses computer numerical control to cut or carve materials like wood and high-density foam?",
+        option_a: "CNC router",
+        option_b: "3D printer",
+        option_c: "Laser scanner",
+        option_d: "Robotic arm extruder",
+        correct_answer: "A"
+      },
+      {
+        question: "Which material is commonly used in parametric facade fabrication due to its high strength, lightweight nature, and moldability?",
+        option_a: "Glass Fiber Reinforced Concrete (GFRC)",
+        option_b: "Structural timber",
+        option_c: "Heavy cast iron",
+        option_d: "Solid masonry blocks",
+        correct_answer: "A"
+      },
+      {
+        question: "What digital tool uses a laser or structured light to capture the exact 3D coordinates of an existing building or landscape?",
+        option_a: "3D laser scanner (LiDAR)",
+        option_b: "CNC scanner",
+        option_c: "Plotter",
+        option_d: "Digitizer tablet",
+        correct_answer: "A"
+      },
+      {
+        question: "What design process utilizes algorithms inspired by natural selection to automatically find the optimal structural form?",
+        option_a: "Generative design",
+        option_b: "Parametric lofting",
+        option_c: "Manual drafting",
+        option_d: "Boolean extrusion",
+        correct_answer: "A"
+      },
+      {
+        question: "Which term describes the digital instruction file format used by CNC machines and 3D printers to execute fabrication paths?",
+        option_a: "G-code",
+        option_b: "STL mesh",
+        option_c: "DXF vector",
+        option_d: "PDF raster",
+        correct_answer: "A"
+      },
+      {
+        question: "What digital modeling paradigm represents objects as mathematically defined curves and surfaces rather than polygons?",
+        option_a: "NURBS modeling",
+        option_b: "Mesh modeling",
+        option_c: "Voxel modeling",
+        option_d: "Wireframe drafting",
+        correct_answer: "A"
+      },
+      {
+        question: "Which manufacturing technique shapes sheet material over a mold using heat and atmospheric pressure?",
+        option_a: "Vacuum forming",
+        option_b: "CNC routing",
+        option_c: "Additive extrusion",
+        option_d: "Laser cutting",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the term for a virtual, real-time representation of a physical building used to monitor performance during its lifecycle?",
+        option_a: "Digital Twin",
+        option_b: "BIM model",
+        option_c: "CAD prototype",
+        option_d: "Rendering model",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 16,
+    title: "Space Frames & Large Span Engineering",
+    description: "Understand structural grids, tetrahedral shapes, and static equilibrium.",
+    questions: [
+      {
+        question: "What is a three-dimensional truss-like structure constructed from interlocking struts in a geometric pattern, used to span large areas with few supports?",
+        option_a: "Space frame",
+        option_b: "Portal frame",
+        option_c: "Balloon frame",
+        option_d: "Tension cable network",
+        correct_answer: "A"
+      },
+      {
+        question: "Which geometric solid is the primary building block of most space frames due to its inherent structural stability?",
+        option_a: "Tetrahedron",
+        option_b: "Hexahedron",
+        option_c: "Octahedron",
+        option_d: "Dodecahedron",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural member in a space frame is designed to resist compressive forces along its axis?",
+        option_a: "Strut",
+        option_b: "Tie",
+        option_c: "Cable",
+        option_d: "Purlin",
+        correct_answer: "A"
+      },
+      {
+        question: "What patented spherical connector system is widely used to join structural tubes in space frames?",
+        option_a: "Mero joint",
+        option_b: "Cleat plate",
+        option_c: "Gusset plate",
+        option_d: "Tenon joint",
+        correct_answer: "A"
+      },
+      {
+        question: "Who popularized the geodesic dome, which utilizes a spherical space frame system?",
+        option_a: "Buckminster Fuller",
+        option_b: "Frei Otto",
+        option_c: "Walter Gropius",
+        option_d: "Le Corbusier",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural state is achieved when all forces acting on a structure are balanced, resulting in no acceleration?",
+        option_a: "Static equilibrium",
+        option_b: "Elastic deformation",
+        option_c: "Yield limit",
+        option_d: "Ultimate failure",
+        correct_answer: "A"
+      },
+      {
+        question: "Which type of structural truss has diagonal members in tension and vertical members in compression?",
+        option_a: "Pratt truss",
+        option_b: "Warren truss",
+        option_c: "Howe truss",
+        option_d: "Kingpost truss",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural forces pull or stretch a member, causing it to elongate?",
+        option_a: "Tension",
+        option_b: "Compression",
+        option_c: "Shear",
+        option_d: "Torsion",
+        correct_answer: "A"
+      },
+      {
+        question: "Which structural forces squeeze or crush a member, causing it to shorten?",
+        option_a: "Compression",
+        option_b: "Tension",
+        option_c: "Bending",
+        option_d: "Shear",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the main structural advantage of a space frame over a traditional linear truss system?",
+        option_a: "Multidirectional load distribution",
+        option_b: "Thicker structural members",
+        option_c: "Higher material weight",
+        option_d: "Lower fabrication cost",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 17,
+    title: "History Museums & Spatial Curation",
+    description: "Explore circulation flows, gallery lighting design, and historic displays.",
+    questions: [
+      {
+        question: "Which museum circulation layout leads visitors along a single, predetermined, linear path through a sequence of rooms?",
+        option_a: "Enfilade",
+        option_b: "Central hall radial",
+        option_c: "Free-form grid",
+        option_d: "Multi-level stack",
+        correct_answer: "A"
+      },
+      {
+        question: "What lighting design strategy is crucial in museums to protect sensitive artworks while ensuring high-quality color rendering?",
+        option_a: "Indirect skylights with UV filtering",
+        option_b: "Direct halogen spotlights",
+        option_c: "Low-frequency fluorescent tubes",
+        option_d: "Unshielded incandescent bulbs",
+        correct_answer: "A"
+      },
+      {
+        question: "The Solomon R. Guggenheim Museum in New York, designed by Frank Lloyd Wright, uses which unique circulation element as its main gallery?",
+        option_a: "Continuous spiral ramp",
+        option_b: "Grand monumental staircase",
+        option_c: "Central glass elevator tower",
+        option_d: "Series of parallel escalators",
+        correct_answer: "A"
+      },
+      {
+        question: "What refers to the spatial design field focused on planning and organizing museum exhibition layouts and displays?",
+        option_a: "Exhibition design / Scenography",
+        option_b: "Urban design",
+        option_c: "Landscape architecture",
+        option_d: "Interior styling",
+        correct_answer: "A"
+      },
+      {
+        question: "Which gallery type features modular partition walls that can be easily reconfigured for temporary exhibitions?",
+        option_a: "Flexible gallery",
+        option_b: "Permanent collection gallery",
+        option_c: "Period room",
+        option_d: "Atrium courtyard",
+        correct_answer: "A"
+      },
+      {
+        question: "The Louvre Pyramid in Paris, designed by I. M. Pei, serves as what primary architectural function?",
+        option_a: "Central entrance portal and visitor hub",
+        option_b: "Sculpture gallery",
+        option_c: "Administrative wing",
+        option_d: "Climate-controlled conservation lab",
+        correct_answer: "A"
+      },
+      {
+        question: "What museum gallery design incorporates historical architectural interiors or artifacts salvaged from other locations?",
+        option_a: "Period room",
+        option_b: "White cube gallery",
+        option_c: "Black box theater",
+        option_d: "Atrium courtyard",
+        correct_answer: "A"
+      },
+      {
+        question: "What term describes the neutral, white-walled, rectangular gallery design standard in modern art museums?",
+        option_a: "White cube",
+        option_b: "Industrial loft",
+        option_c: "Neo-classical hall",
+        option_d: "Minimalist pavilion",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the main architectural challenge of museum climate control systems?",
+        option_a: "Maintaining constant temperature and humidity",
+        option_b: "High air velocity",
+        option_c: "Minimizing duct visibility",
+        option_d: "Passive ventilation",
+        correct_answer: "A"
+      },
+      {
+        question: "The Centre Pompidou in Paris, designed by Piano and Rogers, is famous for what radical museum architecture style?",
+        option_a: "High-tech structural expressionism",
+        option_b: "Beaux-Arts classicism",
+        option_c: "Brutalist concrete monumentalism",
+        option_d: "Deconstructivist glass sculpture",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 18,
+    title: "Solar Passive Chimneys & Natural Venting",
+    description: "Investigate convective airflow, stack effects, and passive cooling.",
+    questions: [
+      {
+        question: "What is a solar chimney (thermal chimney) primarily used for in passive building design?",
+        option_a: "Inducing natural ventilation through stack effect",
+        option_b: "Storing heat in water tanks",
+        option_c: "Generating high-voltage electricity",
+        option_d: "Filtering exhaust gases",
+        correct_answer: "A"
+      },
+      {
+        question: "What physics principle causes warm air to rise and escape through the top of a solar chimney, drawing cooler air in from below?",
+        option_a: "Stack effect",
+        option_b: "Bernoulli principle",
+        option_c: "Venturi effect",
+        option_d: "Evaporative cooling",
+        correct_answer: "A"
+      },
+      {
+        question: "What color is typically applied to the absorber plate inside a solar chimney to maximize solar heat absorption?",
+        option_a: "Matte black",
+        option_b: "Highly reflective silver",
+        option_c: "Pure white",
+        option_d: "Translucent green",
+        correct_answer: "A"
+      },
+      {
+        question: "What material is used for the glazing cover of a solar chimney to trap solar radiation while letting light pass through?",
+        option_a: "Low-emissivity glass",
+        option_b: "Solid sheet metal",
+        option_c: "Perforated concrete",
+        option_d: "High-density timber",
+        correct_answer: "A"
+      },
+      {
+        question: "To optimize solar radiation collection, which direction should the glazing of a solar chimney face in the Northern Hemisphere?",
+        option_a: "South",
+        option_b: "North",
+        option_c: "East",
+        option_d: "West",
+        correct_answer: "A"
+      },
+      {
+        question: "What passive design feature is often combined with a solar chimney to cool incoming air before it enters the building?",
+        option_a: "Earth-to-air heat exchanger",
+        option_b: "Mechanical air conditioning",
+        option_c: "Electric fan coils",
+        option_d: "Solar photovoltaic array",
+        correct_answer: "A"
+      },
+      {
+        question: "What refers to the heat storage capacity of a material, like the concrete wall behind the glazing in a solar chimney?",
+        option_a: "Thermal mass",
+        option_b: "Thermal conductivity",
+        option_c: "Thermal resistance",
+        option_d: "Thermal transmittance",
+        correct_answer: "A"
+      },
+      {
+        question: "The velocity of air flowing through a solar chimney increases with which architectural parameter?",
+        option_a: "Height of the chimney",
+        option_b: "Thickness of the insulation",
+        option_c: "Width of the exit damper",
+        option_d: "Area of the foundation",
+        correct_answer: "A"
+      },
+      {
+        question: "Which type of solar chimney is integrated into a building's envelope to double as a solar collector and ventilation shaft?",
+        option_a: "Facade-integrated solar chimney",
+        option_b: "Free-standing solar tower",
+        option_c: "Underground thermal duct",
+        option_d: "Roof-mounted wind scoop",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the primary environmental benefit of using a solar chimney in a green building?",
+        option_a: "Zero energy consumption for passive cooling",
+        option_b: "High carbon sequestration",
+        option_c: "Absolute sound insulation",
+        option_d: "Graywater filtration",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 19,
+    title: "Bamboo Joinery & Organic Pavilions",
+    description: "Discover the material properties, joint details, and designs of bamboo architectures.",
+    questions: [
+      {
+        question: "What traditional joint type is used to connect hollow bamboo poles together by inserting a smaller bamboo pin?",
+        option_a: "Pin-and-peg joinery",
+        option_b: "Mortise and tenon",
+        option_c: "Dovetail joint",
+        option_d: "Steel bolt fastening",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the primary chemical treatment used in modern bamboo construction to prevent insect infestation and decay?",
+        option_a: "Borax-boric acid solution",
+        option_b: "Creosote oil coating",
+        option_c: "Polyurethane varnish",
+        option_d: "Formaldehyde resin",
+        correct_answer: "A"
+      },
+      {
+        question: "Which bamboo structural element is bent using heat or steam to form sweeping, curved roofs in tropical pavilions?",
+        option_a: "Split bamboo arches",
+        option_b: "Solid bamboo beams",
+        option_c: "Laminated bamboo columns",
+        option_d: "Woven bamboo trusses",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the botanical family to which bamboo belongs, explaining its rapid growth and high flexibility?",
+        option_a: "Poaceae",
+        option_b: "Pinaceae",
+        option_c: "Fabaceae",
+        option_d: "Rosaceae",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural component is filled with mortar or concrete at the base of a bamboo column to prevent crushing?",
+        option_a: "Bamboo internode cavity",
+        option_b: "External sleeve joint",
+        option_c: "Metal connector plate",
+        option_d: "Timber dowel hole",
+        correct_answer: "A"
+      },
+      {
+        question: "What foundation type is commonly used for bamboo structures to keep the organic material away from ground moisture?",
+        option_a: "Raised concrete piers / Stone plinths",
+        option_b: "Direct soil embedment",
+        option_c: "Steel screw piles",
+        option_d: "Continuous concrete slab",
+        correct_answer: "A"
+      },
+      {
+        question: "Which term describes the node points dividing bamboo culms into hollow segments, providing lateral stability?",
+        option_a: "Nodes",
+        option_b: "Internodes",
+        option_c: "Culms",
+        option_d: "Sheaths",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural advantage does bamboo have over traditional hardwood timber?",
+        option_a: "Higher flexibility and rapid renewability",
+        option_b: "Uniform diameter",
+        option_c: "Complete resistance to fire",
+        option_d: "High decay resistance",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the hollow space between two nodes inside a bamboo culm called?",
+        option_a: "Internode",
+        option_b: "Culm chamber",
+        option_c: "Node cavity",
+        option_d: "Vascular bundle",
+        correct_answer: "A"
+      },
+      {
+        question: "Which famous contemporary Colombian architect is known as a pioneer of modern bamboo (Guadua) architecture?",
+        option_a: "Simón Vélez",
+        option_b: "Shigeru Ban",
+        option_c: "Kengo Kuma",
+        option_d: "Oscar Niemeyer",
+        correct_answer: "A"
+      }
+    ]
+  },
+  {
+    barrel_id: 20,
+    title: "Central Dome Galleries & Vaults",
+    description: "Explore the geometries of Pantheon-style oculus domes, pendentives, and squinches.",
+    questions: [
+      {
+        question: "What is the triangular architectural transition element that allows a circular dome to be placed over a square room?",
+        option_a: "Pendentive",
+        option_b: "Squinch",
+        option_c: "Voussoir",
+        option_d: "Archivolt",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the circular opening at the apex of a dome, such as the one in the Roman Pantheon, that lets in light?",
+        option_a: "Oculus",
+        option_b: "Lantern",
+        option_c: "Drum",
+        option_d: "Cupola",
+        correct_answer: "A"
+      },
+      {
+        question: "Which architectural structure consists of an arch placed diagonally across the corners of a square room to support a dome?",
+        option_a: "Squinch",
+        option_b: "Pendentive",
+        option_c: "Vault",
+        option_d: "Keystone",
+        correct_answer: "A"
+      },
+      {
+        question: "The dome of the Hagia Sophia in Istanbul is structurally supported by which combination of elements?",
+        option_a: "Four massive pendentives and piers",
+        option_b: "Thick solid concrete load-bearing walls",
+        option_c: "Internal steel space frame",
+        option_d: "Geodesic timber frame",
+        correct_answer: "A"
+      },
+      {
+        question: "What is the continuous circular or polygonal wall that supports a dome, often containing windows to light the space below?",
+        option_a: "Drum",
+        option_b: "Lantern",
+        option_c: "Oculus",
+        option_d: "Archivolt",
+        correct_answer: "A"
+      },
+      {
+        question: "What refers to a vault formed by the intersection of two barrel vaults at right angles?",
+        option_a: "Groin vault",
+        option_b: "Ribbed vault",
+        option_c: "Fan vault",
+        option_d: "Barrel vault",
+        correct_answer: "A"
+      },
+      {
+        question: "What decorative, recessed panels are carved into the interior surface of a dome to reduce its weight?",
+        option_a: "Coffers",
+        option_b: "Tesserae",
+        option_c: "Frescoes",
+        option_d: "Arabesques",
+        correct_answer: "A"
+      },
+      {
+        question: "The Taj Mahal dome is an example of which cultural style of dome design, characterized by its bulbous shape?",
+        option_a: "Mughal onion dome",
+        option_b: "Roman classical dome",
+        option_c: "Byzantine hemispherical dome",
+        option_d: "Gothic ribbed dome",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural element sits on top of a dome, often enclosing a small oculus while providing ventilation and light?",
+        option_a: "Lantern / Cupola",
+        option_b: "Drum",
+        option_c: "Finial",
+        option_d: "Tympanum",
+        correct_answer: "A"
+      },
+      {
+        question: "What structural material was used by the Romans to cast the massive dome of the Pantheon?",
+        option_a: "Unreinforced concrete with lightweight tufa aggregate",
+        option_b: "Solid carved granite blocks",
+        option_c: "Brickwork with lime mortar",
+        option_d: "Structural steel framing",
+        correct_answer: "A"
+      }
+    ]
   }
 ];

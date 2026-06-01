@@ -76,12 +76,12 @@ export async function GET(
     }
 
     // 6. Check if barrel ID is valid
-    if (isNaN(barrelId) || barrelId < 1 || barrelId > 10) {
-      return NextResponse.json({ error: 'Invalid Barrel ID. Must be between 1 and 10.' }, { status: 400 });
+    if (isNaN(barrelId) || barrelId < 1 || barrelId > 20) {
+      return NextResponse.json({ error: 'Invalid Barrel ID. Must be between 1 and 20.' }, { status: 400 });
     }
 
     // 7. Verify assigned barrel flow
-    if (progress.completed_quizzes >= 10) {
+    if (progress.completed_quizzes >= 20) {
       await DB.logAudit(
         participant.id,
         `Scanned Barrel #${barrelId} after completing all quizzes`,
@@ -90,7 +90,7 @@ export async function GET(
       );
       return NextResponse.json({
         completed: true,
-        message: 'Congratulations! You have completed all 10 quizzes. Head to the leaderboard to check your rank!'
+        message: 'Congratulations! You have completed all 20 quizzes. Head to the leaderboard to check your rank!'
       });
     }
 
