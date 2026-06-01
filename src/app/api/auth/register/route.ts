@@ -49,13 +49,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const rawInsta = instagram_id.trim();
+    const formattedInsta = rawInsta.startsWith('@') ? rawInsta : `@${rawInsta}`;
+
     // 5. Create participant and initialize progress
     const participant = await DB.createParticipant({
       full_name: full_name.trim(),
       college_name: college_name.trim(),
       phone_number: phone_number.trim(),
       registration_id: trimmedRegId,
-      instagram_id: instagram_id.trim()
+      instagram_id: formattedInsta
     });
 
     // 6. Generate JWT Session Token

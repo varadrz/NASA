@@ -64,6 +64,7 @@ interface ParticipantEnriched {
   college_name: string;
   phone_number: string;
   registration_id: string;
+  instagram_id?: string;
   is_disabled: boolean;
   created_at: string;
   completed_quizzes: number;
@@ -589,7 +590,19 @@ export default function AdminPage() {
                         {filteredParticipants.map((p) => (
                           <tr key={p.id} className="hover:bg-brand-surface-low">
                             <td className="py-4 px-6 font-mono text-xs text-brand-secondary">{p.registration_id}</td>
-                            <td className="py-4 px-6 font-display uppercase">{p.full_name}</td>
+                            <td className="py-4 px-6">
+                              <div className="font-display uppercase font-bold">{p.full_name}</div>
+                              {p.instagram_id && (
+                                <a 
+                                  href={`https://instagram.com/${p.instagram_id.replace(/^@/, '')}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[10px] font-mono text-brand-secondary hover:underline lowercase block mt-0.5"
+                                >
+                                  @{p.instagram_id.replace(/^@/, '')}
+                                </a>
+                              )}
+                            </td>
                             <td className="py-4 px-6 text-xs text-brand-on-surface-variant uppercase font-mono">{p.college_name}</td>
                             <td className="py-4 px-6 font-mono text-xs">{p.phone_number}</td>
                             <td className="py-4 px-6 text-center font-mono text-xs">{p.completed_quizzes} / 10</td>

@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
           college_name: p.college_name,
           phone_number: p.phone_number,
           registration_id: p.registration_id,
+          instagram_id: p.instagram_id || '',
           is_disabled: p.is_disabled,
           created_at: p.created_at,
           completed_quizzes: prog?.completed_quizzes || 0,
