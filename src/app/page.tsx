@@ -620,7 +620,7 @@ export default function Home() {
                         PEER IDENTITY AUDIT: {selectedPeer}
                       </h4>
                       <p className="text-xs text-brand-on-surface-variant mt-1">
-                        Enter the exact 8-character unique Z-Id retrieved from this participant.
+                        Enter the exact unique code retrieved from this participant.
                       </p>
 
                       {peerVerifyError && (
@@ -637,17 +637,17 @@ export default function Home() {
 
                       <form onSubmit={handleVerifyPeer} className="mt-4 flex flex-col sm:flex-row gap-3 items-stretch">
                         <input
-                          type="text"
-                          value={zIdInput}
-                          onChange={(e) => {
-                            setZIdInput(e.target.value);
-                            setPeerVerifyError(null);
-                          }}
-                          placeholder="ENTER 8-DIGIT Z-ID"
-                          maxLength={12}
-                          disabled={peerSubmitting}
-                          className="flex-1 input-brutalist px-4 py-2.5 text-xs uppercase placeholder:opacity-50 font-mono font-bold"
-                          required
+                           type="text"
+                           value={zIdInput}
+                           onChange={(e) => {
+                             setZIdInput(e.target.value);
+                             setPeerVerifyError(null);
+                           }}
+                           placeholder="ENTER UNIQUE CODE"
+                           maxLength={50}
+                           disabled={peerSubmitting}
+                           className="flex-1 input-brutalist px-4 py-2.5 text-xs uppercase placeholder:opacity-50 font-mono font-bold"
+                           required
                           autoFocus
                         />
                         <button
