@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
   try {
     if (type === 'quiz') {
       const barrelId = parseInt(rawBarrelId || '', 10);
-      if (isNaN(barrelId) || barrelId < 1 || barrelId > 10) {
-        return NextResponse.json({ error: 'Valid barrelId (1-10) is required for quiz leaderboards.' }, { status: 400 });
+      if (isNaN(barrelId) || barrelId < 1 || barrelId > 20) {
+        return NextResponse.json({ error: 'Valid barrelId (1-20) is required for quiz leaderboards.' }, { status: 400 });
       }
 
       const leaderboard = await DB.getQuizLeaderboard(barrelId);
