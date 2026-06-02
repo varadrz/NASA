@@ -50,7 +50,10 @@ function RegisterForm() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          registration_id: `Z-${formData.registration_id.trim()}`
+        })
       });
 
       const data = await res.json();
@@ -178,17 +181,26 @@ function RegisterForm() {
               <label htmlFor="registration_id" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
                 Z-Id (Unique Code)
               </label>
-              <input
-                type="text"
-                id="registration_id"
-                name="registration_id"
-                value={formData.registration_id}
-                onChange={handleChange}
-                placeholder="ENTER Z-ID"
-                disabled={submitting}
-                className="w-full input-brutalist px-4 py-3.5 text-sm uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
-                required
-              />
+              <div className="flex border-2 border-brand-on-surface focus-within:border-brand-secondary focus-within:shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] transition-all bg-brand-surface">
+                <span className="flex items-center justify-center px-4 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-sm select-none">
+                  Z-
+                </span>
+                <input
+                  type="text"
+                  id="registration_id"
+                  name="registration_id"
+                  value={formData.registration_id}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, ''); // Numbers only
+                    setFormData({ ...formData, registration_id: val });
+                    setError(null);
+                  }}
+                  placeholder="NUMBER"
+                  disabled={submitting}
+                  className="flex-grow px-4 py-3.5 text-sm bg-transparent text-brand-on-surface placeholder:text-brand-outline-variant placeholder:opacity-50 outline-none border-none uppercase"
+                  required
+                />
+              </div>
             </div>
           </div>
 

@@ -284,7 +284,7 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: selectedPeer,
-          zId: zIdInput.trim()
+          zId: `Z-${zIdInput.trim()}`
         })
       });
 
@@ -397,32 +397,6 @@ export default function Home() {
                     <p className="font-sans text-brand-on-surface-variant leading-relaxed text-sm md:text-base">
                       Find the physical barrel marked with identifier <strong className="text-brand-primary">#{progress.next_barrel_id}</strong> positioned around the venue. Use your phone camera to scan its QR code. Your sequence is dynamically locked and verified by the server clock.
                     </p>
-
-                    <div className="p-4 bg-brand-surface-low border-l-4 border-brand-mustard text-brand-on-surface">
-                      <span className="font-mono text-xs font-bold block text-brand-on-surface-variant">BARREL LOCATION CLUE</span>
-                      <p className="font-sans font-bold italic mt-1 text-sm text-brand-on-surface">
-                        {progress.next_barrel_id === 1 && "Start near the main registration lobby where heritage blueprints are displayed."}
-                        {progress.next_barrel_id === 2 && "Positioned near the School of Planning & Architecture studio entry."}
-                        {progress.next_barrel_id === 3 && "Near the open-air amphitheater steps where discussions meet design."}
-                        {progress.next_barrel_id === 4 && "Explore the central architectural model exhibition arcade."}
-                        {progress.next_barrel_id === 5 && "Located in the courtyard between the design workshop and main labs."}
-                        {progress.next_barrel_id === 6 && "Check the structural gallery highlighting vernacular architecture patterns."}
-                        {progress.next_barrel_id === 7 && "Located near the masonry restoration and material testing shed."}
-                        {progress.next_barrel_id === 8 && "Find this near the modernist concrete framing structural models."}
-                        {progress.next_barrel_id === 9 && "Check the hydraulic model stepwell structure replica on campus."}
-                        {progress.next_barrel_id === 10 && "Positioned near the Moazzam Jahi exhibition dome."}
-                        {progress.next_barrel_id === 11 && "Positioned close to the classic columns exhibition at the main plaza."}
-                        {progress.next_barrel_id === 12 && "Located near the sustainable mud-brick arches workshop."}
-                        {progress.next_barrel_id === 13 && "Check the landscape design court overlooking the central lake."}
-                        {progress.next_barrel_id === 14 && "Near the acoustic design chamber and audio labs."}
-                        {progress.next_barrel_id === 15 && "Located outside the digital fabrication lab."}
-                        {progress.next_barrel_id === 16 && "Positioned near the space frames structural installation."}
-                        {progress.next_barrel_id === 17 && "Look close to the architectural history museum entrance."}
-                        {progress.next_barrel_id === 18 && "Located near the solar passive chimney cooling tower."}
-                        {progress.next_barrel_id === 19 && "Look near the bamboo pavilion structure."}
-                        {progress.next_barrel_id === 20 && "Final destination, situated at the central dome gallery."}
-                      </p>
-                    </div>
                   </div>
 
                   {/* Card Actions/Footer */}
@@ -636,20 +610,26 @@ export default function Home() {
                       )}
 
                       <form onSubmit={handleVerifyPeer} className="mt-4 flex flex-col sm:flex-row gap-3 items-stretch">
-                        <input
-                           type="text"
-                           value={zIdInput}
-                           onChange={(e) => {
-                             setZIdInput(e.target.value);
-                             setPeerVerifyError(null);
-                           }}
-                           placeholder="ENTER UNIQUE CODE"
-                           maxLength={50}
-                           disabled={peerSubmitting}
-                           className="flex-1 input-brutalist px-4 py-2.5 text-xs uppercase placeholder:opacity-50 font-mono font-bold"
-                           required
-                          autoFocus
-                        />
+                        <div className="flex-1 flex border-2 border-brand-on-surface focus-within:border-brand-secondary transition-all bg-brand-surface">
+                          <span className="flex items-center justify-center px-4 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-xs select-none">
+                            Z-
+                          </span>
+                          <input
+                             type="text"
+                             value={zIdInput}
+                             onChange={(e) => {
+                               const val = e.target.value.replace(/\D/g, ''); // Numbers only
+                               setZIdInput(val);
+                               setPeerVerifyError(null);
+                             }}
+                             placeholder="NUMBER"
+                             maxLength={50}
+                             disabled={peerSubmitting}
+                             className="flex-grow px-4 py-2.5 text-xs uppercase bg-transparent text-brand-on-surface placeholder:text-brand-outline-variant placeholder:opacity-50 outline-none border-none font-mono font-bold animate-none"
+                             required
+                            autoFocus
+                          />
+                        </div>
                         <button
                           type="submit"
                           disabled={peerSubmitting}
