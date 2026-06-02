@@ -798,6 +798,19 @@ export default function Home() {
           <p className="font-mono text-[10px] text-brand-on-surface-variant mt-4 font-bold">
             68th Year Annual Nasa Heritage Hunt x Woxsen University © 2026
           </p>
+
+          <div className="flex flex-col items-center gap-1.5 mt-4">
+            <p className="font-mono text-[10px] text-brand-on-surface-variant">
+              Made with ❤️ by <a href="https://varadpatil.in/" target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-primary font-bold">Varad Patil</a>
+            </p>
+            <div className="flex gap-3">
+              <a href="https://varadpatil.in/" target="_blank" rel="noopener noreferrer" className="font-mono text-[9px] uppercase tracking-wider text-brand-on-surface-variant hover:text-brand-primary font-bold underline">Website</a>
+              <span className="text-brand-outline-variant text-[9px]">•</span>
+              <a href="https://www.linkedin.com/in/varadpatil665/" target="_blank" rel="noopener noreferrer" className="font-mono text-[9px] uppercase tracking-wider text-brand-on-surface-variant hover:text-brand-primary font-bold underline">LinkedIn</a>
+              <span className="text-brand-outline-variant text-[9px]">•</span>
+              <a href="https://github.com/varadrz" target="_blank" rel="noopener noreferrer" className="font-mono text-[9px] uppercase tracking-wider text-brand-on-surface-variant hover:text-brand-primary font-bold underline">GitHub</a>
+            </div>
+          </div>
         </div>
       </footer>
       {/* QR SCANNER & CODE INPUT MODAL OVERLAY */}
