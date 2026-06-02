@@ -5,15 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DB } from '@/lib/db';
 import { verifyJWT } from '@/lib/jwt';
 import { rateLimit } from '@/lib/rate-limit';
+import { seededShuffle } from '@/lib/seeded-shuffle';
 
-function shuffleArray<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
 
 export async function GET(
   request: NextRequest,
@@ -120,21 +113,21 @@ export async function GET(
       return NextResponse.json({ error: 'Questions pool is empty for this quiz.' }, { status: 500 });
     }
 
-    // 10. Select 5 questions randomly
-    const selectedQuestions = shuffleArray(questionsPool).slice(0, 5);
-
-    // 11. Create or retrieve active attempt (sets started_at on server)
+    // 10. Create or retrieve active attempt (sets started_at on server)
     const attempt = await DB.createAttempt(participant.id, quiz.id);
+
+    // 11. Select 5 questions deterministically using attempt.id as a seed
+    const selectedQuestions = seededShuffle(questionsPool, attempt.id).slice(0, 5);
 
     // 12. Format and sanitize questions (randomize options, remove correct answers)
     const formattedQuestions = selectedQuestions.map((q) => {
-      // Create options list and shuffle it
-      const options = shuffleArray([
+      // Create options list and shuffle it (using attempt.id + question.id as option seed to stabilize UI option layout across refreshes)
+      const options = seededShuffle([
         { value: 'A', text: q.option_a },
         { value: 'B', text: q.option_b },
         { value: 'C', text: q.option_c },
         { value: 'D', text: q.option_d }
-      ]);
+      ], attempt.id + q.id);
 
       return {
         id: q.id,

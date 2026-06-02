@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DB } from '@/lib/db';
 import { verifyJWT } from '@/lib/jwt';
 import { rateLimit } from '@/lib/rate-limit';
+import { seededShuffle } from '@/lib/seeded-shuffle';
 
 export async function POST(request: NextRequest) {
   // 1. Get Client IP & UA for logging/rate limiting
@@ -54,6 +55,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Attempt ID and answers list are required.' }, { status: 400 });
     }
 
+    if (answers.length !== 5) {
+      return NextResponse.json({ error: 'Invalid answers count. Exactly 5 answers are required.' }, { status: 400 });
+    }
+
     // 6. Fetch attempt and verify ownership
     const attempt = await DB.getAttemptById(attemptId);
     if (!attempt) {
@@ -80,11 +85,12 @@ export async function POST(request: NextRequest) {
 
     // 9. Score the quiz server-side
     const dbQuestions = await DB.getQuestionsByQuizId(quiz.id);
+    const selectedQuestions = seededShuffle(dbQuestions, attempt.id).slice(0, 5);
     let correctCount = 0;
     
-    // Validate each question answer
+    // Validate each question answer against the deterministically assigned subset only
     answers.forEach((submitted: { questionId: string; answer: string }) => {
-      const match = dbQuestions.find(q => q.id === submitted.questionId);
+      const match = selectedQuestions.find(q => q.id === submitted.questionId);
       if (match) {
         if (match.correct_answer.toUpperCase() === submitted.answer.trim().toUpperCase()) {
           correctCount++;
@@ -92,7 +98,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    const score = correctCount * 10; // 10 points per question (Max 50 per quiz)
+    const score = Math.min(50, correctCount * 10); // 10 points per question (Max 50 per quiz)
 
     // 10. Calculate time elapsed on Server
     const startTime = new Date(attempt.started_at).getTime();
