@@ -9,8 +9,10 @@ interface ParticipantSession {
   id: string;
   full_name: string;
   college_name: string;
+  phone_number?: string;
   registration_id: string;
   instagram_id?: string;
+  has_edited_details?: boolean;
 }
 
 interface ProgressSession {
@@ -28,6 +30,67 @@ export default function Navbar() {
   const [progress, setProgress] = useState<ProgressSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    full_name: '',
+    college_name: '',
+    phone_number: '',
+    instagram_id: ''
+  });
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
+  const handleOpenEdit = () => {
+    if (participant) {
+      setEditForm({
+        full_name: participant.full_name || '',
+        college_name: participant.college_name || '',
+        phone_number: participant.phone_number || '',
+        instagram_id: participant.instagram_id ? participant.instagram_id.replace(/^@+/, '') : ''
+      });
+      setEditError(null);
+      setEditModalOpen(true);
+      setProfileOpen(false);
+    }
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditSubmitting(true);
+    setEditError(null);
+
+    if (!editForm.full_name.trim() || !editForm.college_name.trim() || !editForm.phone_number.trim() || !editForm.instagram_id.trim()) {
+      setEditError('All fields are required.');
+      setEditSubmitting(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/update-profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editForm)
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setEditError(data.error || 'Failed to update profile details.');
+        setEditSubmitting(false);
+        return;
+      }
+
+      setEditModalOpen(false);
+      fetchSession();
+      window.dispatchEvent(new Event('refresh-session'));
+      router.refresh();
+    } catch (err) {
+      console.error('Edit details submission error:', err);
+      setEditError('Connection error. Please try again.');
+      setEditSubmitting(false);
+    }
+  };
 
   const fetchSession = async () => {
     try {
@@ -327,7 +390,7 @@ export default function Navbar() {
                   <div>
                     <h3 className="font-display font-black text-base uppercase text-brand-on-surface leading-tight">{participant.full_name}</h3>
                     <p className="font-mono text-xs text-brand-on-surface-variant uppercase">{participant.college_name}</p>
-                    <p className="font-mono text-[10px] text-brand-outline-variant uppercase">Instagram: @{participant.instagram_id || 'not_set'}</p>
+                    <p className="font-mono text-[10px] text-brand-outline-variant uppercase">Instagram: @{participant.instagram_id ? participant.instagram_id.replace(/^@/, '') : 'not_set'}</p>
                   </div>
                 </div>
 
@@ -354,6 +417,16 @@ export default function Navbar() {
                       <Shield className="h-4 w-4" />
                       Admin Dashboard
                     </Link>
+                  )}
+
+                  {!participant.has_edited_details && (
+                    <button
+                      onClick={handleOpenEdit}
+                      className="w-full py-3 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider hover:bg-brand-primary-container transition flex items-center justify-center gap-2 shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5"
+                    >
+                      <User className="h-4 w-4" />
+                      Edit Details (Once)
+                    </button>
                   )}
 
                   <button
@@ -389,6 +462,135 @@ export default function Navbar() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* EDIT PROFILE DETAILS MODAL */}
+      {editModalOpen && (
+        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-brand-surface max-w-md w-full border-4 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] p-6 md:p-8 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setEditModalOpen(false)}
+              className="absolute -top-3 -right-3 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface p-2 shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-primary-container active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
+              title="Close Modal"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <div className="mb-6">
+              <span className="font-mono text-[9px] font-bold bg-brand-primary text-brand-on-primary px-3 py-1 mb-2 inline-block uppercase tracking-wider">
+                Account Details Update
+              </span>
+              <h2 className="font-display text-2xl font-black uppercase text-brand-on-surface">
+                EDIT DETAILS
+              </h2>
+            </div>
+
+            {/* Sizing/Details warning */}
+            <div className="p-2.5 border-2 border-brand-on-surface bg-brand-mustard text-brand-on-surface font-mono text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] text-center whitespace-nowrap overflow-x-auto scrollbar-none mb-6">
+              DETAILS CAN ONLY BE EDITED ONCE. DOUBLE-CHECK CAREFULLY.
+            </div>
+
+            {editError && (
+              <div className="mb-4 p-3 border-2 border-brand-error bg-red-50 text-brand-error font-mono text-xs font-bold uppercase">
+                ERROR: {editError}
+              </div>
+            )}
+
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              {/* Full Name */}
+              <div>
+                <label className="font-mono text-xs font-bold block mb-1 text-brand-on-surface-variant uppercase tracking-wider">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={editForm.full_name}
+                  onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                  disabled={editSubmitting}
+                  className="w-full input-brutalist px-3 py-2 text-xs uppercase"
+                  required
+                />
+              </div>
+
+              {/* Zone No */}
+              <div>
+                <label className="font-mono text-xs font-bold block mb-1 text-brand-on-surface-variant uppercase tracking-wider">
+                  Zone No.
+                </label>
+                <select
+                  value={editForm.college_name}
+                  onChange={(e) => setEditForm({ ...editForm, college_name: e.target.value })}
+                  disabled={editSubmitting}
+                  className="w-full input-brutalist px-3 py-2 text-xs uppercase bg-brand-surface font-bold"
+                  required
+                >
+                  <option value="" disabled>SELECT YOUR ZONE</option>
+                  <option value="Zone 1">ZONE 1</option>
+                  <option value="Zone 2">ZONE 2</option>
+                  <option value="Zone 3">ZONE 3</option>
+                  <option value="Zone 4">ZONE 4</option>
+                  <option value="Zone 5">ZONE 5</option>
+                  <option value="Zone 6">ZONE 6</option>
+                </select>
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <label className="font-mono text-xs font-bold block mb-1 text-brand-on-surface-variant uppercase tracking-wider">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={editForm.phone_number}
+                  onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
+                  disabled={editSubmitting}
+                  className="w-full input-brutalist px-3 py-2 text-xs uppercase"
+                  required
+                />
+              </div>
+
+              {/* Instagram Handle */}
+              <div>
+                <label className="font-mono text-xs font-bold block mb-1 text-brand-on-surface-variant uppercase tracking-wider">
+                  Instagram Handle
+                </label>
+                <div className="flex border-2 border-brand-on-surface focus-within:border-brand-secondary focus-within:shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] transition-all bg-brand-surface">
+                  <span className="flex items-center justify-center px-3 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-xs select-none">
+                    @
+                  </span>
+                  <input
+                    type="text"
+                    value={editForm.instagram_id}
+                    onChange={(e) => setEditForm({ ...editForm, instagram_id: e.target.value })}
+                    disabled={editSubmitting}
+                    className="flex-grow px-3 py-2 text-xs bg-transparent text-brand-on-surface outline-none border-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Submit / Cancel Buttons */}
+              <div className="flex gap-4 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setEditModalOpen(false)}
+                  disabled={editSubmitting}
+                  className="flex-1 py-3 bg-brand-surface border-2 border-brand-on-surface text-brand-on-surface font-mono font-bold text-xs uppercase hover:bg-brand-surface-low transition shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editSubmitting}
+                  className="flex-1 py-3 bg-brand-secondary text-brand-on-secondary border-2 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider hover:bg-brand-secondary/90 transition shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50"
+                >
+                  {editSubmitting ? 'Saving...' : 'Save details'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

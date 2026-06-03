@@ -237,6 +237,35 @@ export const MockDB = {
     return false;
   },
 
+  async updateParticipantDetails(id: string, details: { full_name: string; college_name: string; phone_number: string; instagram_id: string }): Promise<any> {
+    const db = getDB();
+    const idx = db.participants.findIndex(p => p.id === id);
+    if (idx === -1) throw new Error('Participant not found');
+
+    const formattedInsta = details.instagram_id.replace(/^@+/, '');
+
+    const p = db.participants[idx] as any;
+    p.full_name = details.full_name;
+    p.college_name = details.college_name;
+    p.phone_number = details.phone_number;
+    p.instagram_id = formattedInsta;
+    p.has_edited = true;
+
+    const progIdx = db.participant_progress.findIndex(prog => prog.participant_id === id);
+    if (progIdx !== -1) {
+      const prog = db.participant_progress[progIdx];
+      let targets = prog.peer_targets || [];
+      if (!Array.isArray(targets)) targets = [];
+      if (!targets.some((t: any) => t.name === '__SYSTEM_DETAILS_EDITED__')) {
+        targets.push({ name: '__SYSTEM_DETAILS_EDITED__', found: true });
+        prog.peer_targets = targets;
+      }
+    }
+
+    saveDB(db);
+    return db.participants[idx];
+  },
+
   // Progress
   async getParticipantProgress(participantId: string): Promise<ParticipantProgress | null> {
     const db = getDB();

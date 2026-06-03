@@ -89,6 +89,83 @@ export const DB = {
     return data;
   },
 
+  async updateParticipantDetails(id: string, details: { full_name: string; college_name: string; phone_number: string; instagram_id: string }): Promise<any> {
+    if (!IS_REAL_DB || !supabase) return await MockDB.updateParticipantDetails(id, details);
+
+    const formattedInsta = details.instagram_id.replace(/^@+/, '');
+
+    // 1. Try to update with has_edited = true
+    const { data, error } = await supabase
+      .from('participants')
+      .update({
+        full_name: details.full_name,
+        college_name: details.college_name,
+        phone_number: details.phone_number,
+        instagram_id: formattedInsta,
+        has_edited: true
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      // If the column has_edited doesn't exist, try updating without it!
+      if (error.code === '42703') {
+        console.warn('Column has_edited does not exist in participants table. Retrying update without it.');
+        const { data: retryData, error: retryError } = await supabase
+          .from('participants')
+          .update({
+            full_name: details.full_name,
+            college_name: details.college_name,
+            phone_number: details.phone_number,
+            instagram_id: formattedInsta
+          })
+          .eq('id', id)
+          .select()
+          .single();
+
+        if (retryError) {
+          console.error('Error updating participant details:', retryError);
+          throw new Error(retryError.message || 'Failed to update participant details');
+        }
+
+        // To make sure it is marked as edited, we also append it to peer_targets
+        const progress = await this.getParticipantProgress(id);
+        if (progress) {
+          let targets = progress.peer_targets || [];
+          if (!Array.isArray(targets)) targets = [];
+          if (!targets.some((t: any) => t.name === '__SYSTEM_DETAILS_EDITED__')) {
+            targets.push({ name: '__SYSTEM_DETAILS_EDITED__', found: true });
+            await supabase
+              .from('participant_progress')
+              .update({ peer_targets: targets })
+              .eq('participant_id', id);
+          }
+        }
+
+        return retryData;
+      }
+      console.error('Error updating participant details:', error);
+      throw new Error(error.message || 'Failed to update participant details');
+    }
+
+    // Even if column exists, write to peer_targets too for extra redundancy
+    const progress = await this.getParticipantProgress(id);
+    if (progress) {
+      let targets = progress.peer_targets || [];
+      if (!Array.isArray(targets)) targets = [];
+      if (!targets.some((t: any) => t.name === '__SYSTEM_DETAILS_EDITED__')) {
+        targets.push({ name: '__SYSTEM_DETAILS_EDITED__', found: true });
+        await supabase
+          .from('participant_progress')
+          .update({ peer_targets: targets })
+          .eq('participant_id', id);
+      }
+    }
+
+    return data;
+  },
+
   async createParticipant(pData: {
     full_name: string;
     college_name: string;

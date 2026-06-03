@@ -128,8 +128,12 @@ export async function GET(request: NextRequest) {
         id: participant.id,
         full_name: participant.full_name,
         college_name: participant.college_name,
+        phone_number: participant.phone_number || '',
         registration_id: participant.registration_id,
-        instagram_id: participant.instagram_id
+        instagram_id: participant.instagram_id ? participant.instagram_id.replace(/^@+/, '') : '',
+        has_edited_details: (participant as any).has_edited === true ||
+          (progress && progress.peer_targets && Array.isArray(progress.peer_targets) && progress.peer_targets.some((t: any) => t.name === '__SYSTEM_DETAILS_EDITED__')) ||
+          false
       },
       progress: progress ? {
         completed_quizzes: progress.completed_quizzes,
@@ -137,10 +141,12 @@ export async function GET(request: NextRequest) {
         total_time: progress.total_time,
         next_barrel_id: progress.next_barrel_id,
         current_attempt_id: progress.current_attempt_id,
-        peer_targets: peerTargets.map((t: any) => ({
-          name: t.name,
-          found: t.found
-        }))
+        peer_targets: peerTargets
+          .filter((t: any) => !t.name.startsWith('__'))
+          .map((t: any) => ({
+            name: t.name,
+            found: t.found
+          }))
       } : null
     });
   } catch (error) {

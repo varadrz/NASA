@@ -352,7 +352,7 @@ export default function Home() {
                   INSTAGRAM HANDLE
                 </span>
                 <span className="font-display text-2xl font-black text-brand-primary mt-2">
-                  @{participant.instagram_id || 'not_set'}
+                  @{participant.instagram_id ? participant.instagram_id.replace(/^@+/, '') : 'not_set'}
                 </span>
               </div>
 
@@ -760,39 +760,54 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-6 text-center">
           <div className="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-8 md:gap-16 w-full max-w-4xl">
             {/* Hosted By Card */}
-            <div className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between">
+            <a
+              href="https://woxsen.edu.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer"
+            >
               <span className="font-mono text-[9px] text-brand-on-surface-variant mb-2 uppercase tracking-wider font-bold">HOSTED BY</span>
               <div className="h-10 flex items-center justify-center">
                 <img src="/woxsen-logo.png" alt="Woxsen University" className="h-8 md:h-10 object-contain" />
               </div>
               <span className="font-display font-bold text-[10px] uppercase text-brand-outline mt-2 tracking-wider">Woxsen University</span>
-            </div>
+            </a>
             
             {/* Powered By Card */}
-            <div className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between">
+            <a
+              href="https://www.nasaindia.co/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer"
+            >
               <span className="font-mono text-[9px] text-brand-on-surface-variant mb-2 uppercase tracking-wider font-bold">POWERED BY</span>
               <div className="h-10 flex items-center justify-center">
                 <img src="/catalyse-logo.png" alt="Catalyse" className="h-8 md:h-10 object-contain" />
               </div>
               <span className="font-display font-bold text-[10px] uppercase text-brand-outline mt-2 tracking-wider">Catalyse</span>
-            </div>
+            </a>
 
             {/* Organized By Card */}
-            <div className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between">
+            <a
+              href="https://www.nasaindia.co/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center bg-brand-surface border-2 border-brand-on-surface p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex-1 min-w-[200px] justify-between hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer"
+            >
               <span className="font-mono text-[9px] text-brand-on-surface-variant mb-2 uppercase tracking-wider font-bold">ORGANIZED BY</span>
               <div className="h-10 flex items-center justify-center">
                 <img src="/nasa-logo.png" alt="NASA India" className="h-8 md:h-10 object-contain" />
               </div>
               <span className="font-display font-bold text-[10px] uppercase text-brand-outline mt-2 tracking-wider">NASA India</span>
-            </div>
+            </a>
           </div>
           
           <div className="flex gap-6 mt-6">
-            <a href="#" className="font-mono text-[10px] text-brand-on-surface-variant hover:text-brand-secondary font-bold uppercase">NASA India</a>
+            <a href="https://www.nasaindia.co/" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] text-brand-on-surface-variant hover:text-brand-secondary font-bold uppercase">NASA India</a>
             <span className="text-brand-outline-variant">•</span>
-            <a href="#" className="font-mono text-[10px] text-brand-on-surface-variant hover:text-brand-secondary font-bold uppercase">Catalyse</a>
+            <a href="https://www.nasaindia.co/" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] text-brand-on-surface-variant hover:text-brand-secondary font-bold uppercase">Catalyse</a>
             <span className="text-brand-outline-variant">•</span>
-            <a href="#" className="font-mono text-[10px] text-brand-on-surface-variant hover:text-brand-secondary font-bold uppercase">Support</a>
+            <a href="https://www.nasaindia.co/" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] text-brand-on-surface-variant hover:text-brand-secondary font-bold uppercase">Support</a>
           </div>
 
           <p className="font-mono text-[10px] text-brand-on-surface-variant mt-4 font-bold">
