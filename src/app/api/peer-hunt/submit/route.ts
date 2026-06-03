@@ -67,11 +67,19 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Verify Instagram ID (registration ID/Z-ID fallback)
-    const normalizedInputId = inputId.replace(/^@/, '').toLowerCase();
-    const targetVal = target.instagram_id || target.reg_id || '';
-    const expectedId = targetVal.trim().replace(/^@/, '').toLowerCase();
+    const normalizedInputId = inputId.replace(/^@+/, '').toLowerCase();
 
-    if (normalizedInputId !== expectedId) {
+    // Dynamically check the participant's current details in the DB to support any profile updates
+    const allParticipants = await DB.getAllParticipants();
+    const targetUser = allParticipants.find((p: any) => p.full_name.toLowerCase() === target.name.toLowerCase());
+
+    const currentInsta = targetUser?.instagram_id || target.instagram_id || '';
+    const currentRegId = targetUser?.registration_id || target.reg_id || '';
+
+    const expectedId = currentInsta.trim().replace(/^@+/, '').toLowerCase();
+    const expectedRegId = currentRegId.trim().toLowerCase();
+
+    if (normalizedInputId !== expectedId && normalizedInputId !== expectedRegId) {
       return NextResponse.json({ error: 'Invalid Instagram ID for this participant. Verify physically.' }, { status: 400 });
     }
 
