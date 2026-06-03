@@ -581,63 +581,82 @@ export default function Home() {
                     ))}
                   </div>
 
-                  {/* Verification drawer / modal inside dashboard */}
+                  {/* Verification pop-up modal inside dashboard */}
                   {selectedPeer && (
-                    <div className="p-6 border-4 border-brand-on-surface bg-brand-surface-high shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] animate-fade-in relative">
-                      <button 
-                        onClick={() => setSelectedPeer(null)}
-                        className="absolute top-4 right-4 text-brand-on-surface hover:text-brand-error cursor-pointer"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
-
-                      <h4 className="font-display text-sm font-black uppercase text-brand-on-surface tracking-wider">
-                        INSTAGRAM VERIFICATION: {selectedPeer}
-                      </h4>
-                      <p className="text-xs text-brand-on-surface-variant mt-1">
-                        Enter the exact Instagram handle of this participant.
-                      </p>
-
-                      {peerVerifyError && (
-                        <div className="mt-3 p-3 bg-red-50 border-2 border-brand-error text-brand-error font-mono text-[10px] font-bold uppercase">
-                          ERROR: {peerVerifyError}
-                        </div>
-                      )}
-
-                      {peerVerifySuccess && (
-                        <div className="mt-3 p-3 bg-brand-secondary-container border-2 border-brand-secondary text-brand-on-secondary font-mono text-[10px] font-bold uppercase">
-                          SUCCESS: {peerVerifySuccess}
-                        </div>
-                      )}
-
-                      <form onSubmit={handleVerifyPeer} className="mt-4 flex flex-col sm:flex-row gap-3 items-stretch">
-                        <div className="flex-1 flex border-2 border-brand-on-surface focus-within:border-brand-secondary transition-all bg-brand-surface">
-                          <span className="flex items-center justify-center px-4 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-xs select-none">
-                            @
-                          </span>
-                          <input
-                             type="text"
-                             value={instagramInput}
-                             onChange={(e) => {
-                               setInstagramInput(e.target.value);
-                               setPeerVerifyError(null);
-                             }}
-                             placeholder="username"
-                             maxLength={50}
-                             disabled={peerSubmitting}
-                             className="flex-grow px-4 py-2.5 text-xs bg-transparent text-brand-on-surface placeholder:text-brand-outline-variant placeholder:opacity-50 outline-none border-none font-mono font-bold animate-none"
-                             required
-                            autoFocus
-                          />
-                        </div>
-                        <button
-                          type="submit"
-                          disabled={peerSubmitting}
-                          className="px-6 py-2.5 bg-brand-on-surface text-brand-surface border border-brand-on-surface font-display font-black text-xs uppercase tracking-wider hover:bg-opacity-90 active:translate-x-[1px] active:translate-y-[1px] cursor-pointer disabled:opacity-50"
+                    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                      <div className="bg-brand-surface max-w-md w-full border-4 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] p-6 md:p-8 relative">
+                        <button 
+                          onClick={() => setSelectedPeer(null)}
+                          className="absolute -top-3 -right-3 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface p-2 shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-primary-container active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
+                          title="Close Modal"
                         >
-                          {peerSubmitting ? 'VALIDATING...' : 'SUBMIT VERIFICATION'}
+                          <X className="h-4 w-4" />
                         </button>
-                      </form>
+
+                        <div className="mb-4">
+                          <span className="font-mono text-[9px] font-bold bg-brand-secondary text-brand-on-secondary px-3 py-1 mb-2 inline-block uppercase tracking-wider">
+                            PEER VERIFICATION
+                          </span>
+                          <h4 className="font-display text-xl font-black uppercase text-brand-on-surface tracking-wider">
+                            VERIFY {selectedPeer}
+                          </h4>
+                          <p className="text-xs text-brand-on-surface-variant mt-1.5 leading-relaxed">
+                            Enter the exact Instagram handle of this participant to unlock +25 XP.
+                          </p>
+                        </div>
+
+                        {peerVerifyError && (
+                          <div className="mb-4 p-3 bg-red-50 border-2 border-brand-error text-brand-error font-mono text-[10px] font-bold uppercase">
+                            ERROR: {peerVerifyError}
+                          </div>
+                        )}
+
+                        {peerVerifySuccess && (
+                          <div className="mb-4 p-3 bg-brand-secondary-container border-2 border-brand-secondary text-brand-on-secondary font-mono text-[10px] font-bold uppercase">
+                            SUCCESS: {peerVerifySuccess}
+                          </div>
+                        )}
+
+                        <form onSubmit={handleVerifyPeer} className="space-y-4">
+                          <div className="flex border-2 border-brand-on-surface focus-within:border-brand-secondary transition-all bg-brand-surface">
+                            <span className="flex items-center justify-center px-4 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-xs select-none">
+                              @
+                            </span>
+                            <input
+                              type="text"
+                              value={instagramInput}
+                              onChange={(e) => {
+                                setInstagramInput(e.target.value);
+                                setPeerVerifyError(null);
+                              }}
+                              placeholder="username"
+                              maxLength={50}
+                              disabled={peerSubmitting}
+                              className="flex-grow px-4 py-3 text-xs bg-transparent text-brand-on-surface placeholder:text-brand-outline-variant placeholder:opacity-50 outline-none border-none font-mono font-bold animate-none"
+                              required
+                              autoFocus
+                            />
+                          </div>
+
+                          <div className="flex gap-4 pt-2">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedPeer(null)}
+                              disabled={peerSubmitting}
+                              className="flex-1 py-3 bg-brand-surface border-2 border-brand-on-surface text-brand-on-surface font-mono font-bold text-xs uppercase hover:bg-brand-surface-low transition shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="submit"
+                              disabled={peerSubmitting}
+                              className="flex-1 py-3 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider hover:bg-brand-primary-container transition shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50"
+                            >
+                              {peerSubmitting ? 'VALIDATING...' : 'SUBMIT'}
+                            </button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
                   )}
                 </div>
