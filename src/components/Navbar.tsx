@@ -489,7 +489,7 @@ export default function Navbar() {
             </div>
 
             {/* Sizing/Details warning */}
-            <div className="p-2.5 border-2 border-brand-on-surface bg-brand-mustard text-brand-on-surface font-mono text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] text-center whitespace-nowrap overflow-x-auto scrollbar-none mb-6">
+            <div className="p-2.5 border-2 border-brand-on-surface bg-brand-mustard text-brand-on-surface font-mono text-[11px] sm:text-xs font-bold uppercase tracking-tighter shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] text-center whitespace-nowrap overflow-x-auto scrollbar-none mb-6">
               DETAILS CAN ONLY BE EDITED ONCE. DOUBLE-CHECK CAREFULLY.
             </div>
 
