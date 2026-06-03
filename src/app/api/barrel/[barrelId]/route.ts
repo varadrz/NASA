@@ -53,8 +53,12 @@ export async function GET(
   }
 
   try {
-    // 4. Fetch participant and verify status
-    const participant = await DB.getParticipantById(decoded.participantId);
+    // 4. Fetch participant and progress in parallel
+    const [participant, progress] = await Promise.all([
+      DB.getParticipantById(decoded.participantId),
+      DB.getParticipantProgress(decoded.participantId)
+    ]);
+
     if (!participant) {
       return NextResponse.json({ error: 'Participant not found.' }, { status: 404 });
     }
@@ -62,8 +66,6 @@ export async function GET(
       return NextResponse.json({ error: 'Your account has been suspended by an admin.' }, { status: 403 });
     }
 
-    // 5. Fetch progress
-    const progress = await DB.getParticipantProgress(participant.id);
     if (!progress) {
       return NextResponse.json({ error: 'Progress record not found.' }, { status: 404 });
     }

@@ -56,6 +56,7 @@ interface Participant {
   full_name: string;
   college_name: string;
   registration_id: string;
+  instagram_id?: string;
 }
 
 interface PeerTarget {
@@ -87,7 +88,7 @@ export default function Home() {
 
   // Peer hunt states
   const [selectedPeer, setSelectedPeer] = useState<string | null>(null);
-  const [zIdInput, setZIdInput] = useState('');
+  const [instagramInput, setInstagramInput] = useState('');
   const [peerVerifyError, setPeerVerifyError] = useState<string | null>(null);
   const [peerVerifySuccess, setPeerVerifySuccess] = useState<string | null>(null);
   const [peerSubmitting, setPeerSubmitting] = useState(false);
@@ -272,7 +273,7 @@ export default function Home() {
 
   const handleVerifyPeer = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedPeer || !zIdInput.trim()) return;
+    if (!selectedPeer || !instagramInput.trim()) return;
 
     setPeerSubmitting(true);
     setPeerVerifyError(null);
@@ -284,7 +285,7 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: selectedPeer,
-          zId: `Z-${zIdInput.trim()}`
+          instagramId: instagramInput.trim()
         })
       });
 
@@ -300,7 +301,7 @@ export default function Home() {
             peer_targets: data.peer_targets
           });
         }
-        setZIdInput('');
+        setInstagramInput('');
         setTimeout(() => {
           setSelectedPeer(null);
           setPeerVerifySuccess(null);
@@ -348,10 +349,10 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-brand-surface border-2 border-brand-on-surface shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] p-6 flex flex-col justify-between">
                 <span className="font-mono text-xs font-bold text-brand-on-surface-variant uppercase tracking-wider">
-                  Z-ID CODE
+                  INSTAGRAM HANDLE
                 </span>
                 <span className="font-display text-2xl font-black text-brand-primary mt-2">
-                  {participant.registration_id}
+                  @{participant.instagram_id || 'not_set'}
                 </span>
               </div>
 
@@ -522,7 +523,7 @@ export default function Home() {
                 <div className="bg-brand-mustard p-4 border-b-4 border-brand-on-surface flex justify-between items-center text-brand-on-surface">
                   <h3 className="font-mono text-xs font-bold tracking-widest flex items-center gap-2 uppercase">
                     <span className="inline-block w-2.5 h-2.5 bg-brand-primary border border-brand-on-surface animate-ping" />
-                    CAMPUS PEER QUEST • NETWORKING MODULE
+                    INSTAGRAM HUNT • NETWORKING MODULE
                   </h3>
                   <span className="font-mono text-xs font-bold bg-brand-on-surface text-brand-surface px-2 py-0.5 border border-brand-on-surface">
                     +25 XP EACH
@@ -533,10 +534,10 @@ export default function Home() {
                 <div className="p-6 md:p-8 space-y-6">
                   <div>
                     <h2 className="font-display text-2xl font-black text-brand-on-surface uppercase leading-none">
-                      Find Peers & Validate Z-IDs
+                      Find Peers & Validate Instagram IDs
                     </h2>
                     <p className="font-sans text-brand-on-surface-variant text-sm mt-2 leading-relaxed">
-                      Randomly assigned peers are currently roaming the campus. Locate them, strike a conversation, learn their registration <strong className="text-brand-secondary">Z-ID</strong>, and submit it below to unlock bonus XP!
+                      Randomly assigned peers are currently roaming the campus. Locate them, strike a conversation, learn their <strong className="text-brand-secondary">Instagram ID</strong>, and submit it below to unlock bonus XP!
                     </p>
                   </div>
 
@@ -567,13 +568,13 @@ export default function Home() {
                           <button
                             onClick={() => {
                               setSelectedPeer(peer.name);
-                              setZIdInput('');
+                              setInstagramInput('');
                               setPeerVerifyError(null);
                               setPeerVerifySuccess(null);
                             }}
                             className="w-full py-1.5 bg-brand-primary text-brand-on-primary border border-brand-on-surface text-[10px] font-display font-black uppercase tracking-wider shadow-[1.5px_1.5px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none transition-all cursor-pointer"
                           >
-                            Verify Z-ID
+                            Verify Instagram
                           </button>
                         )}
                       </div>
@@ -591,10 +592,10 @@ export default function Home() {
                       </button>
 
                       <h4 className="font-display text-sm font-black uppercase text-brand-on-surface tracking-wider">
-                        PEER IDENTITY AUDIT: {selectedPeer}
+                        INSTAGRAM VERIFICATION: {selectedPeer}
                       </h4>
                       <p className="text-xs text-brand-on-surface-variant mt-1">
-                        Enter the exact unique code retrieved from this participant.
+                        Enter the exact Instagram handle of this participant.
                       </p>
 
                       {peerVerifyError && (
@@ -612,20 +613,19 @@ export default function Home() {
                       <form onSubmit={handleVerifyPeer} className="mt-4 flex flex-col sm:flex-row gap-3 items-stretch">
                         <div className="flex-1 flex border-2 border-brand-on-surface focus-within:border-brand-secondary transition-all bg-brand-surface">
                           <span className="flex items-center justify-center px-4 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-xs select-none">
-                            Z-
+                            @
                           </span>
                           <input
                              type="text"
-                             value={zIdInput}
+                             value={instagramInput}
                              onChange={(e) => {
-                               const val = e.target.value.replace(/\D/g, ''); // Numbers only
-                               setZIdInput(val);
+                               setInstagramInput(e.target.value);
                                setPeerVerifyError(null);
                              }}
-                             placeholder="NUMBER"
+                             placeholder="username"
                              maxLength={50}
                              disabled={peerSubmitting}
-                             className="flex-grow px-4 py-2.5 text-xs uppercase bg-transparent text-brand-on-surface placeholder:text-brand-outline-variant placeholder:opacity-50 outline-none border-none font-mono font-bold animate-none"
+                             className="flex-grow px-4 py-2.5 text-xs bg-transparent text-brand-on-surface placeholder:text-brand-outline-variant placeholder:opacity-50 outline-none border-none font-mono font-bold animate-none"
                              required
                             autoFocus
                           />

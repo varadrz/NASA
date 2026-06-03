@@ -263,6 +263,11 @@ export const MockDB = {
     return db.quizzes.find(q => q.barrel_id === barrelId) || null;
   },
 
+  async getAllQuizzes(): Promise<Quiz[]> {
+    const db = getDB();
+    return db.quizzes;
+  },
+
   async getQuestionsByQuizId(quizId: string): Promise<Question[]> {
     const db = getDB();
     return db.questions.filter(q => q.quiz_id === quizId);

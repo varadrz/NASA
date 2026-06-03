@@ -12,8 +12,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const participants = await DB.getAllParticipants();
-    const leaderboard = await DB.getOverallLeaderboard();
+    const [participants, leaderboard, allQuizzes] = await Promise.all([
+      DB.getAllParticipants(),
+      DB.getOverallLeaderboard(),
+      DB.getAllQuizzes()
+    ]);
 
     const totalParticipants = participants.length;
     const activeParticipants = participants.filter(p => !p.is_disabled).length;
@@ -37,11 +40,9 @@ export async function GET(request: NextRequest) {
     const averageScore = totalParticipants > 0 ? Math.round(totalScoreAll / totalParticipants) : 0;
     const averageTime = totalParticipants > 0 ? Math.round(totalTimeAll / totalParticipants) : 0;
 
-    // Quiz by quiz stats (completions per barrel)
-    const quizStats = [];
-    for (let barrelId = 1; barrelId <= 20; barrelId++) {
-      const qLeaderboard = await DB.getQuizLeaderboard(barrelId);
-      const quiz = await DB.getQuizByBarrelId(barrelId);
+    // Quiz by quiz stats (completions per barrel) fetched in parallel
+    const quizStatsPromises = allQuizzes.map(async (quiz) => {
+      const qLeaderboard = await DB.getQuizLeaderboard(quiz.barrel_id);
       
       let sumScore = 0;
       let sumTime = 0;
@@ -50,14 +51,17 @@ export async function GET(request: NextRequest) {
         sumTime += item.time_taken_seconds;
       });
 
-      quizStats.push({
-        barrel_id: barrelId,
-        title: quiz?.title || `Quiz ${barrelId}`,
+      return {
+        barrel_id: quiz.barrel_id,
+        title: quiz.title || `Quiz ${quiz.barrel_id}`,
         completions: qLeaderboard.length,
         average_score: qLeaderboard.length > 0 ? Math.round((sumScore / qLeaderboard.length) * 10) / 10 : 0,
         average_time_seconds: qLeaderboard.length > 0 ? Math.round(sumTime / qLeaderboard.length) : 0
-      });
-    }
+      };
+    });
+
+    const quizStats = await Promise.all(quizStatsPromises);
+    quizStats.sort((a, b) => a.barrel_id - b.barrel_id);
 
     return NextResponse.json({
       summary: {

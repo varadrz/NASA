@@ -25,7 +25,14 @@ import {
   CheckCircle2,
   Compass,
   Trophy,
-  Clock
+  Clock,
+  BookOpen,
+  Plus,
+  Edit2,
+  X,
+  ArrowLeft,
+  HelpCircle,
+  Check
 } from 'lucide-react';
 
 const BARREL_CODES: { [key: number]: string } = {
@@ -38,14 +45,24 @@ const BARREL_CODES: { [key: number]: string } = {
   7: '83920154',
   8: '43892015',
   9: '20154389',
-  10: '71543892'
+  10: '71543892',
+  11: '62940183',
+  12: '30958174',
+  13: '84920173',
+  14: '15948302',
+  15: '93018472',
+  16: '48201937',
+  17: '75039182',
+  18: '29481037',
+  19: '58392014',
+  20: '10394827'
 };
 
 interface StatsSummary {
   total_participants: number;
   active_participants: number;
   disabled_participants: number;
-  completed_all_10: number;
+  completed_all_20: number;
   average_score: number;
   average_time_seconds: number;
 }
@@ -70,6 +87,7 @@ interface ParticipantEnriched {
   completed_quizzes: number;
   total_score: number;
   total_time: number;
+  next_barrel_id: number | null;
 }
 
 interface AuditLog {
@@ -89,10 +107,11 @@ export default function AdminPage() {
   const [verifying, setVerifying] = useState(false);
 
   // Dashboard state
-  const [activeTab, setActiveTab] = useState<'stats' | 'participants' | 'qrcodes' | 'database' | 'audits'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'participants' | 'quizzes' | 'qrcodes' | 'database' | 'audits'>('stats');
   const [summary, setSummary] = useState<StatsSummary | null>(null);
   const [completionDist, setCompletionDist] = useState<any[]>([]);
   const [quizStats, setQuizStats] = useState<QuizStat[]>([]);
+  const [allQuizzes, setAllQuizzes] = useState<any[]>([]);
   const [participants, setParticipants] = useState<ParticipantEnriched[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(false);
@@ -103,6 +122,49 @@ export default function AdminPage() {
   // Confirmation states
   const [wiping, setWiping] = useState(false);
   const [seeding, setSeeding] = useState(false);
+
+  // --- CRUD States for Participants ---
+  const [showPartModal, setShowPartModal] = useState(false);
+  const [editingPart, setEditingPart] = useState<any | null>(null);
+  const [partForm, setPartForm] = useState({
+    id: '',
+    full_name: '',
+    college_name: '',
+    phone_number: '',
+    registration_id: '',
+    instagram_id: '',
+    is_disabled: false,
+    completed_quizzes: 0,
+    total_score: 0,
+    total_time: 0,
+    next_barrel_id: ''
+  });
+
+  // --- CRUD States for Quizzes ---
+  const [showQuizModal, setShowQuizModal] = useState(false);
+  const [editingQuiz, setEditingQuiz] = useState<any | null>(null);
+  const [quizForm, setQuizForm] = useState({
+    id: '',
+    barrel_id: '',
+    title: '',
+    description: ''
+  });
+
+  // --- CRUD States for Questions ---
+  const [activeQuizForQuestions, setActiveQuizForQuestions] = useState<any | null>(null);
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [showQuestionModal, setShowQuestionModal] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<any | null>(null);
+  const [questionForm, setQuestionForm] = useState({
+    id: '',
+    question: '',
+    option_a: '',
+    option_b: '',
+    option_c: '',
+    option_d: '',
+    correct_answer: 'A'
+  });
 
   const router = useRouter();
 
@@ -175,6 +237,12 @@ export default function AdminPage() {
         setParticipants(data.participants || []);
       }
 
+      const quizzesRes = await fetch('/api/admin/quizzes', { headers: { 'x-admin-password': pw } });
+      if (quizzesRes.ok) {
+        const data = await quizzesRes.json();
+        setAllQuizzes(data.quizzes || []);
+      }
+
       const auditRes = await fetch('/api/admin/audit-logs', { headers: { 'x-admin-password': pw } });
       if (auditRes.ok) {
         const data = await auditRes.json();
@@ -185,6 +253,244 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  // --- Participant CRUD Handlers ---
+  const handleSaveParticipant = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const isEdit = !!editingPart;
+      const payload = {
+        action: isEdit ? 'update' : 'create',
+        ...partForm
+      };
+      
+      const res = await fetch('/api/admin/participants', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': password
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message || 'Participant saved successfully!');
+        setShowPartModal(false);
+        fetchDashboardData(password, true);
+      } else {
+        alert(data.error || 'Failed to save participant.');
+      }
+    } catch (err) {
+      alert('Network or client error saving participant details.');
+    }
+  };
+
+  const openCreateParticipant = () => {
+    setEditingPart(null);
+    setPartForm({
+      id: '',
+      full_name: '',
+      college_name: '',
+      phone_number: '',
+      registration_id: '',
+      instagram_id: '',
+      is_disabled: false,
+      completed_quizzes: 0,
+      total_score: 0,
+      total_time: 0,
+      next_barrel_id: '1'
+    });
+    setShowPartModal(true);
+  };
+
+  const openEditParticipant = (p: ParticipantEnriched) => {
+    setEditingPart(p);
+    setPartForm({
+      id: p.id,
+      full_name: p.full_name,
+      college_name: p.college_name,
+      phone_number: p.phone_number,
+      registration_id: p.registration_id,
+      instagram_id: p.instagram_id || '',
+      is_disabled: p.is_disabled,
+      completed_quizzes: p.completed_quizzes,
+      total_score: p.total_score,
+      total_time: p.total_time,
+      next_barrel_id: p.next_barrel_id ? String(p.next_barrel_id) : ''
+    });
+    setShowPartModal(true);
+  };
+
+  // --- Quiz CRUD Handlers ---
+  const handleSaveQuiz = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const isEdit = !!editingQuiz;
+      const res = await fetch('/api/admin/quizzes', {
+        method: isEdit ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': password
+        },
+        body: JSON.stringify(quizForm)
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(isEdit ? 'Quiz updated successfully!' : 'Quiz created successfully!');
+        setShowQuizModal(false);
+        fetchDashboardData(password, true);
+      } else {
+        alert(data.error || 'Failed to save quiz.');
+      }
+    } catch (err) {
+      alert('Network error saving quiz.');
+    }
+  };
+
+  const openCreateQuiz = () => {
+    setEditingQuiz(null);
+    setQuizForm({
+      id: '',
+      barrel_id: '',
+      title: '',
+      description: ''
+    });
+    setShowQuizModal(true);
+  };
+
+  const openEditQuiz = (q: any) => {
+    setEditingQuiz(q);
+    setQuizForm({
+      id: q.id,
+      barrel_id: String(q.barrel_id),
+      title: q.title,
+      description: q.description
+    });
+    setShowQuizModal(true);
+  };
+
+  const handleDeleteQuiz = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this quiz? All associated questions will be deleted!')) return;
+    try {
+      const res = await fetch(`/api/admin/quizzes?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-password': password }
+      });
+      if (res.ok) {
+        alert('Quiz deleted successfully!');
+        fetchDashboardData(password, true);
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete quiz.');
+      }
+    } catch (err) {
+      alert('Network error deleting quiz.');
+    }
+  };
+
+  // --- Question CRUD Handlers ---
+  const fetchQuestions = async (quizId: string) => {
+    setLoadingQuestions(true);
+    try {
+      const res = await fetch(`/api/admin/questions?quiz_id=${quizId}`, {
+        headers: { 'x-admin-password': password }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setQuestions(data.questions || []);
+      }
+    } catch (err) {
+      console.error('Error fetching questions:', err);
+    } finally {
+      setLoadingQuestions(false);
+    }
+  };
+
+  const openManageQuestions = (quiz: any) => {
+    setActiveQuizForQuestions(quiz);
+    fetchQuestions(quiz.id);
+  };
+
+  const handleSaveQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeQuizForQuestions) return;
+    try {
+      const isEdit = !!editingQuestion;
+      const payload = {
+        ...questionForm,
+        quiz_id: activeQuizForQuestions.id
+      };
+
+      const res = await fetch('/api/admin/questions', {
+        method: isEdit ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': password
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(isEdit ? 'Question updated successfully!' : 'Question created successfully!');
+        setShowQuestionModal(false);
+        fetchQuestions(activeQuizForQuestions.id);
+      } else {
+        alert(data.error || 'Failed to save question.');
+      }
+    } catch (err) {
+      alert('Network error saving question.');
+    }
+  };
+
+  const openCreateQuestion = () => {
+    setEditingQuestion(null);
+    setQuestionForm({
+      id: '',
+      question: '',
+      option_a: '',
+      option_b: '',
+      option_c: '',
+      option_d: '',
+      correct_answer: 'A'
+    });
+    setShowQuestionModal(true);
+  };
+
+  const openEditQuestion = (q: any) => {
+    setEditingQuestion(q);
+    setQuestionForm({
+      id: q.id,
+      question: q.question,
+      option_a: q.option_a,
+      option_b: q.option_b,
+      option_c: q.option_c,
+      option_d: q.option_d,
+      correct_answer: q.correct_answer
+    });
+    setShowQuestionModal(true);
+  };
+
+  const handleDeleteQuestion = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this question?')) return;
+    try {
+      const res = await fetch(`/api/admin/questions?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-password': password }
+      });
+      if (res.ok) {
+        alert('Question deleted successfully!');
+        if (activeQuizForQuestions) fetchQuestions(activeQuizForQuestions.id);
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete question.');
+      }
+    } catch (err) {
+      alert('Network error deleting question.');
     }
   };
 
@@ -390,6 +696,7 @@ export default function AdminPage() {
           {[
             { id: 'stats', label: 'Overview Analytics', icon: BarChart3 },
             { id: 'participants', label: 'Participant Roster', icon: Users },
+            { id: 'quizzes', label: 'Quizzes & Questions', icon: BookOpen },
             { id: 'qrcodes', label: 'Barrel QR Codes', icon: QrCode },
             { id: 'database', label: 'System Controls', icon: Database },
             { id: 'audits', label: 'Security Audits', icon: History }
@@ -441,8 +748,8 @@ export default function AdminPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[
                       { label: 'Total Registered', val: summary.total_participants, icon: Users, color: 'bg-brand-surface border-brand-on-surface text-brand-on-surface' },
-                      { label: 'Completed All 10', val: summary.completed_all_10, icon: Trophy, color: 'bg-brand-mustard border-brand-on-surface text-brand-on-surface' },
-                      { label: 'Average Score', val: `${summary.average_score} / 500`, icon: CheckCircle2, color: 'bg-brand-secondary border-brand-on-surface text-brand-on-secondary' },
+                      { label: 'Completed All 20', val: summary.completed_all_20, icon: Trophy, color: 'bg-brand-mustard border-brand-on-surface text-brand-on-surface' },
+                      { label: 'Average Score', val: `${summary.average_score} / 1000`, icon: CheckCircle2, color: 'bg-brand-secondary border-brand-on-surface text-brand-on-secondary' },
                       { label: 'Avg Hunt Duration', val: `${Math.floor(summary.average_time_seconds / 60)}m ${summary.average_time_seconds % 60}s`, icon: Clock, color: 'bg-brand-primary border-brand-on-surface text-brand-on-primary' }
                     ].map((card, idx) => {
                       const Icon = card.icon;
@@ -540,7 +847,7 @@ export default function AdminPage() {
                         return (
                           <div key={item.quizzes_completed} className="space-y-2">
                             <div className="flex justify-between font-mono text-xs font-bold text-brand-on-surface-variant uppercase tracking-wider">
-                              <span>Completed {item.quizzes_completed} / 10 Quiz Nodes</span>
+                              <span>Completed {item.quizzes_completed} / 20 Quiz Nodes</span>
                               <span className="text-brand-on-surface">{item.participant_count} Students ({Math.round(percentage)}%)</span>
                             </div>
                             <div className="w-full bg-brand-surface-container h-6 border-2 border-brand-on-surface overflow-hidden">
@@ -561,14 +868,23 @@ export default function AdminPage() {
             {/* 2. PARTICIPANTS LIST TAB */}
             {activeTab === 'participants' && (
               <div className="space-y-6 animate-fade-in print:hidden">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="SEARCH ROSTER BY Z-ID, NAME, OR ZONE..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full input-brutalist px-4 py-3.5 text-xs font-mono uppercase"
-                  />
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
+                  <div className="flex-grow">
+                    <input
+                      type="text"
+                      placeholder="SEARCH ROSTER BY REGISTRATION ID, NAME, COLLEGE OR INSTAGRAM ID..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full input-brutalist px-4 py-3.5 text-xs font-mono uppercase"
+                    />
+                  </div>
+                  <button
+                    onClick={openCreateParticipant}
+                    className="px-5 py-3.5 border-4 border-brand-on-surface bg-brand-mustard text-brand-on-surface font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
+                  >
+                    <Plus className="h-4 w-4" />
+                    ADD PARTICIPANT
+                  </button>
                 </div>
 
                 <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] overflow-hidden">
@@ -576,7 +892,7 @@ export default function AdminPage() {
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
                         <tr className="bg-brand-on-surface border-b-2 border-brand-on-surface text-xs text-brand-surface font-mono uppercase tracking-widest font-bold">
-                          <th className="py-4 px-6">Z-Id</th>
+                          <th className="py-4 px-6">Reg ID</th>
                           <th className="py-4 px-6">Participant</th>
                           <th className="py-4 px-6">Zone No.</th>
                           <th className="py-4 px-6">Phone</th>
@@ -619,6 +935,13 @@ export default function AdminPage() {
                             <td className="py-4 px-6 text-center">
                               <div className="inline-flex items-center gap-2">
                                 <button
+                                  onClick={() => openEditParticipant(p)}
+                                  className="p-2 border-2 border-brand-on-surface bg-brand-surface text-brand-on-surface hover:bg-brand-surface-low transition-all cursor-pointer"
+                                  title="Edit student details"
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </button>
+                                <button
                                   onClick={() => handleToggleStatus(p.id, p.is_disabled)}
                                   className={`p-2 border-2 border-brand-on-surface transition-all cursor-pointer ${
                                     p.is_disabled
@@ -647,7 +970,154 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* 3. BARREL PRINTABLE QR CODES TAB */}
+            {/* 3. QUIZZES & QUESTIONS TAB */}
+            {activeTab === 'quizzes' && (
+              <div className="space-y-6 animate-fade-in print:hidden">
+                {activeQuizForQuestions ? (
+                  /* Questions CRUD Manager */
+                  <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] p-6 md:p-8 space-y-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b-4 border-brand-on-surface pb-4">
+                      <div>
+                        <button
+                          onClick={() => setActiveQuizForQuestions(null)}
+                          className="font-mono text-xs font-bold text-brand-secondary hover:underline flex items-center gap-1.5 uppercase mb-2"
+                        >
+                          <ArrowLeft className="h-4 w-4" /> Back to Quizzes
+                        </button>
+                        <h2 className="font-display text-2xl font-black text-brand-on-surface uppercase">
+                          Questions Pool for Barrel #{activeQuizForQuestions.barrel_id.toString().padStart(2, '0')}
+                        </h2>
+                        <p className="text-brand-on-surface-variant text-xs font-mono uppercase mt-1">
+                          {activeQuizForQuestions.title}
+                        </p>
+                      </div>
+                      <button
+                        onClick={openCreateQuestion}
+                        className="px-4 py-2.5 border-2 border-brand-on-surface bg-brand-mustard text-brand-on-surface font-display font-bold text-xs uppercase hover:bg-opacity-95 shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] active:translate-y-[1px] cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Plus className="h-4 w-4" /> Add Question
+                      </button>
+                    </div>
+
+                    {loadingQuestions ? (
+                      <div className="py-12 text-center text-brand-on-surface-variant font-mono">
+                        <Compass className="h-8 w-8 text-brand-primary animate-spin mx-auto mb-2" />
+                        <span className="text-xs">LOADING QUESTIONS CHANNELS...</span>
+                      </div>
+                    ) : questions.length === 0 ? (
+                      <div className="py-12 text-center text-brand-on-surface-variant font-mono border-4 border-dashed border-brand-surface-container">
+                        No questions configured for this quiz yet. Click "Add Question" above to initialize.
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {questions.map((q, idx) => (
+                          <div key={q.id || idx} className="p-4 border-2 border-brand-on-surface bg-brand-surface-low space-y-3 shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]">
+                            <div className="flex justify-between items-start gap-4">
+                              <span className="font-mono text-xs font-black bg-brand-on-surface text-brand-surface px-2 py-0.5">
+                                Q#{idx + 1}
+                              </span>
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => openEditQuestion(q)}
+                                  className="p-1.5 border border-brand-on-surface bg-white text-brand-on-surface hover:bg-brand-surface-low cursor-pointer"
+                                  title="Edit Question"
+                                >
+                                  <Edit2 className="h-3.5 w-3.5" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteQuestion(q.id)}
+                                  className="p-1.5 border border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-opacity-95 cursor-pointer"
+                                  title="Delete Question"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                            <p className="font-sans font-bold text-sm text-brand-on-surface">{q.question}</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono">
+                              <div className={`p-2 border ${q.correct_answer === 'A' ? 'bg-emerald-50 border-emerald-600 text-emerald-800 font-black' : 'border-brand-surface-container'}`}>
+                                A. {q.option_a}
+                              </div>
+                              <div className={`p-2 border ${q.correct_answer === 'B' ? 'bg-emerald-50 border-emerald-600 text-emerald-800 font-black' : 'border-brand-surface-container'}`}>
+                                B. {q.option_b}
+                              </div>
+                              <div className={`p-2 border ${q.correct_answer === 'C' ? 'bg-emerald-50 border-emerald-600 text-emerald-800 font-black' : 'border-brand-surface-container'}`}>
+                                C. {q.option_c}
+                              </div>
+                              <div className={`p-2 border ${q.correct_answer === 'D' ? 'bg-emerald-50 border-emerald-600 text-emerald-800 font-black' : 'border-brand-surface-container'}`}>
+                                D. {q.option_d}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Quizzes List Dashboard */
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center gap-4">
+                      <div>
+                        <h2 className="font-display text-2xl font-black text-brand-on-surface uppercase">Heritage Hunt Quizzes</h2>
+                        <p className="text-brand-on-surface-variant text-xs">Configure the 20 barrel locations, instructions, and questions pool.</p>
+                      </div>
+                      <button
+                        onClick={openCreateQuiz}
+                        className="px-5 py-3 border-4 border-brand-on-surface bg-brand-mustard text-brand-on-surface font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-x-[2px] active:translate-y-[2px] cursor-pointer flex items-center gap-2"
+                      >
+                        <Plus className="h-4 w-4" /> Add Quiz
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {allQuizzes.length === 0 ? (
+                        <div className="col-span-2 py-12 text-center text-brand-on-surface-variant font-mono">
+                          No quizzes loaded. Check database connectivity or click "Add Quiz" above to initialize.
+                        </div>
+                      ) : (
+                        [...allQuizzes].sort((a, b) => a.barrel_id - b.barrel_id).map((q) => (
+                          <div key={q.id} className="bg-brand-surface border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] p-6 space-y-4 flex flex-col justify-between">
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center border-b-2 border-brand-on-surface pb-2">
+                                <span className="inline-flex items-center justify-center h-8 w-8 bg-brand-mustard border-2 border-brand-on-surface font-mono text-xs font-bold text-brand-on-surface">
+                                  #{q.barrel_id.toString().padStart(2, '0')}
+                                </span>
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={() => openEditQuiz(q)}
+                                    className="p-1.5 border border-brand-on-surface bg-white text-brand-on-surface hover:bg-brand-surface-low cursor-pointer"
+                                    title="Edit Quiz"
+                                  >
+                                    <Edit2 className="h-4 w-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteQuiz(q.id)}
+                                    className="p-1.5 border border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-opacity-95 cursor-pointer"
+                                    title="Delete Quiz"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              </div>
+                              <h3 className="font-display text-lg font-black text-brand-on-surface uppercase leading-snug">{q.title}</h3>
+                              <p className="font-sans text-xs text-brand-on-surface-variant leading-relaxed line-clamp-3">{q.description}</p>
+                            </div>
+                            <button
+                              onClick={() => openManageQuestions(q)}
+                              className="w-full py-2.5 border-2 border-brand-on-surface bg-brand-secondary text-brand-on-secondary font-display font-bold text-xs uppercase hover:bg-opacity-95 active:translate-y-[1px] cursor-pointer flex items-center justify-center gap-1.5 mt-4"
+                            >
+                              <HelpCircle className="h-4 w-4" /> Manage Questions
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 4. BARREL PRINTABLE QR CODES TAB */}
             {activeTab === 'qrcodes' && (
               <div className="space-y-8 animate-fade-in">
                 {/* Print Control panel */}
@@ -655,7 +1125,7 @@ export default function AdminPage() {
                   <div className="max-w-2xl">
                     <span className="font-mono text-[10px] font-bold block mb-1 uppercase tracking-widest">PRINT SPECIFICATIONS</span>
                     <p className="font-sans text-sm font-bold leading-relaxed">
-                      Render physical placard labels for all 10 campus checkpoint barrels. Use the print command below to print directly onto card stock paper. Target paths are compiled dynamically.
+                      Render physical placard labels for all 20 campus checkpoint barrels. Use the print command below to print directly onto card stock paper. Target paths are compiled dynamically.
                     </p>
                   </div>
                   <a
@@ -670,7 +1140,7 @@ export default function AdminPage() {
 
                 {/* Printable placat nodes */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 print:grid-cols-2 print:gap-4 print:text-black">
-                  {Array.from({ length: 10 }, (_, i) => i + 1).map((barrelNum) => {
+                  {Array.from({ length: 20 }, (_, i) => i + 1).map((barrelNum) => {
                     const scanLink = `${originUrl}/barrel/${barrelNum}`;
                     return (
                       <div 
@@ -678,7 +1148,7 @@ export default function AdminPage() {
                         className="bg-brand-surface p-10 border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] text-center space-y-6 flex flex-col items-center justify-center page-break-inside-avoid print:bg-white print:border-black print:text-black print:shadow-none print:p-8"
                       >
                         <div className="font-mono text-xs tracking-widest text-brand-on-surface uppercase font-black print:text-black border-b border-brand-on-surface pb-1">
-                          NASA HYDERABAD HERITAGE HUNT 2026
+                          NASA HYDERABAD INSTAGRAM HUNT 2026
                         </div>
 
                         <div>
@@ -829,6 +1299,325 @@ export default function AdminPage() {
               </div>
             )}
           </>
+        )}
+
+        {/* -------------------------------------------------------------
+            CRUD OVERLAY MODALS
+           ------------------------------------------------------------- */}
+
+        {/* Participant CRUD Modal */}
+        {showPartModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:hidden overflow-y-auto">
+            <div className="bg-brand-surface border-8 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] max-w-lg w-full p-6 md:p-8 space-y-6 my-8">
+              <div className="flex justify-between items-center border-b-4 border-brand-on-surface pb-3">
+                <h3 className="font-display text-xl font-black text-brand-on-surface uppercase">
+                  {editingPart ? 'Edit Participant Details' : 'Register New Participant'}
+                </h3>
+                <button
+                  onClick={() => setShowPartModal(false)}
+                  className="p-1 border-2 border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-brand-primary-container cursor-pointer"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveParticipant} className="space-y-4">
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={partForm.full_name}
+                    onChange={(e) => setPartForm({ ...partForm, full_name: e.target.value })}
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Registration ID</label>
+                    <input
+                      type="text"
+                      required
+                      value={partForm.registration_id}
+                      onChange={(e) => setPartForm({ ...partForm, registration_id: e.target.value })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono uppercase"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">College/Zone</label>
+                    <input
+                      type="text"
+                      required
+                      value={partForm.college_name}
+                      onChange={(e) => setPartForm({ ...partForm, college_name: e.target.value })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold uppercase"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Phone Number</label>
+                    <input
+                      type="text"
+                      required
+                      value={partForm.phone_number}
+                      onChange={(e) => setPartForm({ ...partForm, phone_number: e.target.value })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Instagram ID</label>
+                    <input
+                      type="text"
+                      value={partForm.instagram_id}
+                      onChange={(e) => setPartForm({ ...partForm, instagram_id: e.target.value })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono lowercase"
+                      placeholder="e.g. user_handle"
+                    />
+                  </div>
+                </div>
+
+                <div className="border-2 border-brand-on-surface p-4 bg-brand-surface-low space-y-4">
+                  <span className="block font-mono text-xs font-black uppercase text-brand-primary border-b border-brand-on-surface pb-1.5">
+                    Quest Progression Overrides
+                  </span>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Completed Quizzes (0-20)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="20"
+                        value={partForm.completed_quizzes}
+                        onChange={(e) => setPartForm({ ...partForm, completed_quizzes: parseInt(e.target.value || '0', 10) })}
+                        className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Next Target Barrel (1-20)</label>
+                      <select
+                        value={partForm.next_barrel_id}
+                        onChange={(e) => setPartForm({ ...partForm, next_barrel_id: e.target.value })}
+                        className="w-full input-brutalist px-3 py-2 text-xs font-mono bg-white"
+                      >
+                        <option value="">None (Finished)</option>
+                        {Array.from({ length: 20 }, (_, i) => String(i + 1)).map((num) => (
+                          <option key={num} value={num}>Barrel #{num.padStart(2, '0')}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Total Score (XP)</label>
+                      <input
+                        type="number"
+                        value={partForm.total_score}
+                        onChange={(e) => setPartForm({ ...partForm, total_score: parseInt(e.target.value || '0', 10) })}
+                        className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Total Hunt Duration (sec)</label>
+                      <input
+                        type="number"
+                        value={partForm.total_time}
+                        onChange={(e) => setPartForm({ ...partForm, total_time: parseInt(e.target.value || '0', 10) })}
+                        className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 mt-2">
+                  <input
+                    type="checkbox"
+                    id="is_disabled_check"
+                    checked={partForm.is_disabled}
+                    onChange={(e) => setPartForm({ ...partForm, is_disabled: e.target.checked })}
+                    className="h-4 w-4 border-2 border-brand-on-surface text-brand-primary"
+                  />
+                  <label htmlFor="is_disabled_check" className="font-mono text-xs font-bold text-brand-on-surface uppercase cursor-pointer">
+                    SUSPEND / DISABLE PARTICIPANT LOGIN ACCESS
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-brand-secondary text-brand-on-secondary border-4 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-y-[1px] cursor-pointer mt-4"
+                >
+                  SAVE RECORD
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Quiz CRUD Modal */}
+        {showQuizModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:hidden overflow-y-auto">
+            <div className="bg-brand-surface border-8 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] max-w-md w-full p-6 md:p-8 space-y-6 my-8">
+              <div className="flex justify-between items-center border-b-4 border-brand-on-surface pb-3">
+                <h3 className="font-display text-xl font-black text-brand-on-surface uppercase">
+                  {editingQuiz ? 'Edit Quiz Barrel' : 'Create Quiz Barrel'}
+                </h3>
+                <button
+                  onClick={() => setShowQuizModal(false)}
+                  className="p-1 border-2 border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-brand-primary-container cursor-pointer"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveQuiz} className="space-y-4">
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Barrel ID (1-20)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="20"
+                    required
+                    value={quizForm.barrel_id}
+                    onChange={(e) => setQuizForm({ ...quizForm, barrel_id: e.target.value })}
+                    className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                    disabled={!!editingQuiz}
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Quiz Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={quizForm.title}
+                    onChange={(e) => setQuizForm({ ...quizForm, title: e.target.value })}
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Quiz Instructions / Description</label>
+                  <textarea
+                    required
+                    value={quizForm.description}
+                    onChange={(e) => setQuizForm({ ...quizForm, description: e.target.value })}
+                    rows={4}
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-brand-secondary text-brand-on-secondary border-4 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-y-[1px] cursor-pointer mt-4"
+                >
+                  SAVE QUIZ BARREL
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Question CRUD Modal */}
+        {showQuestionModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:hidden overflow-y-auto">
+            <div className="bg-brand-surface border-8 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] max-w-lg w-full p-6 md:p-8 space-y-6 my-8">
+              <div className="flex justify-between items-center border-b-4 border-brand-on-surface pb-3">
+                <h3 className="font-display text-xl font-black text-brand-on-surface uppercase">
+                  {editingQuestion ? 'Edit Question' : 'Add Question to Quiz'}
+                </h3>
+                <button
+                  onClick={() => setShowQuestionModal(false)}
+                  className="p-1 border-2 border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-brand-primary-container cursor-pointer"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveQuestion} className="space-y-4">
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Question Prompt Text</label>
+                  <textarea
+                    required
+                    value={questionForm.question}
+                    onChange={(e) => setQuestionForm({ ...questionForm, question: e.target.value })}
+                    rows={3}
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <span className="block font-mono text-xs font-black uppercase text-brand-primary">Answer Options</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Option A</label>
+                      <input
+                        type="text"
+                        required
+                        value={questionForm.option_a}
+                        onChange={(e) => setQuestionForm({ ...questionForm, option_a: e.target.value })}
+                        className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Option B</label>
+                      <input
+                        type="text"
+                        required
+                        value={questionForm.option_b}
+                        onChange={(e) => setQuestionForm({ ...questionForm, option_b: e.target.value })}
+                        className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Option C</label>
+                      <input
+                        type="text"
+                        required
+                        value={questionForm.option_c}
+                        onChange={(e) => setQuestionForm({ ...questionForm, option_c: e.target.value })}
+                        className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Option D</label>
+                      <input
+                        type="text"
+                        required
+                        value={questionForm.option_d}
+                        onChange={(e) => setQuestionForm({ ...questionForm, option_d: e.target.value })}
+                        className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Correct Choice</label>
+                  <select
+                    value={questionForm.correct_answer}
+                    onChange={(e) => setQuestionForm({ ...questionForm, correct_answer: e.target.value })}
+                    className="w-full input-brutalist px-3 py-2 text-xs font-mono font-bold bg-white"
+                  >
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                  </select>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-brand-secondary text-brand-on-secondary border-4 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-y-[1px] cursor-pointer mt-4"
+                >
+                  SAVE QUESTION
+                </button>
+              </form>
+            </div>
+          </div>
         )}
       </main>
     </div>

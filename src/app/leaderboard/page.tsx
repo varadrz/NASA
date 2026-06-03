@@ -399,7 +399,7 @@ export default function LeaderboardPage() {
                           +{z.avgScore} XP
                         </td>
                         <td className="py-4 px-6 text-center font-mono text-xs text-brand-on-surface-variant">
-                          {z.avgCompleted} / 10
+                          {z.avgCompleted} / 20
                         </td>
                         <td className="py-4 px-6 text-center font-mono text-xs text-brand-on-surface">
                           <div className="inline-flex items-center gap-1.5 justify-center">

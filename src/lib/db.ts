@@ -240,6 +240,21 @@ export const DB = {
     return data;
   },
 
+  async getAllQuizzes() {
+    if (!IS_REAL_DB || !supabase) return await MockDB.getAllQuizzes();
+
+    const { data, error } = await supabase
+      .from('quizzes')
+      .select('*')
+      .order('barrel_id', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching all quizzes:', error);
+      return [];
+    }
+    return data || [];
+  },
+
   async getQuestionsByQuizId(quizId: string) {
     if (!IS_REAL_DB || !supabase) return await MockDB.getQuestionsByQuizId(quizId);
 
@@ -543,14 +558,42 @@ export const DB = {
 
         if (quiz) {
           qSeed.questions.forEach((q: any) => {
+            let correctText = '';
+            if (q.correct_answer === 'A') correctText = q.option_a;
+            else if (q.correct_answer === 'B') correctText = q.option_b;
+            else if (q.correct_answer === 'C') correctText = q.option_c;
+            else if (q.correct_answer === 'D') correctText = q.option_d;
+
+            const options = [
+              { text: q.option_a },
+              { text: q.option_b },
+              { text: q.option_c },
+              { text: q.option_d }
+            ];
+
+            // Fisher-Yates shuffle
+            for (let i = options.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [options[i], options[j]] = [options[j], options[i]];
+            }
+
+            // Find which option matches correctText
+            let newCorrectAnswer: 'A' | 'B' | 'C' | 'D' = 'A';
+            const keys: ('A' | 'B' | 'C' | 'D')[] = ['A', 'B', 'C', 'D'];
+            options.forEach((opt, idx) => {
+              if (opt.text === correctText) {
+                newCorrectAnswer = keys[idx];
+              }
+            });
+
             insertList.push({
               quiz_id: quiz.id,
               question: q.question,
-              option_a: q.option_a,
-              option_b: q.option_b,
-              option_c: q.option_c,
-              option_d: q.option_d,
-              correct_answer: q.correct_answer
+              option_a: options[0].text,
+              option_b: options[1].text,
+              option_c: options[2].text,
+              option_d: options[3].text,
+              correct_answer: newCorrectAnswer
             });
           });
         }

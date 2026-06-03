@@ -10,6 +10,7 @@ interface ParticipantSession {
   full_name: string;
   college_name: string;
   registration_id: string;
+  instagram_id?: string;
 }
 
 interface ProgressSession {
@@ -103,11 +104,16 @@ export default function Navbar() {
       {/* Top Header Navbar */}
       <nav className="sticky top-0 z-40 bg-brand-surface border-b-4 border-brand-on-surface shadow-[4px_4px_0px_0px_rgba(28,27,27,1)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
 
             {/* Logo Section */}
             <div className="flex items-center">
-              <Link href="/" className="flex items-center gap-2 group">
+              <Link href="/" className="flex items-center gap-3 group">
+                <img 
+                  src="/nasa-logo.png" 
+                  alt="NASA Logo" 
+                  className="h-14 w-auto object-contain border border-brand-on-surface p-0.5 bg-white shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]" 
+                />
                 <span className="font-display font-black text-lg md:text-xl tracking-tighter uppercase text-brand-on-surface">
                   68th Year Annual Nasa Heritage Hunt
                 </span>
@@ -151,7 +157,7 @@ export default function Navbar() {
                     <div className="text-[10px] font-mono font-bold text-brand-primary flex gap-2 justify-end">
                       <span>{progress?.total_score || 0} XP</span>
                       <span>•</span>
-                      <span>{progress?.completed_quizzes || 0}/10 BARRELS</span>
+                      <span>{progress?.completed_quizzes || 0}/20 BARRELS</span>
                     </div>
                   </div>
 
@@ -321,7 +327,7 @@ export default function Navbar() {
                   <div>
                     <h3 className="font-display font-black text-base uppercase text-brand-on-surface leading-tight">{participant.full_name}</h3>
                     <p className="font-mono text-xs text-brand-on-surface-variant uppercase">{participant.college_name}</p>
-                    <p className="font-mono text-[10px] text-brand-outline-variant uppercase">Z-ID: {participant.registration_id}</p>
+                    <p className="font-mono text-[10px] text-brand-outline-variant uppercase">Instagram: @{participant.instagram_id || 'not_set'}</p>
                   </div>
                 </div>
 
@@ -333,7 +339,7 @@ export default function Navbar() {
                   </div>
                   <div className="bg-brand-surface border-2 border-brand-on-surface p-3 text-center shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]">
                     <p className="font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-wider">Barrels Scanned</p>
-                    <p className="font-display font-black text-lg text-brand-secondary">{progress?.completed_quizzes || 0}/10</p>
+                    <p className="font-display font-black text-lg text-brand-secondary">{progress?.completed_quizzes || 0}/20</p>
                   </div>
                 </div>
 

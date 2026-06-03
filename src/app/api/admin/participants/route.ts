@@ -41,35 +41,172 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Toggle Participant Status (suspend/unsuspend)
+// Create, Update, or Toggle Participant Status
 export async function POST(request: NextRequest) {
   if (!isAdminAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
   }
 
   try {
-    const { id, isDisabled } = await request.json();
-    if (!id) {
-      return NextResponse.json({ error: 'Participant ID is required.' }, { status: 400 });
+    const body = await request.json();
+    const action = body.action || (body.isDisabled !== undefined ? 'toggleStatus' : 'update');
+    
+    if (action === 'toggleStatus') {
+      const { id, isDisabled } = body;
+      if (!id) {
+        return NextResponse.json({ error: 'Participant ID is required.' }, { status: 400 });
+      }
+
+      const success = await DB.updateParticipantStatus(id, isDisabled);
+      if (!success) {
+        return NextResponse.json({ error: 'Participant not found or update failed.' }, { status: 404 });
+      }
+
+      const actionText = isDisabled ? 'disabled' : 'enabled';
+      await DB.logAudit(
+        null,
+        `Administrator ${actionText} participant ID: ${id}`,
+        request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1',
+        request.headers.get('user-agent') || 'Unknown'
+      );
+
+      return NextResponse.json({ success: true, message: `Participant status set to ${isDisabled ? 'Suspended' : 'Active'}.` });
     }
 
-    const success = await DB.updateParticipantStatus(id, isDisabled);
-    if (!success) {
-      return NextResponse.json({ error: 'Participant not found or update failed.' }, { status: 404 });
+    if (action === 'create') {
+      const { full_name, college_name, phone_number, registration_id, instagram_id } = body;
+      if (!full_name || !college_name || !phone_number || !registration_id) {
+        return NextResponse.json({ error: 'Full name, college, phone, and registration ID are required.' }, { status: 400 });
+      }
+
+      // Create using existing DB wrapper which sets up participant and progress
+      const participant = await DB.createParticipant({
+        full_name,
+        college_name,
+        phone_number,
+        registration_id,
+        instagram_id: instagram_id || ''
+      });
+
+      // If progress overrides are specified, apply them too
+      if (body.completed_quizzes !== undefined || body.total_score !== undefined || body.total_time !== undefined || body.next_barrel_id !== undefined) {
+        const completed_quizzes = parseInt(body.completed_quizzes || '0', 10);
+        const total_score = parseInt(body.total_score || '0', 10);
+        const total_time = parseInt(body.total_time || '0', 10);
+        const next_barrel_id = body.next_barrel_id ? parseInt(body.next_barrel_id, 10) : null;
+
+        await DB.updateParticipantProgress({
+          participant_id: participant.id,
+          completed_quizzes,
+          total_score,
+          total_time,
+          next_barrel_id,
+          current_attempt_id: null
+        });
+      }
+
+      await DB.logAudit(
+        null,
+        `Administrator created participant: ${full_name} (${registration_id})`,
+        request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1',
+        request.headers.get('user-agent') || 'Unknown'
+      );
+
+      return NextResponse.json({ success: true, message: 'Participant created successfully.', participant });
     }
 
-    const actionText = isDisabled ? 'disabled' : 'enabled';
-    await DB.logAudit(
-      null,
-      `Administrator ${actionText} participant ID: ${id}`,
-      request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1',
-      request.headers.get('user-agent') || 'Unknown'
-    );
+    if (action === 'update') {
+      const {
+        id,
+        full_name,
+        college_name,
+        phone_number,
+        registration_id,
+        instagram_id,
+        is_disabled,
+        completed_quizzes,
+        total_score,
+        total_time,
+        next_barrel_id
+      } = body;
 
-    return NextResponse.json({ success: true, message: `Participant status set to ${isDisabled ? 'Suspended' : 'Active'}.` });
-  } catch (error) {
-    console.error('Toggle status error:', error);
-    return NextResponse.json({ error: 'Failed to update status.' }, { status: 500 });
+      if (!id) {
+        return NextResponse.json({ error: 'Participant ID is required for update.' }, { status: 400 });
+      }
+
+      if (DB.isRealDatabase() && supabase) {
+        // Update participant table
+        const { error: pError } = await supabase
+          .from('participants')
+          .update({
+            full_name,
+            college_name,
+            phone_number,
+            registration_id,
+            instagram_id: instagram_id || '',
+            is_disabled: !!is_disabled
+          })
+          .eq('id', id);
+
+        if (pError) throw new Error(pError.message);
+
+        // Update progress table
+        const { error: progError } = await supabase
+          .from('participant_progress')
+          .upsert({
+            participant_id: id,
+            completed_quizzes: parseInt(completed_quizzes || '0', 10),
+            total_score: parseInt(total_score || '0', 10),
+            total_time: parseInt(total_time || '0', 10),
+            next_barrel_id: next_barrel_id ? parseInt(next_barrel_id, 10) : null,
+            updated_at: new Date().toISOString()
+          });
+
+        if (progError) throw new Error(progError.message);
+      } else {
+        const { getDB, saveDB } = require('@/lib/mock-db');
+        const db = getDB();
+        const p = db.participants.find((x: any) => x.id === id);
+        if (!p) {
+          return NextResponse.json({ error: 'Participant not found.' }, { status: 404 });
+        }
+
+        p.full_name = full_name;
+        p.college_name = college_name;
+        p.phone_number = phone_number;
+        p.registration_id = registration_id;
+        p.instagram_id = instagram_id || '';
+        p.is_disabled = !!is_disabled;
+
+        let prog = db.participant_progress.find((x: any) => x.participant_id === id);
+        if (!prog) {
+          prog = { participant_id: id };
+          db.participant_progress.push(prog);
+        }
+
+        prog.completed_quizzes = parseInt(completed_quizzes || '0', 10);
+        prog.total_score = parseInt(total_score || '0', 10);
+        prog.total_time = parseInt(total_time || '0', 10);
+        prog.next_barrel_id = next_barrel_id ? parseInt(next_barrel_id, 10) : null;
+        prog.updated_at = new Date().toISOString();
+
+        saveDB(db);
+      }
+
+      await DB.logAudit(
+        null,
+        `Administrator updated participant details for: ${full_name} (${registration_id})`,
+        request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1',
+        request.headers.get('user-agent') || 'Unknown'
+      );
+
+      return NextResponse.json({ success: true, message: 'Participant updated successfully.' });
+    }
+
+    return NextResponse.json({ error: 'Invalid action.' }, { status: 400 });
+  } catch (error: any) {
+    console.error('Participant CRUD error:', error);
+    return NextResponse.json({ error: error.message || 'Failed to perform participant operation.' }, { status: 500 });
   }
 }
 

@@ -15,7 +15,17 @@ const BARREL_CODES: { [key: number]: string } = {
   7: '83920154',
   8: '43892015',
   9: '20154389',
-  10: '71543892'
+  10: '71543892',
+  11: '62940183',
+  12: '30958174',
+  13: '84920173',
+  14: '15948302',
+  15: '93018472',
+  16: '48201937',
+  17: '75039182',
+  18: '29481037',
+  19: '58392014',
+  20: '10394827'
 };
 
 export default function AdminPrintPage() {
@@ -61,7 +71,7 @@ export default function AdminPrintPage() {
 
       {/* A3 Placard Sheets Container */}
       <div className="space-y-12 print:space-y-0 print:m-0">
-        {Array.from({ length: 10 }, (_, i) => i + 1).map((barrelNum) => {
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((barrelNum) => {
           const scanLink = `${originUrl || 'https://nasa-nine-rosy.vercel.app'}/barrel/${barrelNum}`;
           return (
             <div 
@@ -76,10 +86,10 @@ export default function AdminPrintPage() {
             >
               {/* Header Header */}
               <div className="w-full border-b-4 border-brand-on-surface pb-6 mt-4">
-                <span className="font-mono text-lg font-black tracking-widest text-brand-on-surface-variant uppercase">
-                  68TH YEAR ANNUAL NASA CONVENTION
+                <span className="font-mono text-2xl font-black tracking-widest text-brand-on-surface-variant uppercase">
+                  68TH YEAR ANNUAL NASA HERITAGE HUNT
                 </span>
-                <h1 className="font-display text-4xl font-black text-brand-on-surface uppercase tracking-wide mt-2">
+                <h1 className="font-display text-6xl font-black text-brand-on-surface uppercase tracking-wide mt-2">
                   HERITAGE SCAVENGER HUNT
                 </h1>
               </div>
@@ -87,10 +97,10 @@ export default function AdminPrintPage() {
               {/* Central Target Display */}
               <div className="my-auto py-8 space-y-8 flex flex-col items-center justify-center">
                 <div>
-                  <h2 className="font-display text-7xl font-black text-brand-primary uppercase tracking-tight">
+                  <h2 className="font-display text-8xl font-black text-brand-primary uppercase tracking-tight">
                     BARREL TARGET #{barrelNum.toString().padStart(2, '0')}
                   </h2>
-                  <div className="font-mono text-sm text-brand-on-surface-variant mt-2 font-bold uppercase tracking-wider">
+                  <div className="font-mono text-lg text-brand-on-surface-variant mt-2 font-bold uppercase tracking-wider">
                     SCAN THE HIGH-DENSITY QR TARGET WITH YOUR DEVICE CAMERA TO UNLOCK NEXT QUIZ
                   </div>
                 </div>
@@ -99,7 +109,7 @@ export default function AdminPrintPage() {
                 <div className="p-8 bg-white border-8 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] print:shadow-none inline-block">
                   <QRCodeSVG 
                     value={scanLink} 
-                    size={380} 
+                    size={700} 
                     level="H"
                     includeMargin={false}
                   />
@@ -108,10 +118,10 @@ export default function AdminPrintPage() {
                 {/* Big physical fallback access key displays */}
                 <div className="w-full max-w-xl p-6 border-4 border-brand-on-surface bg-brand-surface-low rounded-none space-y-2 shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] print:shadow-none">
                   <div>
-                    <span className="font-mono text-xs font-black text-brand-on-surface-variant uppercase tracking-widest block mb-2">
+                    <span className="font-mono text-base font-black text-brand-on-surface-variant uppercase tracking-widest block mb-2">
                       PHYSICAL ACCESS KEY (MANUAL FALLBACK)
                     </span>
-                    <div className="font-mono text-5xl font-black text-brand-primary uppercase tracking-widest leading-none">
+                    <div className="font-mono text-7xl font-black text-brand-primary uppercase tracking-widest leading-none">
                       {BARREL_CODES[barrelNum]}
                     </div>
                   </div>
@@ -120,7 +130,7 @@ export default function AdminPrintPage() {
 
               {/* Footer Disclaimers */}
               <div className="w-full border-t-4 border-brand-on-surface pt-6 mb-4">
-                <p className="font-mono text-xs text-brand-on-surface-variant font-bold uppercase leading-relaxed">
+                <p className="font-mono text-sm text-brand-on-surface-variant font-bold uppercase leading-relaxed">
                   DO NOT REMOVE, COVER, OR INTERFERE WITH THIS PLACARD ASSEMBLY.<br />
                   AUTOMATIC AUDIT LOGS TRIGGER ON SUSPICIOUS ACTIVITY. ORGANISED BY NASA INDIA.
                 </p>

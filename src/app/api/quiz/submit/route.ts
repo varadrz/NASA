@@ -110,21 +110,21 @@ export async function POST(request: NextRequest) {
     await DB.submitAttempt(attemptId, score, timeTakenSeconds);
 
     // 12. Determine next barrel randomly from unattempted barrels
-    const completedAttempts = await DB.getCompletedAttempts(participant.id);
+    const [completedAttempts, allQuizzes] = await Promise.all([
+      DB.getCompletedAttempts(participant.id),
+      DB.getAllQuizzes()
+    ]);
     const completedQuizIds = completedAttempts.map(a => a.quiz_id);
 
-    // All barrels
-    const allBarrels = Array.from({ length: 20 }, (_, i) => i + 1);
-    
-    // Find completed barrel IDs
+    // Find completed barrel IDs in memory
     const completedBarrels: number[] = [];
-    for (const bId of allBarrels) {
-      const bQuiz = await DB.getQuizByBarrelId(bId);
-      if (bQuiz && completedQuizIds.includes(bQuiz.id)) {
-        completedBarrels.push(bId);
+    for (const bQuiz of allQuizzes) {
+      if (completedQuizIds.includes(bQuiz.id)) {
+        completedBarrels.push(bQuiz.barrel_id);
       }
     }
 
+    const allBarrels = Array.from({ length: 20 }, (_, i) => i + 1);
     const unattemptedBarrels = allBarrels.filter(bId => !completedBarrels.includes(bId));
     let nextBarrelId: number | null = null;
     if (unattemptedBarrels.length > 0) {

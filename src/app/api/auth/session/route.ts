@@ -36,8 +36,12 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // 3. Fetch current participant record from DB
-    const participant = await DB.getParticipantById(decoded.participantId);
+    // 3. Fetch current participant record and progress in parallel
+    const [participant, progress] = await Promise.all([
+      DB.getParticipantById(decoded.participantId),
+      DB.getParticipantProgress(decoded.participantId)
+    ]);
+
     if (!participant) {
       const response = NextResponse.json(
         { authenticated: false, error: 'Participant not found.' },
@@ -56,9 +60,6 @@ export async function GET(request: NextRequest) {
       response.cookies.delete('participant_session');
       return response;
     }
-
-    // 5. Fetch participant progress
-    const progress = await DB.getParticipantProgress(participant.id);
     
     let peerTargets = [];
     if (progress) {
@@ -74,6 +75,7 @@ export async function GET(request: NextRequest) {
 
         const targets = selected.map((p: any) => ({
           name: p.full_name,
+          instagram_id: p.instagram_id ? p.instagram_id.trim() : '',
           reg_id: p.registration_id.trim().toUpperCase(),
           found: false
         }));
@@ -81,16 +83,16 @@ export async function GET(request: NextRequest) {
         if (targets.length < 10) {
           const paddingNeeded = 10 - targets.length;
           const PADDING_POOL = [
-            { name: "Aarav Mehta", reg_id: "NASA08P1" },
-            { name: "Aditi Rao", reg_id: "NASA08P2" },
-            { name: "Vihaan Sharma", reg_id: "NASA08P3" },
-            { name: "Ananya Iyer", reg_id: "NASA08P4" },
-            { name: "Kabir Sen", reg_id: "NASA08P5" },
-            { name: "Ishaan Verma", reg_id: "NASA08P6" },
-            { name: "Diya Joshi", reg_id: "NASA08P7" },
-            { name: "Rohan Gupta", reg_id: "NASA08P8" },
-            { name: "Zara Khan", reg_id: "NASA08P9" },
-            { name: "Sai Pranav", reg_id: "NASA08P10" }
+            { name: "Aarav Mehta", instagram_id: "@aarav_mehta", reg_id: "NASA08P1" },
+            { name: "Aditi Rao", instagram_id: "@aditi_rao", reg_id: "NASA08P2" },
+            { name: "Vihaan Sharma", instagram_id: "@vihaan_s", reg_id: "NASA08P3" },
+            { name: "Ananya Iyer", instagram_id: "@ananya_i", reg_id: "NASA08P4" },
+            { name: "Kabir Sen", instagram_id: "@kabir_sen", reg_id: "NASA08P5" },
+            { name: "Ishaan Verma", instagram_id: "@ishaan_v", reg_id: "NASA08P6" },
+            { name: "Diya Joshi", instagram_id: "@diya_j", reg_id: "NASA08P7" },
+            { name: "Rohan Gupta", instagram_id: "@rohan_g", reg_id: "NASA08P8" },
+            { name: "Zara Khan", instagram_id: "@zara_k", reg_id: "NASA08P9" },
+            { name: "Sai Pranav", instagram_id: "@sai_pranav", reg_id: "NASA08P10" }
           ];
           
           const shuffledPadding = PADDING_POOL.sort(() => 0.5 - Math.random());
@@ -99,6 +101,7 @@ export async function GET(request: NextRequest) {
             const pad = shuffledPadding[i % shuffledPadding.length];
             targets.push({
               name: pad.name,
+              instagram_id: pad.instagram_id,
               reg_id: pad.reg_id,
               found: false
             });
@@ -125,7 +128,8 @@ export async function GET(request: NextRequest) {
         id: participant.id,
         full_name: participant.full_name,
         college_name: participant.college_name,
-        registration_id: participant.registration_id
+        registration_id: participant.registration_id,
+        instagram_id: participant.instagram_id
       },
       progress: progress ? {
         completed_quizzes: progress.completed_quizzes,

@@ -39,10 +39,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, zId } = body;
+    const { name, zId, instagramId } = body;
 
-    if (!name || !zId) {
-      return NextResponse.json({ error: 'Target name and Z-Id are required.' }, { status: 400 });
+    const inputId = (instagramId || zId || '').trim();
+
+    if (!name || !inputId) {
+      return NextResponse.json({ error: 'Target name and Instagram ID are required.' }, { status: 400 });
     }
 
     // 2. Fetch Progress
@@ -64,12 +66,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'You have already verified this participant.' }, { status: 400 });
     }
 
-    // 4. Verify Z-ID (registration ID)
-    const normalizedInputId = zId.trim().toUpperCase();
-    const expectedRegId = target.reg_id.trim().toUpperCase();
+    // 4. Verify Instagram ID (registration ID/Z-ID fallback)
+    const normalizedInputId = inputId.replace(/^@/, '').toLowerCase();
+    const targetVal = target.instagram_id || target.reg_id || '';
+    const expectedId = targetVal.trim().replace(/^@/, '').toLowerCase();
 
-    if (normalizedInputId !== expectedRegId) {
-      return NextResponse.json({ error: 'Invalid Z-Id for this participant. Verify physically.' }, { status: 400 });
+    if (normalizedInputId !== expectedId) {
+      return NextResponse.json({ error: 'Invalid Instagram ID for this participant. Verify physically.' }, { status: 400 });
     }
 
     // 5. Award 25 XP and mark as found

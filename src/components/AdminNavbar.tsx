@@ -15,14 +15,16 @@ export default function AdminNavbar({ onLogout, isAuthenticated }: AdminNavbarPr
   return (
     <nav className="sticky top-0 z-50 bg-brand-surface border-b-4 border-brand-on-surface shadow-[4px_4px_0px_0px_rgba(28,27,27,1)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           {/* Brand/Logo Section */}
           <div className="flex items-center gap-3">
-            <div className="bg-brand-primary p-1.5 border border-brand-on-surface hidden sm:block">
-              <Database className="h-4 w-4 text-brand-on-primary" />
-            </div>
+            <img 
+              src="/nasa-logo.png" 
+              alt="NASA Logo" 
+              className="h-14 w-auto object-contain border border-brand-on-surface p-0.5 bg-white shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] hidden sm:block" 
+            />
             <span className="font-display font-black text-sm md:text-base tracking-tighter uppercase text-brand-on-surface">
-              NASA HERITAGE HUNT
+              68th Year Annual Nasa Heritage Hunt
             </span>
             <span className="font-mono text-[9px] font-black bg-brand-mustard text-brand-on-surface px-2.5 py-0.5 border-2 border-brand-on-surface shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] uppercase tracking-wider">
               ADMIN CONTROL
