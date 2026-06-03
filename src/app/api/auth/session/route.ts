@@ -61,88 +61,104 @@ export async function GET(request: NextRequest) {
       return response;
     }
     
+const getDynamicRange = (totalUsers: number): number => {
+  if (totalUsers < 10) return 0;       // Starting 10 users: no range limit so they can see each other!
+  if (totalUsers < 30) return 3;       // 10-29 users: small range
+  if (totalUsers < 60) return 8;       // 30-59 users: moderate range
+  if (totalUsers < 100) return 15;     // 60-99 users: larger range
+  return 25;                           // 100+ users: full range
+};
+
     let peerTargets = [];
     if (progress) {
-      if (progress.peer_targets && Array.isArray(progress.peer_targets) && progress.peer_targets.length > 0) {
-        // Dynamically strip any legacy mock padding targets
-        const PADDING_NAMES = ["Aarav Mehta", "Aditi Rao", "Vihaan Sharma", "Ananya Iyer", "Kabir Sen", "Ishaan Verma", "Diya Joshi", "Rohan Gupta", "Zara Khan", "Sai Pranav"];
-        const cleanTargets = progress.peer_targets.filter((t: any) => !PADDING_NAMES.includes(t.name));
-        
-        // Also apply the +-25 range check to existing targets to ensure no invalid targets remain
-        const allParts = await DB.getAllParticipants();
-        const filteredTargets = cleanTargets.filter((t: any) => {
-          const dbPart = allParts.find((p: any) => p.full_name.toLowerCase() === t.name.toLowerCase());
-          if (!dbPart) return true; // Keep if not found in DB
-          
-          const currentRegId = participant.registration_id || '';
-          const otherRegId = dbPart.registration_id || '';
-          const currentMatch = currentRegId.match(/\d+/);
-          const otherMatch = otherRegId.match(/\d+/);
-          
-          if (currentMatch && otherMatch) {
-            const currentNum = parseInt(currentMatch[0], 10);
-            const otherNum = parseInt(otherMatch[0], 10);
-            if (Math.abs(currentNum - otherNum) <= 25) {
-              return false; // Exclude
-            }
-          }
-          return true;
-        });
+      const allParts = await DB.getAllParticipants();
+      const totalUsers = allParts.length;
+      const limit = getDynamicRange(totalUsers);
 
-        peerTargets = filteredTargets;
+      const PADDING_NAMES = ["Aarav Mehta", "Aditi Rao", "Vihaan Sharma", "Ananya Iyer", "Kabir Sen", "Ishaan Verma", "Diya Joshi", "Rohan Gupta", "Zara Khan", "Sai Pranav"];
 
-        // If the targets were modified (e.g. mock names stripped or range checks applied), update DB
-        if (filteredTargets.length !== progress.peer_targets.length) {
-          progress.peer_targets = filteredTargets;
-          await DB.updateParticipantProgress({
-            participant_id: progress.participant_id,
-            completed_quizzes: progress.completed_quizzes,
-            total_score: progress.total_score,
-            total_time: progress.total_time,
-            next_barrel_id: progress.next_barrel_id,
-            current_attempt_id: progress.current_attempt_id,
-            peer_targets: filteredTargets
-          });
+      // Retrieve existing target list (default to empty list if none)
+      const existingList = Array.isArray(progress.peer_targets) ? progress.peer_targets : [];
+      
+      // 1. Clean existing targets: remove mock targets and any targets violating the dynamic Z-ID range limit
+      let cleanTargets = existingList.filter((t: any) => {
+        // Strip mock padding targets
+        if (PADDING_NAMES.includes(t.name)) {
+          return false;
         }
-      } else {
-        // Initialize targets using actual DB participants only (no mock padding)
-        const allParts = await DB.getAllParticipants();
+
+        // Find the actual participant in DB by name to check current Z-ID range exclusion
+        const dbPart = allParts.find((p: any) => p.full_name.toLowerCase() === t.name.toLowerCase());
+        if (!dbPart) return true; // Keep if not found in DB but not a known mock target
+
+        const currentRegId = participant.registration_id || '';
+        const otherRegId = dbPart.registration_id || '';
+        const currentMatch = currentRegId.match(/\d+/);
+        const otherMatch = otherRegId.match(/\d+/);
         
-        // Filter out others who are disabled, matches own ID, or within +-25 numeric registration ID range
-        const others = allParts.filter((p: any) => {
+        if (currentMatch && otherMatch) {
+          const currentNum = parseInt(currentMatch[0], 10);
+          const otherNum = parseInt(otherMatch[0], 10);
+          if (Math.abs(currentNum - otherNum) <= limit) {
+            return false; // Exclude targets violating current dynamic range limits
+          }
+        }
+        return true;
+      });
+
+      // 2. If target list has fewer than 10 targets, dynamically fill it up with new eligible participants
+      if (cleanTargets.length < 10) {
+        const currentNamesLower = cleanTargets.map((t: any) => t.name.toLowerCase());
+
+        // Find other registered participants who are not already in their target list, and are not within dynamic Z-ID range
+        const newEligible = allParts.filter((p: any) => {
           if (p.id === participant.id || p.is_disabled) {
             return false;
           }
-          
+          if (currentNamesLower.includes(p.full_name.toLowerCase())) {
+            return false; // Already targeted
+          }
+
           const currentRegId = participant.registration_id || '';
           const otherRegId = p.registration_id || '';
-          
           const currentMatch = currentRegId.match(/\d+/);
           const otherMatch = otherRegId.match(/\d+/);
           
           if (currentMatch && otherMatch) {
             const currentNum = parseInt(currentMatch[0], 10);
             const otherNum = parseInt(otherMatch[0], 10);
-            if (Math.abs(currentNum - otherNum) <= 25) {
-              return false; // Exclude targets within +-25 of current user's registration ID number
+            if (Math.abs(currentNum - otherNum) <= limit) {
+              return false; // Exclude targets within dynamic range limits
             }
           }
-          
           return true;
         });
 
-        const shuffled = others.sort(() => 0.5 - Math.random());
-        const selected = shuffled.slice(0, 10);
+        if (newEligible.length > 0) {
+          const shuffledNew = newEligible.sort(() => 0.5 - Math.random());
+          const sliceCount = 10 - cleanTargets.length;
+          const selectedNew = shuffledNew.slice(0, sliceCount);
 
-        const targets = selected.map((p: any) => ({
-          name: p.full_name,
-          instagram_id: p.instagram_id ? p.instagram_id.trim() : '',
-          reg_id: p.registration_id.trim().toUpperCase(),
-          found: false
-        }));
+          const addedTargets = selectedNew.map((p: any) => ({
+            name: p.full_name,
+            instagram_id: p.instagram_id ? p.instagram_id.trim() : '',
+            reg_id: p.registration_id.trim().toUpperCase(),
+            found: false
+          }));
 
-        peerTargets = targets;
-        progress.peer_targets = targets;
+          cleanTargets = [...cleanTargets, ...addedTargets];
+        }
+      }
+
+      peerTargets = cleanTargets;
+
+      // 3. Save to database if targets list changed (e.g. mock targets stripped, new users added, or out-of-range targets removed)
+      const hasChanged = !Array.isArray(progress.peer_targets) ||
+        progress.peer_targets.length !== cleanTargets.length ||
+        progress.peer_targets.some((t: any, idx: number) => t.name !== cleanTargets[idx]?.name);
+
+      if (hasChanged) {
+        progress.peer_targets = cleanTargets;
         await DB.updateParticipantProgress({
           participant_id: progress.participant_id,
           completed_quizzes: progress.completed_quizzes,
@@ -150,7 +166,7 @@ export async function GET(request: NextRequest) {
           total_time: progress.total_time,
           next_barrel_id: progress.next_barrel_id,
           current_attempt_id: progress.current_attempt_id,
-          peer_targets: targets
+          peer_targets: cleanTargets
         });
       }
     }
