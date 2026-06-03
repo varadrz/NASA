@@ -64,11 +64,72 @@ export async function GET(request: NextRequest) {
     let peerTargets = [];
     if (progress) {
       if (progress.peer_targets && Array.isArray(progress.peer_targets) && progress.peer_targets.length > 0) {
-        peerTargets = progress.peer_targets;
-      } else {
-        // Initialize targets
+        // Dynamically strip any legacy mock padding targets
+        const PADDING_NAMES = ["Aarav Mehta", "Aditi Rao", "Vihaan Sharma", "Ananya Iyer", "Kabir Sen", "Ishaan Verma", "Diya Joshi", "Rohan Gupta", "Zara Khan", "Sai Pranav"];
+        const cleanTargets = progress.peer_targets.filter((t: any) => !PADDING_NAMES.includes(t.name));
+        
+        // Also apply the +-25 range check to existing targets to ensure no invalid targets remain
         const allParts = await DB.getAllParticipants();
-        const others = allParts.filter((p: any) => p.id !== participant.id && !p.is_disabled);
+        const filteredTargets = cleanTargets.filter((t: any) => {
+          const dbPart = allParts.find((p: any) => p.full_name.toLowerCase() === t.name.toLowerCase());
+          if (!dbPart) return true; // Keep if not found in DB
+          
+          const currentRegId = participant.registration_id || '';
+          const otherRegId = dbPart.registration_id || '';
+          const currentMatch = currentRegId.match(/\d+/);
+          const otherMatch = otherRegId.match(/\d+/);
+          
+          if (currentMatch && otherMatch) {
+            const currentNum = parseInt(currentMatch[0], 10);
+            const otherNum = parseInt(otherMatch[0], 10);
+            if (Math.abs(currentNum - otherNum) <= 25) {
+              return false; // Exclude
+            }
+          }
+          return true;
+        });
+
+        peerTargets = filteredTargets;
+
+        // If the targets were modified (e.g. mock names stripped or range checks applied), update DB
+        if (filteredTargets.length !== progress.peer_targets.length) {
+          progress.peer_targets = filteredTargets;
+          await DB.updateParticipantProgress({
+            participant_id: progress.participant_id,
+            completed_quizzes: progress.completed_quizzes,
+            total_score: progress.total_score,
+            total_time: progress.total_time,
+            next_barrel_id: progress.next_barrel_id,
+            current_attempt_id: progress.current_attempt_id,
+            peer_targets: filteredTargets
+          });
+        }
+      } else {
+        // Initialize targets using actual DB participants only (no mock padding)
+        const allParts = await DB.getAllParticipants();
+        
+        // Filter out others who are disabled, matches own ID, or within +-25 numeric registration ID range
+        const others = allParts.filter((p: any) => {
+          if (p.id === participant.id || p.is_disabled) {
+            return false;
+          }
+          
+          const currentRegId = participant.registration_id || '';
+          const otherRegId = p.registration_id || '';
+          
+          const currentMatch = currentRegId.match(/\d+/);
+          const otherMatch = otherRegId.match(/\d+/);
+          
+          if (currentMatch && otherMatch) {
+            const currentNum = parseInt(currentMatch[0], 10);
+            const otherNum = parseInt(otherMatch[0], 10);
+            if (Math.abs(currentNum - otherNum) <= 25) {
+              return false; // Exclude targets within +-25 of current user's registration ID number
+            }
+          }
+          
+          return true;
+        });
 
         const shuffled = others.sort(() => 0.5 - Math.random());
         const selected = shuffled.slice(0, 10);
@@ -79,34 +140,6 @@ export async function GET(request: NextRequest) {
           reg_id: p.registration_id.trim().toUpperCase(),
           found: false
         }));
-
-        if (targets.length < 10) {
-          const paddingNeeded = 10 - targets.length;
-          const PADDING_POOL = [
-            { name: "Aarav Mehta", instagram_id: "@aarav_mehta", reg_id: "NASA08P1" },
-            { name: "Aditi Rao", instagram_id: "@aditi_rao", reg_id: "NASA08P2" },
-            { name: "Vihaan Sharma", instagram_id: "@vihaan_s", reg_id: "NASA08P3" },
-            { name: "Ananya Iyer", instagram_id: "@ananya_i", reg_id: "NASA08P4" },
-            { name: "Kabir Sen", instagram_id: "@kabir_sen", reg_id: "NASA08P5" },
-            { name: "Ishaan Verma", instagram_id: "@ishaan_v", reg_id: "NASA08P6" },
-            { name: "Diya Joshi", instagram_id: "@diya_j", reg_id: "NASA08P7" },
-            { name: "Rohan Gupta", instagram_id: "@rohan_g", reg_id: "NASA08P8" },
-            { name: "Zara Khan", instagram_id: "@zara_k", reg_id: "NASA08P9" },
-            { name: "Sai Pranav", instagram_id: "@sai_pranav", reg_id: "NASA08P10" }
-          ];
-          
-          const shuffledPadding = PADDING_POOL.sort(() => 0.5 - Math.random());
-
-          for (let i = 0; i < paddingNeeded; i++) {
-            const pad = shuffledPadding[i % shuffledPadding.length];
-            targets.push({
-              name: pad.name,
-              instagram_id: pad.instagram_id,
-              reg_id: pad.reg_id,
-              found: false
-            });
-          }
-        }
 
         peerTargets = targets;
         progress.peer_targets = targets;
