@@ -561,7 +561,7 @@ export default function Home() {
                         </div>
 
                         {peer.found ? (
-                          <div className="py-1 bg-brand-secondary-container text-brand-secondary text-[10px] font-mono font-bold uppercase border border-brand-on-surface">
+                          <div className="py-1 bg-brand-secondary text-white text-[10px] font-mono font-bold uppercase border border-brand-on-surface">
                             +25 XP SECURED
                           </div>
                         ) : (
