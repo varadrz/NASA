@@ -23,6 +23,29 @@ import {
   LogIn
 } from 'lucide-react';
 
+const BARREL_CODES: { [key: number]: string } = {
+  1: '48392015',
+  2: '89201543',
+  3: '31548920',
+  4: '54389201',
+  5: '92015438',
+  6: '15438920',
+  7: '83920154',
+  8: '43892015',
+  9: '20154389',
+  10: '71543892',
+  11: '62940183',
+  12: '30958174',
+  13: '84920173',
+  14: '15948302',
+  15: '93018472',
+  16: '48201937',
+  17: '75039182',
+  18: '29481037',
+  19: '58392014',
+  20: '10394827'
+};
+
 const getBarrelIdFromCode = (code: string): number | null => {
   const normalized = code.trim();
   // Check numeric mappings:
@@ -114,7 +137,7 @@ export default function Home() {
       if (bId >= 1 && bId <= 20) {
         setIsScannerOpen(false);
         resetScannerState();
-        router.push(`/barrel/${bId}`);
+        router.push(`/barrel/${bId}?code=${BARREL_CODES[bId]}`);
         return;
       }
     }
@@ -124,7 +147,7 @@ export default function Home() {
     if (!isNaN(rawNum) && rawNum >= 1 && rawNum <= 20) {
       setIsScannerOpen(false);
       resetScannerState();
-      router.push(`/barrel/${rawNum}`);
+      router.push(`/barrel/${rawNum}?code=${BARREL_CODES[rawNum]}`);
       return;
     }
 
@@ -133,7 +156,7 @@ export default function Home() {
     if (detectedBId) {
       setIsScannerOpen(false);
       resetScannerState();
-      router.push(`/barrel/${detectedBId}`);
+      router.push(`/barrel/${detectedBId}?code=${decodedText}`);
       return;
     }
 
@@ -154,7 +177,7 @@ export default function Home() {
     if (detectedBId) {
       setIsScannerOpen(false);
       resetScannerState();
-      router.push(`/barrel/${detectedBId}`);
+      router.push(`/barrel/${detectedBId}?code=${code}`);
     } else {
       setManualCodeError("INVALID 8-DIGIT ACCESS KEY. VERIFY PHYSICAL BARREL.");
     }

@@ -54,6 +54,9 @@ export default function BarrelQuizPage({
   const [wrongBarrel, setWrongBarrel] = useState(false);
   const [assignedBarrel, setAssignedBarrel] = useState<number | null>(null);
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
+  const [needsCode, setNeedsCode] = useState(false);
+  const [inputCode, setInputCode] = useState('');
+  const [codeError, setCodeError] = useState<string | null>(null);
   
   // Quiz execution states
   const [quiz, setQuiz] = useState<QuizData | null>(null);
@@ -88,9 +91,14 @@ export default function BarrelQuizPage({
     setNeedsAuth(false);
     setWrongBarrel(false);
     setAlreadyCompleted(false);
+    setNeedsCode(false);
+
+    // Get code from URL query parameter
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get('code') || '';
 
     try {
-      const res = await fetch(`/api/barrel/${barrelId}`);
+      const res = await fetch(`/api/barrel/${barrelId}?code=${code}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -100,6 +108,9 @@ export default function BarrelQuizPage({
         } else if (data.wrong_barrel) {
           setWrongBarrel(true);
           setAssignedBarrel(data.assigned_barrel);
+          setError(data.error);
+        } else if (data.needs_code || res.status === 403) {
+          setNeedsCode(true);
           setError(data.error);
         } else {
           setError(data.error || 'Failed to fetch barrel information.');
@@ -130,6 +141,24 @@ export default function BarrelQuizPage({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleUnlockWithCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCodeError(null);
+
+    const code = inputCode.trim();
+    if (code.length !== 8) {
+      setCodeError('ACCESS CODE MUST BE EXACTLY 8 CHARACTERS.');
+      return;
+    }
+
+    // Update query string in URL
+    const newUrl = `${window.location.pathname}?code=${code}`;
+    window.history.replaceState(null, '', newUrl);
+
+    // Re-fetch the quiz
+    fetchQuiz();
   };
 
   const handleSelectOption = (qId: string, optionValue: string) => {
@@ -206,6 +235,68 @@ export default function BarrelQuizPage({
       <div className="min-h-screen bg-brand-surface flex flex-col items-center justify-center text-brand-on-surface">
         <Compass className="h-10 w-10 text-brand-primary animate-spin mb-4" />
         <p className="font-mono text-xs font-bold uppercase tracking-widest">LOADING BARREL COORDINATES...</p>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
+  // STATE A.5: BARREL IS LOCKED - REQUIRES PASSCODE
+  // -------------------------------------------------------------
+  if (needsCode) {
+    return (
+      <div className="min-h-screen flex flex-col bg-brand-surface">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="bg-brand-surface p-8 border-4 border-brand-on-surface shadow-[6px_6px_0px_0px_rgba(28,27,27,1)] max-w-md w-full text-center space-y-6">
+            <div className="inline-flex p-4 bg-brand-mustard border-2 border-brand-on-surface text-brand-on-surface">
+              <Lock className="h-10 w-10" />
+            </div>
+            <div>
+              <span className="font-mono text-[9px] font-bold bg-brand-primary text-brand-on-primary px-3 py-1 mb-2 inline-block uppercase tracking-wider">
+                BARREL #{barrelId} IS LOCKED
+              </span>
+              <h2 className="font-display text-2xl font-black uppercase text-brand-on-surface">ENTER ACCESS CODE</h2>
+            </div>
+            <p className="font-sans text-brand-on-surface-variant text-sm leading-relaxed">
+              To unlock this quiz, scan the physical QR code on the barrel or enter the 8-digit access code displayed on the physical barrel below.
+            </p>
+
+            {codeError && (
+              <div className="p-3 border-2 border-brand-error bg-red-50 text-brand-error font-mono text-xs font-bold uppercase">
+                {codeError}
+              </div>
+            )}
+
+            <form onSubmit={handleUnlockWithCode} className="space-y-4">
+              <input
+                type="text"
+                value={inputCode}
+                onChange={(e) => {
+                  setInputCode(e.target.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8));
+                  setCodeError(null);
+                }}
+                placeholder="ENTER 8-DIGIT CODE"
+                className="w-full input-brutalist px-4 py-3 text-sm text-center font-mono uppercase tracking-widest placeholder:text-brand-outline-variant placeholder:opacity-50"
+                required
+              />
+              <button
+                type="submit"
+                className="w-full py-4 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-display font-bold text-xs uppercase tracking-widest shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-primary-container active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(28,27,27,1)] transition-all flex items-center justify-center cursor-pointer"
+              >
+                UNLOCK BARREL
+              </button>
+            </form>
+
+            <div className="pt-2">
+              <Link
+                href="/"
+                className="w-full block py-3.5 bg-brand-surface border-2 border-brand-on-surface font-display font-bold text-xs uppercase hover:bg-brand-surface-low transition-all text-center"
+              >
+                Return to Dashboard
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

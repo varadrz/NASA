@@ -8,6 +8,29 @@ import { rateLimit } from '@/lib/rate-limit';
 import { seededShuffle } from '@/lib/seeded-shuffle';
 
 
+const BARREL_CODES: { [key: number]: string } = {
+  1: '48392015',
+  2: '89201543',
+  3: '31548920',
+  4: '54389201',
+  5: '92015438',
+  6: '15438920',
+  7: '83920154',
+  8: '43892015',
+  9: '20154389',
+  10: '71543892',
+  11: '62940183',
+  12: '30958174',
+  13: '84920173',
+  14: '15948302',
+  15: '93018472',
+  16: '48201937',
+  17: '75039182',
+  18: '29481037',
+  19: '58392014',
+  20: '10394827'
+};
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ barrelId: string }> }
@@ -87,6 +110,17 @@ export async function GET(
         completed: true,
         message: 'Congratulations! You have completed all 20 quizzes. Head to the leaderboard to check your rank!'
       });
+    }
+
+    // 7.5 Verify 8-digit access code
+    const { searchParams } = new URL(request.url);
+    const code = searchParams.get('code');
+    const expectedCode = BARREL_CODES[barrelId];
+    if (!code || code.trim() !== expectedCode) {
+      return NextResponse.json({
+        needs_code: true,
+        error: 'A valid 8-digit physical barrel access code is required to unlock this quiz.'
+      }, { status: 403 });
     }
 
     if (progress.next_barrel_id !== barrelId) {
