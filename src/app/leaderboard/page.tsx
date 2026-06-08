@@ -26,7 +26,7 @@ interface LeaderboardItem {
 }
 
 export default function LeaderboardPage() {
-  const [activeTab, setActiveTab] = useState<'overall' | 'zone' | 'quiz'>('overall');
+  const [activeTab, setActiveTab] = useState<'overall' | 'zone' | 'quiz' | 'zid'>('overall');
   const [selectedBarrel, setSelectedBarrel] = useState<number>(1);
   const [selectedZone, setSelectedZone] = useState<string>('all');
   const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([]);
@@ -40,7 +40,7 @@ export default function LeaderboardPage() {
     else setLoading(true);
 
     try {
-      const url = (activeTab === 'overall' || activeTab === 'zone')
+      const url = (activeTab === 'overall' || activeTab === 'zone' || activeTab === 'zid')
         ? '/api/leaderboard?type=overall'
         : `/api/leaderboard?type=quiz&barrelId=${selectedBarrel}`;
       
@@ -90,6 +90,45 @@ export default function LeaderboardPage() {
     });
 
     return Object.values(zoneStats)
+      .map(z => ({
+        ...z,
+        avgScore: z.participants > 0 ? Math.round((z.totalScore / z.participants) * 10) / 10 : 0,
+        avgTime: z.participants > 0 ? Math.round(z.totalTime / z.participants) : 0,
+        avgCompleted: z.participants > 0 ? Math.round((z.completedSum / z.participants) * 10) / 10 : 0,
+      }))
+      .sort((a, b) => b.totalScore - a.totalScore || a.avgTime - b.avgTime)
+      .map((z, idx) => ({ ...z, rank: idx + 1 }));
+  };
+
+  const getZidComparisonList = () => {
+    const zidStats: Record<string, { zid: string; college: string; participants: number; totalScore: number; totalTime: number; completedSum: number }> = {};
+
+    leaderboard.forEach(item => {
+      const zid = (item as any).registration_id || 'N/A';
+      
+      // Apply search query and zone filter if present
+      const matchesSearch = searchQuery ? zid.toLowerCase().includes(searchQuery.toLowerCase()) : true;
+      const matchesZone = selectedZone !== 'all' ? item.college === selectedZone : true;
+      
+      if (!matchesSearch || !matchesZone) return;
+
+      if (!zidStats[zid]) {
+        zidStats[zid] = {
+          zid,
+          college: item.college,
+          participants: 0,
+          totalScore: 0,
+          totalTime: 0,
+          completedSum: 0
+        };
+      }
+      zidStats[zid].participants += 1;
+      zidStats[zid].totalScore += item.score;
+      zidStats[zid].totalTime += item.time;
+      zidStats[zid].completedSum += item.completed || 0;
+    });
+
+    return Object.values(zidStats)
       .map(z => ({
         ...z,
         avgScore: z.participants > 0 ? Math.round((z.totalScore / z.participants) * 10) / 10 : 0,
@@ -217,6 +256,20 @@ export default function LeaderboardPage() {
             Quiz-Specific Leaderboard
           </button>
 
+          <button
+            onClick={() => {
+              setActiveTab('zid');
+              setSearchQuery('');
+            }}
+            className={`px-5 py-3 border-2 font-display text-xs uppercase font-bold tracking-widest transition-all cursor-pointer shrink-0 ${
+              activeTab === 'zid'
+                ? 'bg-brand-primary text-brand-on-primary border-brand-on-surface shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] translate-x-[1px] translate-y-[1px]'
+                : 'bg-brand-surface border-transparent text-brand-on-surface-variant hover:border-brand-on-surface'
+            }`}
+          >
+            Z-ID Leaderboard
+          </button>
+
           {activeTab === 'quiz' && (
             <select
               value={selectedBarrel}
@@ -241,7 +294,7 @@ export default function LeaderboardPage() {
               </div>
               <input
                 type="text"
-                placeholder="SEARCH BY PARTICIPANT NAME..."
+                placeholder={activeTab === 'zid' ? "SEARCH BY Z-ID..." : "SEARCH BY PARTICIPANT NAME..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full input-brutalist pl-12 pr-4 py-3.5 text-xs font-mono uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
@@ -267,7 +320,7 @@ export default function LeaderboardPage() {
         )}
 
         {/* Podium Section - Only show when search query is empty, we have at least 3 participants, and not on Zone view */}
-        {activeTab !== 'zone' && !searchQuery && !loading && filteredLeaderboard.length >= 3 && (
+        {activeTab !== 'zone' && activeTab !== 'zid' && !searchQuery && !loading && filteredLeaderboard.length >= 3 && (
           <div className="grid grid-cols-3 items-end gap-3 md:gap-6 max-w-2xl mx-auto h-[220px] md:h-[300px] mt-4 mb-8">
             {/* Rank 2 */}
             {(() => {
@@ -413,6 +466,75 @@ export default function LeaderboardPage() {
                 </tbody>
               </table>
             </div>
+          ) : activeTab === 'zid' ? (
+            getZidComparisonList().length === 0 ? (
+              <div className="p-20 text-center text-brand-on-surface-variant font-mono flex flex-col items-center justify-center gap-2">
+                <HelpCircle className="h-10 w-10 text-brand-outline" />
+                <span className="text-xs font-bold uppercase tracking-wider">No Z-ID records matching search criteria.</span>
+              </div>
+            ) : (
+              /* Z-ID COMPARISON TABLE */
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[650px]">
+                  <thead>
+                    <tr className="bg-brand-on-surface border-b-4 border-brand-on-surface text-xs text-brand-surface font-mono uppercase tracking-widest font-bold">
+                      <th className="py-4 px-6 text-center w-24">Rank</th>
+                      <th className="py-4 px-6">Z-ID</th>
+                      <th className="py-4 px-6">Zone No.</th>
+                      <th className="py-4 px-6 text-center">Group Size</th>
+                      <th className="py-4 px-6 text-center">Total Points</th>
+                      <th className="py-4 px-6 text-center">Avg Points / Member</th>
+                      <th className="py-4 px-6 text-center">Avg Barrels Scanned</th>
+                      <th className="py-4 px-6 text-center">Avg Completion Time</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y-2 divide-brand-on-surface text-sm font-sans font-bold">
+                    {getZidComparisonList().map((z) => {
+                      const isTop3 = z.rank <= 3;
+                      const rankStyle = 
+                        z.rank === 1 ? 'bg-brand-mustard text-brand-on-surface border-2 border-brand-on-surface font-black shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]' :
+                        z.rank === 2 ? 'bg-brand-secondary text-brand-on-secondary border-2 border-brand-on-surface font-black shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]' :
+                        z.rank === 3 ? 'bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-black shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]' :
+                        'bg-brand-surface-container border-2 border-transparent text-brand-on-surface-variant font-bold';
+
+                      return (
+                        <tr key={z.zid} className={`hover:bg-brand-surface-low transition duration-150 ${isTop3 ? 'bg-brand-mustard/5' : ''}`}>
+                          <td className="py-4 px-6 text-center">
+                            <span className={`inline-flex items-center justify-center h-8 w-8 font-mono text-xs ${rankStyle}`}>
+                              {z.rank.toString().padStart(2, '0')}
+                            </span>
+                          </td>
+                          <td className="py-4 px-6 font-display font-black text-brand-primary text-base uppercase">
+                            {z.zid}
+                          </td>
+                          <td className="py-4 px-6 font-mono text-xs text-brand-on-surface-variant uppercase">
+                            {z.college}
+                          </td>
+                          <td className="py-4 px-6 text-center font-mono text-xs text-brand-on-surface">
+                            {z.participants} {z.participants === 1 ? 'student' : 'students'}
+                          </td>
+                          <td className="py-4 px-6 text-center font-mono text-brand-secondary font-black text-base">
+                            {z.totalScore} XP
+                          </td>
+                          <td className="py-4 px-6 text-center font-mono text-brand-primary">
+                            +{z.avgScore} XP
+                          </td>
+                          <td className="py-4 px-6 text-center font-mono text-xs text-brand-on-surface-variant">
+                            {z.avgCompleted} / 20
+                          </td>
+                          <td className="py-4 px-6 text-center font-mono text-xs text-brand-on-surface">
+                            <div className="inline-flex items-center gap-1.5 justify-center">
+                              <Clock className="h-3.5 w-3.5 text-brand-outline" />
+                              {formatTime(z.avgTime)}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )
           ) : filteredLeaderboard.length === 0 ? (
             <div className="p-20 text-center text-brand-on-surface-variant font-mono flex flex-col items-center justify-center gap-2">
               <HelpCircle className="h-10 w-10 text-brand-outline" />
