@@ -4,6 +4,31 @@
 import fs from 'fs';
 import path from 'path';
 import { questionsData, QuizSeed, QuestionInput } from './questions-data';
+import { INITIAL_SCHEDULE, EventItem } from './initial-schedule';
+
+interface MockEventItem {
+  id: string;
+  day_idx: number;
+  time: string;
+  startHour: number;
+  endHour: number;
+  speaker: string;
+  topic: string;
+  venue: string;
+  type: 'Masterclass' | 'Seminar' | 'Workshop' | 'Nexus Event';
+  created_at: string;
+}
+
+interface MockAnnouncement {
+  id: string;
+  title?: string;
+  message: string;
+  type: string;
+  scheduled_for?: string; // ISO string
+  expires_at?: string; // ISO string
+  created_at: string;
+}
+
 
 interface Participant {
   id: string;
@@ -73,7 +98,10 @@ interface DBStructure {
   quiz_attempts: QuizAttempt[];
   participant_progress: ParticipantProgress[];
   audit_logs: AuditLog[];
+  schedule_events?: MockEventItem[];
+  announcements?: MockAnnouncement[];
 }
+
 
 const DB_FILE = path.join(process.cwd(), 'mock_db.json');
 
@@ -87,8 +115,30 @@ function initializeDB(): DBStructure {
     questions: [],
     quiz_attempts: [],
     participant_progress: [],
-    audit_logs: []
+    audit_logs: [],
+    schedule_events: [],
+    announcements: []
   };
+
+  // Seed schedule events from INITIAL_SCHEDULE
+  let eventSeq = 1;
+  INITIAL_SCHEDULE.forEach((day, dayIdx) => {
+    day.events.forEach((event) => {
+      defaultDB.schedule_events!.push({
+        id: `evt-${eventSeq++}`,
+        day_idx: dayIdx,
+        time: event.time,
+        startHour: event.startHour,
+        endHour: event.endHour,
+        speaker: event.speaker,
+        topic: event.topic,
+        venue: event.venue,
+        type: event.type,
+        created_at: new Date().toISOString()
+      });
+    });
+  });
+
 
   // Seed quizzes and questions from questionsData
   let questionCount = 1;
@@ -150,7 +200,6 @@ export function getDB(): DBStructure {
           }
         }
         memoryDB = parsed;
-        return memoryDB!;
       }
     }
   } catch (error) {
@@ -158,10 +207,41 @@ export function getDB(): DBStructure {
   }
 
   // If file doesn't exist or failed to load, initialize the DB
-  memoryDB = initializeDB();
-  saveDB(memoryDB);
-  return memoryDB;
+  if (!memoryDB) {
+    memoryDB = initializeDB();
+  }
+  
+  const db = memoryDB;
+  
+  // Ensure schedule_events and announcements are initialized for existing files
+  if (!db.schedule_events) {
+    db.schedule_events = [];
+    let eventSeq = 1;
+    INITIAL_SCHEDULE.forEach((day, dayIdx) => {
+      day.events.forEach((event) => {
+        db.schedule_events!.push({
+          id: `evt-${eventSeq++}`,
+          day_idx: dayIdx,
+          time: event.time,
+          startHour: event.startHour,
+          endHour: event.endHour,
+          speaker: event.speaker,
+          topic: event.topic,
+          venue: event.venue,
+          type: event.type,
+          created_at: new Date().toISOString()
+        });
+      });
+    });
+  }
+  if (!db.announcements) {
+    db.announcements = [];
+  }
+
+  saveDB(db);
+  return db;
 }
+
 
 export function saveDB(db: DBStructure): void {
   memoryDB = db;
@@ -467,6 +547,80 @@ export const MockDB = {
     db.quiz_attempts = [];
     db.participant_progress = [];
     db.audit_logs = [];
+    db.schedule_events = [];
+    db.announcements = [];
     saveDB(db);
+  },
+
+  // Schedule Events CRUD
+  async getScheduleEvents(): Promise<MockEventItem[]> {
+    const db = getDB();
+    if (!db.schedule_events) db.schedule_events = [];
+    return db.schedule_events;
+  },
+
+  async createScheduleEvent(event: Omit<MockEventItem, 'id' | 'created_at'>): Promise<MockEventItem> {
+    const db = getDB();
+    if (!db.schedule_events) db.schedule_events = [];
+    const newEvent: MockEventItem = {
+      ...event,
+      id: `evt-${Math.random().toString(36).substr(2, 9)}`,
+      created_at: new Date().toISOString()
+    };
+    db.schedule_events.push(newEvent);
+    saveDB(db);
+    return newEvent;
+  },
+
+  async updateScheduleEvent(id: string, event: Partial<Omit<MockEventItem, 'id' | 'created_at'>>): Promise<MockEventItem> {
+    const db = getDB();
+    if (!db.schedule_events) db.schedule_events = [];
+    const idx = db.schedule_events.findIndex(e => e.id === id);
+    if (idx === -1) throw new Error('Event not found');
+    db.schedule_events[idx] = {
+      ...db.schedule_events[idx],
+      ...event
+    };
+    saveDB(db);
+    return db.schedule_events[idx];
+  },
+
+  async deleteScheduleEvent(id: string): Promise<boolean> {
+    const db = getDB();
+    if (!db.schedule_events) db.schedule_events = [];
+    const initialLength = db.schedule_events.length;
+    db.schedule_events = db.schedule_events.filter(e => e.id !== id);
+    saveDB(db);
+    return db.schedule_events.length < initialLength;
+  },
+
+  // Announcements CRUD
+  async getAnnouncements(): Promise<MockAnnouncement[]> {
+    const db = getDB();
+    if (!db.announcements) db.announcements = [];
+    return db.announcements;
+  },
+
+  async createAnnouncement(ann: Omit<MockAnnouncement, 'id' | 'created_at'>): Promise<MockAnnouncement> {
+    const db = getDB();
+    if (!db.announcements) db.announcements = [];
+    const newAnn: MockAnnouncement = {
+      ...ann,
+      id: `ann-${Math.random().toString(36).substr(2, 9)}`,
+      created_at: new Date().toISOString()
+    };
+    db.announcements.push(newAnn);
+    saveDB(db);
+    return newAnn;
+  },
+
+  async deleteAnnouncement(id: string): Promise<boolean> {
+    const db = getDB();
+    if (!db.announcements) db.announcements = [];
+    const initialLength = db.announcements.length;
+    db.announcements = db.announcements.filter(a => a.id !== id);
+    saveDB(db);
+    return db.announcements.length < initialLength;
   }
 };
+

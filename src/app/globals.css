@@ -20,7 +20,8 @@
   --color-brand-secondary-container: #99f3e6;
   --color-brand-on-secondary: #ffffff;
   
-  --color-brand-tertiary: #775700;
+  --color-brand-tertiary: #ea580c; /* High contrast vibrant orange */
+  --color-brand-on-tertiary: #ffffff;
   --color-brand-mustard: #f1bf52; /* Mustard Yellow */
   --color-brand-error: #ba1a1a;
   
@@ -203,4 +204,9 @@ body {
 @page {
   size: A3 portrait;
   margin: 0;
+}
+
+/* Allow rounded shapes for badge indicators specifically */
+.rounded-badge {
+  border-radius: 9999px !important;
 }

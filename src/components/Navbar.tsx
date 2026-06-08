@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Award, Compass, LayoutDashboard, LogOut, QrCode, User, Shield, X, Calendar } from 'lucide-react';
+import { Award, Compass, LayoutDashboard, LogOut, QrCode, User, Shield, X, Calendar, Bell } from 'lucide-react';
 
 interface ParticipantSession {
   id: string;
@@ -31,6 +31,75 @@ export default function Navbar() {
   const [progress, setProgress] = useState<ProgressSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
+
+  // Public Announcements State
+  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [dismissedAnnIds, setDismissedAnnIds] = useState<string[]>([]);
+  const [annIndex, setAnnIndex] = useState(0);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const unreadCount = announcements.filter(a => !dismissedAnnIds.includes(a.id)).length;
+
+  useEffect(() => {
+    // Load dismissed announcements from sessionStorage
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('dismissed_announcements');
+      if (saved) {
+        try {
+          setDismissedAnnIds(JSON.parse(saved));
+        } catch (e) {}
+      }
+    }
+
+    const fetchAnnouncements = async () => {
+      try {
+        const res = await fetch('/api/announcements');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            setAnnouncements(data);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch announcements:', err);
+      }
+    };
+
+    fetchAnnouncements();
+    // Poll every 15 seconds to receive updates in real-time
+    const interval = setInterval(fetchAnnouncements, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const visibleAnnouncements = announcements.filter(a => !dismissedAnnIds.includes(a.id));
+  const currentAnn = visibleAnnouncements.length > 0 ? visibleAnnouncements[annIndex % visibleAnnouncements.length] : null;
+
+  const latestUnreadAnn = visibleAnnouncements.length > 0 
+    ? [...visibleAnnouncements].sort((a, b) => new Date(b.scheduled_for || 0).getTime() - new Date(a.scheduled_for || 0).getTime())[0]
+    : null;
+
+  const getBadgeColorClass = (type: string) => {
+    switch (type?.toLowerCase()) {
+      case 'error': return 'bg-brand-primary';
+      case 'warning': return 'bg-brand-mustard';
+      case 'success': return 'bg-brand-secondary';
+      default: return 'bg-brand-tertiary';
+    }
+  };
+
+  const nextAnn = () => {
+    setAnnIndex(prev => (prev + 1) % visibleAnnouncements.length);
+  };
+
+  const dismissAnn = (id: string) => {
+    const nextDismissed = [...dismissedAnnIds, id];
+    setDismissedAnnIds(nextDismissed);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dismissed_announcements', JSON.stringify(nextDismissed));
+    }
+    // Adjust index if needed
+    setAnnIndex(0);
+  };
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     full_name: '',
@@ -165,6 +234,50 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Announcements Broadcast Ticker */}
+      {currentAnn && (
+        <div className="bg-brand-on-surface text-brand-surface border-b-4 border-brand-on-surface z-50 relative">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <span className={`px-2 py-0.5 font-mono text-[9px] font-black uppercase tracking-wider shrink-0 ${
+                currentAnn.type === 'error' ? 'bg-brand-primary text-brand-on-primary border border-brand-on-surface' :
+                currentAnn.type === 'warning' ? 'bg-brand-mustard text-brand-on-surface border border-brand-on-surface animate-pulse' :
+                currentAnn.type === 'success' ? 'bg-brand-secondary text-brand-on-secondary border border-brand-on-surface' :
+                'bg-brand-tertiary text-brand-on-tertiary border border-brand-on-surface'
+              }`}>
+                {currentAnn.type === 'error' ? 'CRITICAL ALERT' : currentAnn.type?.toUpperCase() || 'ANNOUNCEMENT'}
+              </span>
+              <span className="font-mono text-xs font-bold uppercase tracking-tight truncate flex items-center gap-1.5">
+                <span className="text-brand-mustard font-black">[{currentAnn.title}]:</span>
+                <span className="text-brand-surface-low">{currentAnn.message}</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2.5 shrink-0">
+              {visibleAnnouncements.length > 1 && (
+                <span className="font-mono text-[9px] font-bold opacity-60">
+                  {annIndex + 1}/{visibleAnnouncements.length}
+                </span>
+              )}
+              {visibleAnnouncements.length > 1 && (
+                <button
+                  onClick={nextAnn}
+                  className="px-2 py-0.5 bg-brand-surface-highest text-brand-on-surface border-2 border-brand-on-surface font-mono text-[9px] font-bold hover:bg-brand-surface-high cursor-pointer shadow-[1px_1px_0px_0px_rgba(28,27,27,1)] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none transition-all"
+                >
+                  NEXT
+                </button>
+              )}
+              <button
+                onClick={() => dismissAnn(currentAnn.id)}
+                className="p-1 text-brand-surface hover:text-brand-mustard transition-colors cursor-pointer border border-transparent hover:border-brand-surface"
+                title="Dismiss Broadcast"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top Header Navbar */}
       <nav className="sticky top-0 z-40 bg-brand-surface border-b-4 border-brand-on-surface shadow-[4px_4px_0px_0px_rgba(28,27,27,1)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -214,6 +327,19 @@ export default function Navbar() {
 
             {/* Desktop Participant status display */}
             <div className="hidden md:flex items-center gap-4">
+              <button
+                onClick={() => setNotificationsOpen(true)}
+                className="p-2 border-2 border-transparent hover:border-brand-on-surface text-brand-outline hover:text-brand-primary transition relative cursor-pointer flex items-center justify-center"
+                title="Notification History"
+              >
+                <Bell className="h-4.5 w-4.5" />
+                {unreadCount > 0 && (
+                  <span className={`absolute top-1 right-1 h-2.5 w-2.5 rounded-badge border border-brand-on-surface animate-pulse shadow-[1px_1px_0px_0px_rgba(0,0,0,0.5)] ${
+                    latestUnreadAnn ? getBadgeColorClass(latestUnreadAnn.type) : 'bg-brand-tertiary'
+                  }`} />
+                )}
+              </button>
+
               {!loading && participant ? (
                 <div className="flex items-center gap-3">
                   <div className="text-right">
@@ -274,7 +400,20 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Top Right Avatar (Click opens Profile Bottom Sheet) */}
-            <div className="md:hidden flex items-center">
+            <div className="md:hidden flex items-center gap-3">
+              <button
+                onClick={() => setNotificationsOpen(true)}
+                className="p-1.5 border-2 border-transparent text-brand-outline hover:text-brand-primary transition relative cursor-pointer flex items-center justify-center"
+                title="Notification History"
+              >
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className={`absolute top-0.5 right-0.5 h-3 w-3 rounded-badge border border-brand-on-surface animate-pulse shadow-[1px_1px_0px_0px_rgba(0,0,0,0.5)] ${
+                    latestUnreadAnn ? getBadgeColorClass(latestUnreadAnn.type) : 'bg-brand-tertiary'
+                  }`} />
+                )}
+              </button>
+
               {!loading && participant ? (
                 <button
                   onClick={() => setProfileOpen(true)}
@@ -604,6 +743,94 @@ export default function Navbar() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Broadcast History Modal */}
+      {notificationsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/60 transition-opacity" 
+            onClick={() => setNotificationsOpen(false)}
+          />
+          
+          {/* Modal Container */}
+          <div className="relative w-full max-w-lg bg-brand-surface border-4 border-brand-on-surface p-6 space-y-6 shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] max-h-[80vh] flex flex-col z-10 animate-fade-in">
+            {/* Header */}
+            <div className="flex justify-between items-center border-b-4 border-brand-on-surface pb-3">
+              <div className="flex items-center gap-2">
+                <Bell className="h-5 w-5 text-brand-primary" />
+                <span className="font-display font-black text-sm md:text-base uppercase tracking-tight text-brand-on-surface">
+                  Broadcast History
+                </span>
+              </div>
+              <button
+                onClick={() => setNotificationsOpen(false)}
+                className="p-1 border-2 border-brand-on-surface bg-brand-surface text-brand-on-surface hover:bg-brand-surface-low transition cursor-pointer font-bold text-xs"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* List */}
+            <div className="flex-1 overflow-y-auto space-y-4 pr-1 scrollbar-none">
+              {announcements.length === 0 ? (
+                <div className="py-12 text-center text-brand-on-surface-variant font-mono text-xs uppercase font-bold">
+                  No announcements at this time.
+                </div>
+              ) : (
+                [...announcements]
+                  .sort((a, b) => new Date(b.scheduled_for || 0).getTime() - new Date(a.scheduled_for || 0).getTime())
+                  .map((ann) => (
+                    <div 
+                      key={ann.id} 
+                      className={`p-4 border-2 border-brand-on-surface shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] flex flex-col gap-2 ${
+                        ann.type === 'error' ? 'bg-brand-primary/5' :
+                        ann.type === 'warning' ? 'bg-brand-mustard/10' :
+                        ann.type === 'success' ? 'bg-brand-secondary/5' :
+                        'bg-brand-surface'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className={`px-2 py-0.5 font-mono text-[8px] font-black uppercase tracking-wider ${
+                          ann.type === 'error' ? 'bg-brand-primary text-brand-on-primary' :
+                          ann.type === 'warning' ? 'bg-brand-mustard text-brand-on-surface border border-brand-on-surface' :
+                          ann.type === 'success' ? 'bg-brand-secondary text-brand-on-secondary' :
+                          'bg-brand-tertiary text-brand-on-tertiary'
+                        }`}>
+                          {ann.type === 'error' ? 'CRITICAL ALERT' : ann.type?.toUpperCase() || 'ANNOUNCEMENT'}
+                        </span>
+                        <span className="font-mono text-[8px] text-brand-outline font-bold">
+                          {new Date(ann.scheduled_for).toLocaleString([], {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      </div>
+                      <h4 className="font-display font-black text-xs md:text-sm uppercase text-brand-on-surface">
+                        {ann.title}
+                      </h4>
+                      <p className="font-mono text-xs text-brand-on-surface-variant leading-relaxed whitespace-pre-wrap">
+                        {ann.message}
+                      </p>
+                    </div>
+                  ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t-2 border-brand-on-surface pt-4 flex justify-end">
+              <button
+                onClick={() => setNotificationsOpen(false)}
+                className="px-4 py-2 border-2 border-brand-on-surface bg-brand-surface text-brand-on-surface font-display font-black text-xs uppercase tracking-wider hover:bg-brand-surface-low shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(28,27,27,1)] cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

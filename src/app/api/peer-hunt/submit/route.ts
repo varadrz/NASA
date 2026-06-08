@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     // 4. Verify Instagram ID (registration ID/Z-ID fallback)
     const cleanInstagramId = (id: string) => {
-      return id.replace(/^@+/, '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
+      return id.replace(/^@+/, '').replace(/[^a-zA-Z0-9_.]/g, '').toLowerCase().trim();
     };
 
     const cleanRegId = (id: string) => {

@@ -32,7 +32,8 @@ import {
   X,
   ArrowLeft,
   HelpCircle,
-  Check
+  Check,
+  Search
 } from 'lucide-react';
 
 const BARREL_CODES: { [key: number]: string } = {
@@ -108,7 +109,7 @@ export default function AdminPage() {
   const [verifying, setVerifying] = useState(false);
 
   // Dashboard state
-  const [activeTab, setActiveTab] = useState<'stats' | 'participants' | 'quizzes' | 'qrcodes' | 'database' | 'audits'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'participants' | 'quizzes' | 'qrcodes' | 'database' | 'audits' | 'schedule' | 'announcements'>('stats');
   const [summary, setSummary] = useState<StatsSummary | null>(null);
   const [completionDist, setCompletionDist] = useState<any[]>([]);
   const [quizStats, setQuizStats] = useState<QuizStat[]>([]);
@@ -119,6 +120,60 @@ export default function AdminPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [originUrl, setOriginUrl] = useState('');
+
+  // --- CRUD States for Schedule ---
+  const [scheduleList, setScheduleList] = useState<any[]>([]);
+  const [scheduleSearchQuery, setScheduleSearchQuery] = useState('');
+  const [scheduleSelectedDay, setScheduleSelectedDay] = useState<number | 'ALL'>('ALL');
+  const [scheduleSelectedType, setScheduleSelectedType] = useState<string>('ALL');
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [editingScheduleEvent, setEditingScheduleEvent] = useState<any | null>(null);
+  const [scheduleForm, setScheduleForm] = useState({
+    id: '',
+    day_idx: 0,
+    time: '',
+    startHour: 9.0,
+    endHour: 10.0,
+    speaker: '',
+    topic: '',
+    venue: '',
+    type: 'Workshop'
+  });
+
+  const filteredSchedule = scheduleList.filter(event => {
+    const eventDay = event.day_idx !== undefined ? event.day_idx : (event.dayIdx || 0);
+    if (scheduleSelectedDay !== 'ALL' && eventDay !== scheduleSelectedDay) {
+      return false;
+    }
+
+    if (scheduleSelectedType !== 'ALL' && event.type?.toUpperCase() !== scheduleSelectedType.toUpperCase()) {
+      return false;
+    }
+
+    if (scheduleSearchQuery.trim()) {
+      const query = scheduleSearchQuery.toLowerCase();
+      const topic = (event.topic || '').toLowerCase();
+      const speaker = (event.speaker || '').toLowerCase();
+      const venue = (event.venue || '').toLowerCase();
+      const type = (event.type || '').toLowerCase();
+      if (!topic.includes(query) && !speaker.includes(query) && !venue.includes(query) && !type.includes(query)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // --- States for Announcements ---
+  const [announcementsList, setAnnouncementsList] = useState<any[]>([]);
+  const [showAnnModal, setShowAnnModal] = useState(false);
+  const [annForm, setAnnForm] = useState({
+    title: 'Notice',
+    message: '',
+    type: 'info',
+    scheduled_for: '',
+    expires_at: ''
+  });
 
   // Confirmation states
   const [wiping, setWiping] = useState(false);
@@ -198,6 +253,7 @@ export default function AdminPage() {
       if (res.ok) {
         setIsAuthenticated(true);
         sessionStorage.setItem('admin_pw', password);
+        document.cookie = `admin_session=${password}; path=/; max-age=86400; SameSite=Strict`;
         fetchDashboardData(password);
       } else {
         setLoginError(data.error || 'Invalid administrative password.');
@@ -214,6 +270,7 @@ export default function AdminPage() {
     if (saved) {
       setPassword(saved);
       setIsAuthenticated(true);
+      document.cookie = `admin_session=${saved}; path=/; max-age=86400; SameSite=Strict`;
       fetchDashboardData(saved);
     }
   }, []);
@@ -249,11 +306,162 @@ export default function AdminPage() {
         const data = await auditRes.json();
         setAuditLogs(data.logs || []);
       }
+
+      const scheduleRes = await fetch('/api/admin/schedule', { headers: { 'x-admin-password': pw } });
+      if (scheduleRes.ok) {
+        const data = await scheduleRes.json();
+        setScheduleList(data || []);
+      }
+
+      const annRes = await fetch('/api/admin/announcements', { headers: { 'x-admin-password': pw } });
+      if (annRes.ok) {
+        const data = await annRes.json();
+        setAnnouncementsList(data || []);
+      }
     } catch (err) {
       console.error('Error fetching admin data:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  // --- Schedule CRUD Handlers ---
+  const handleSaveScheduleEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const isEdit = !!editingScheduleEvent;
+      const url = '/api/admin/schedule';
+      const method = isEdit ? 'PUT' : 'POST';
+      
+      const payload = {
+        ...scheduleForm,
+        day_idx: Number(scheduleForm.day_idx),
+        startHour: Number(scheduleForm.startHour),
+        endHour: Number(scheduleForm.endHour)
+      };
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': password
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        setShowScheduleModal(false);
+        setEditingScheduleEvent(null);
+        // Refresh schedule list
+        const scheduleRes = await fetch('/api/admin/schedule', { headers: { 'x-admin-password': password } });
+        if (scheduleRes.ok) {
+          const data = await scheduleRes.json();
+          setScheduleList(data || []);
+        }
+      } else {
+        const err = await res.json();
+        alert('Error saving event: ' + err.error);
+      }
+    } catch (err) {
+      alert('Error connecting to schedule API.');
+    }
+  };
+
+  const handleEditScheduleEvent = (event: any) => {
+    setEditingScheduleEvent(event);
+    setScheduleForm({
+      id: event.id || '',
+      day_idx: event.day_idx !== undefined ? Number(event.day_idx) : Number(event.dayIdx || 0),
+      time: event.time || '',
+      startHour: event.startHour !== undefined ? Number(event.startHour) : Number(event.start_hour || 9.0),
+      endHour: event.endHour !== undefined ? Number(event.endHour) : Number(event.end_hour || 10.0),
+      speaker: event.speaker || '',
+      topic: event.topic || '',
+      venue: event.venue || '',
+      type: event.type || 'Workshop'
+    });
+    setShowScheduleModal(true);
+  };
+
+  const handleDeleteScheduleEvent = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this schedule event?')) return;
+    try {
+      const res = await fetch(`/api/admin/schedule?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-password': password }
+      });
+      if (res.ok) {
+        const scheduleRes = await fetch('/api/admin/schedule', { headers: { 'x-admin-password': password } });
+        if (scheduleRes.ok) {
+          const data = await scheduleRes.json();
+          setScheduleList(data || []);
+        }
+      } else {
+        alert('Error deleting event.');
+      }
+    } catch (err) {
+      alert('Error connecting to schedule API.');
+    }
+  };
+
+  // --- Announcements CRUD Handlers ---
+  const handleSaveAnnouncement = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        title: annForm.title || 'Notice',
+        message: annForm.message,
+        type: annForm.type || 'info',
+        scheduled_for: annForm.scheduled_for ? new Date(annForm.scheduled_for).toISOString() : new Date().toISOString(),
+        expires_at: annForm.expires_at ? new Date(annForm.expires_at).toISOString() : null
+      };
+
+      const res = await fetch('/api/admin/announcements', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': password
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        setShowAnnModal(false);
+        setAnnForm({ title: 'Notice', message: '', type: 'info', scheduled_for: '', expires_at: '' });
+        // Refresh announcements list
+        const annRes = await fetch('/api/admin/announcements', { headers: { 'x-admin-password': password } });
+        if (annRes.ok) {
+          const data = await annRes.json();
+          setAnnouncementsList(data || []);
+        }
+      } else {
+        const err = await res.json();
+        alert('Error sending announcement: ' + err.error);
+      }
+    } catch (err) {
+      alert('Error connecting to announcements API.');
+    }
+  };
+
+  const handleDeleteAnnouncement = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this announcement? It will stop showing for all users.')) return;
+    try {
+      const res = await fetch(`/api/admin/announcements?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-password': password }
+      });
+      if (res.ok) {
+        const annRes = await fetch('/api/admin/announcements', { headers: { 'x-admin-password': password } });
+        if (annRes.ok) {
+          const data = await annRes.json();
+          setAnnouncementsList(data || []);
+        }
+      } else {
+        alert('Error deleting announcement.');
+      }
+    } catch (err) {
+      alert('Error connecting to announcements API.');
     }
   };
 
@@ -699,6 +907,8 @@ export default function AdminPage() {
             { id: 'stats', label: 'Overview Analytics', icon: BarChart3 },
             { id: 'participants', label: 'Participant Roster', icon: Users },
             { id: 'quizzes', label: 'Quizzes & Questions', icon: BookOpen },
+            { id: 'schedule', label: 'Schedule Manager', icon: Clock },
+            { id: 'announcements', label: 'Broadcast Updates', icon: AlertOctagon },
             { id: 'qrcodes', label: 'Barrel QR Codes', icon: QrCode },
             { id: 'database', label: 'System Controls', icon: Database },
             { id: 'audits', label: 'Security Audits', icon: History }
@@ -1302,12 +1512,528 @@ export default function AdminPage() {
                 </div>
               </div>
             )}
+
+            {/* SCHEDULE MANAGER TAB */}
+            {activeTab === 'schedule' && (
+              <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] p-6 md:p-8 space-y-6 animate-fade-in print:hidden">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-brand-on-surface pb-4">
+                  <div className="space-y-1">
+                    <h3 className="font-display text-xl font-black text-brand-on-surface uppercase flex items-center gap-2">
+                      <Clock className="h-5 w-5 text-brand-primary" />
+                      Convention Schedule Events
+                    </h3>
+                    <p className="text-xs text-brand-on-surface-variant">
+                      Manage session times, topics, speakers, and locations for all convention days.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setEditingScheduleEvent(null);
+                      setScheduleForm({
+                        id: '',
+                        day_idx: 0,
+                        time: '',
+                        startHour: 9.0,
+                        endHour: 10.0,
+                        speaker: '',
+                        topic: '',
+                        venue: '',
+                        type: 'Workshop'
+                      });
+                      setShowScheduleModal(true);
+                    }}
+                    className="px-4 py-2 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-display text-xs uppercase font-bold tracking-widest shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-primary-container active:translate-y-[1px] cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Plus className="h-4 w-4" />
+                    ADD SCHEDULE EVENT
+                  </button>
+                </div>
+
+                {/* Search and Filters Bar */}
+                <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center bg-brand-surface-low border-2 border-brand-on-surface p-4">
+                  {/* Search Input */}
+                  <div className="flex-grow max-w-md">
+                    <div className="flex border-2 border-brand-on-surface bg-brand-surface focus-within:shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] transition-all">
+                      <span className="flex items-center justify-center px-3 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface">
+                        <Search className="h-4 w-4" />
+                      </span>
+                      <input
+                        type="text"
+                        placeholder="Search by topic, speaker, venue, or type..."
+                        value={scheduleSearchQuery}
+                        onChange={(e) => setScheduleSearchQuery(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-transparent text-brand-on-surface outline-none border-none font-mono font-bold"
+                      />
+                      {scheduleSearchQuery && (
+                        <button
+                          onClick={() => setScheduleSearchQuery('')}
+                          className="px-2 text-brand-on-surface-variant hover:text-brand-primary cursor-pointer font-bold"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Filter Dropdown / Day Buttons */}
+                  <div className="flex flex-wrap items-center gap-4">
+                    {/* Day selector tabs */}
+                    <div className="flex border-2 border-brand-on-surface bg-brand-surface divide-x-2 divide-brand-on-surface overflow-hidden">
+                      {([
+                        { value: 'ALL', label: 'All Days' },
+                        { value: 0, label: 'Day 1' },
+                        { value: 1, label: 'Day 2' },
+                        { value: 2, label: 'Day 3' },
+                        { value: 3, label: 'Day 4' }
+                      ] as const).map((day) => (
+                        <button
+                          key={day.value}
+                          type="button"
+                          onClick={() => setScheduleSelectedDay(day.value)}
+                          className={`px-3 py-1.5 font-mono text-[10px] font-bold uppercase transition-all cursor-pointer ${
+                            scheduleSelectedDay === day.value
+                              ? 'bg-brand-primary text-brand-on-primary font-black'
+                              : 'text-brand-on-surface hover:bg-brand-surface-low'
+                          }`}
+                        >
+                          {day.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Type selector select */}
+                    <div className="flex border-2 border-brand-on-surface bg-brand-surface overflow-hidden">
+                      <select
+                        value={scheduleSelectedType}
+                        onChange={(e) => setScheduleSelectedType(e.target.value)}
+                        className="px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-brand-on-surface bg-transparent outline-none border-none cursor-pointer"
+                      >
+                        <option value="ALL">All Types</option>
+                        <option value="MASTERCLASS">Masterclass</option>
+                        <option value="SEMINAR">Seminar</option>
+                        <option value="WORKSHOP">Workshop</option>
+                        <option value="NEXUS EVENT">Nexus Event</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto border-2 border-brand-on-surface">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-brand-surface-low border-b-2 border-brand-on-surface text-xs text-brand-on-surface-variant font-mono uppercase tracking-widest font-bold">
+                        <th className="py-3 px-4">Day</th>
+                        <th className="py-3 px-4">Time</th>
+                        <th className="py-3 px-4">Topic / Event</th>
+                        <th className="py-3 px-4">Speaker</th>
+                        <th className="py-3 px-4">Venue</th>
+                        <th className="py-3 px-4">Type</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y-2 divide-brand-on-surface text-xs font-sans font-bold text-brand-on-surface bg-white">
+                      {filteredSchedule.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="py-8 text-center text-brand-on-surface-variant font-mono uppercase">
+                            No matching schedule events found.
+                          </td>
+                        </tr>
+                      ) : (
+                        [...filteredSchedule]
+                          .sort((a, b) => {
+                            const dayA = a.day_idx !== undefined ? a.day_idx : (a.dayIdx || 0);
+                            const dayB = b.day_idx !== undefined ? b.day_idx : (b.dayIdx || 0);
+                            if (dayA !== dayB) return dayA - dayB;
+                            const startA = a.startHour !== undefined ? a.startHour : (a.start_hour || 0);
+                            const startB = b.startHour !== undefined ? b.startHour : (b.start_hour || 0);
+                            return startA - startB;
+                          })
+                          .map((event) => {
+                            const dIdx = event.day_idx !== undefined ? event.day_idx : (event.dayIdx || 0);
+                            return (
+                              <tr key={event.id} className="hover:bg-brand-surface-low transition-colors">
+                                <td className="py-3 px-4 font-mono font-black text-brand-secondary">
+                                  DAY {dIdx + 1}
+                                </td>
+                                <td className="py-3 px-4 font-mono">
+                                  {event.time}
+                                </td>
+                                <td className="py-3 px-4 font-display font-black uppercase max-w-xs truncate">
+                                  {event.topic}
+                                </td>
+                                <td className="py-3 px-4 font-sans">
+                                  {event.speaker || '—'}
+                                </td>
+                                <td className="py-3 px-4 font-mono text-[10px]">
+                                  {event.venue}
+                                </td>
+                                <td className="py-3 px-4">
+                                  <span className={`px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest ${
+                                    event.type?.toUpperCase() === 'MASTERCLASS' ? 'bg-brand-primary text-brand-on-primary' :
+                                    event.type?.toUpperCase() === 'SEMINAR' ? 'bg-brand-secondary text-brand-on-secondary' :
+                                    event.type?.toUpperCase() === 'WORKSHOP' ? 'bg-brand-tertiary text-brand-on-tertiary' :
+                                    event.type?.toUpperCase() === 'NEXUS EVENT' ? 'bg-brand-mustard text-brand-on-surface border border-brand-on-surface' :
+                                    'bg-brand-surface-highest text-brand-on-surface'
+                                  }`}>
+                                    {event.type}
+                                  </span>
+                                </td>
+                                <td className="py-3 px-4 text-right">
+                                  <div className="flex justify-end gap-2">
+                                    <button
+                                      onClick={() => handleEditScheduleEvent(event)}
+                                      className="p-1 border border-brand-on-surface bg-brand-surface-highest hover:bg-brand-surface-high cursor-pointer"
+                                      title="Edit Event"
+                                    >
+                                      <Edit2 className="h-3.5 w-3.5" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteScheduleEvent(event.id)}
+                                      className="p-1 border border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-brand-primary-container cursor-pointer"
+                                      title="Delete Event"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* BROADCAST ANNOUNCEMENTS TAB */}
+            {activeTab === 'announcements' && (
+              <div className="bg-brand-surface border-4 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] p-6 md:p-8 space-y-6 animate-fade-in print:hidden">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-brand-on-surface pb-4">
+                  <div className="space-y-1">
+                    <h3 className="font-display text-xl font-black text-brand-on-surface uppercase flex items-center gap-2">
+                      <AlertOctagon className="h-5 w-5 text-brand-primary" />
+                      Broadcast Announcements (Scheduled Updates)
+                    </h3>
+                    <p className="text-xs text-brand-on-surface-variant">
+                      Publish announcements, notifications and important updates. Users will receive these in the app instantly.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setAnnForm({
+                        title: 'Notice',
+                        message: '',
+                        type: 'info',
+                        scheduled_for: '',
+                        expires_at: ''
+                      });
+                      setShowAnnModal(true);
+                    }}
+                    className="px-4 py-2 bg-brand-secondary text-brand-on-secondary border-2 border-brand-on-surface font-display text-xs uppercase font-bold tracking-widest shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-y-[1px] cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Plus className="h-4 w-4" />
+                    CREATE BROADCAST
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto border-2 border-brand-on-surface">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-brand-surface-low border-b-2 border-brand-on-surface text-xs text-brand-on-surface-variant font-mono uppercase tracking-widest font-bold">
+                        <th className="py-3 px-4">Title</th>
+                        <th className="py-3 px-4">Message</th>
+                        <th className="py-3 px-4">Type</th>
+                        <th className="py-3 px-4">Scheduled For</th>
+                        <th className="py-3 px-4">Expires At</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y-2 divide-brand-on-surface text-xs font-sans font-bold text-brand-on-surface bg-white">
+                      {announcementsList.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="py-8 text-center text-brand-on-surface-variant font-mono uppercase">
+                            No announcements found.
+                          </td>
+                        </tr>
+                      ) : (
+                        [...announcementsList]
+                          .sort((a, b) => new Date(b.created_at || b.scheduled_for).getTime() - new Date(a.created_at || a.scheduled_for).getTime())
+                          .map((ann) => {
+                            const now = new Date();
+                            const sched = new Date(ann.scheduled_for);
+                            const expires = ann.expires_at ? new Date(ann.expires_at) : null;
+                            const isLive = sched <= now && (!expires || expires > now);
+                            const isScheduled = sched > now;
+                            const isExpired = expires && expires <= now;
+
+                            return (
+                              <tr key={ann.id} className="hover:bg-brand-surface-low transition-colors">
+                                <td className="py-3 px-4 font-display font-black uppercase text-brand-primary">
+                                  {ann.title}
+                                </td>
+                                <td className="py-3 px-4 max-w-xs truncate" title={ann.message}>
+                                  {ann.message}
+                                </td>
+                                <td className="py-3 px-4">
+                                  <span className={`px-2 py-0.5 font-mono text-[9px] font-bold uppercase ${
+                                    ann.type === 'error' ? 'bg-red-100 text-red-800 border border-red-300' :
+                                    ann.type === 'warning' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' :
+                                    ann.type === 'success' ? 'bg-green-100 text-green-800 border border-green-300' :
+                                    'bg-blue-100 text-blue-800 border border-blue-300'
+                                  }`}>
+                                    {ann.type}
+                                  </span>
+                                </td>
+                                <td className="py-3 px-4 font-mono text-[10px]">
+                                  {new Date(ann.scheduled_for).toLocaleString()}
+                                </td>
+                                <td className="py-3 px-4 font-mono text-[10px]">
+                                  {ann.expires_at ? new Date(ann.expires_at).toLocaleString() : 'Never'}
+                                </td>
+                                <td className="py-3 px-4 font-mono font-bold text-[9px] uppercase">
+                                  {isLive && <span className="text-green-600">● Live</span>}
+                                  {isScheduled && <span className="text-blue-500">Scheduled</span>}
+                                  {isExpired && <span className="text-gray-400">Expired</span>}
+                                </td>
+                                <td className="py-3 px-4 text-right">
+                                  <button
+                                    onClick={() => handleDeleteAnnouncement(ann.id)}
+                                    className="p-1 border border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-brand-primary-container cursor-pointer"
+                                    title="Delete Announcement"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </>
         )}
 
-        {/* -------------------------------------------------------------
-            CRUD OVERLAY MODALS
-           ------------------------------------------------------------- */}
+        {/* Schedule CRUD Modal */}
+        {showScheduleModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:hidden overflow-y-auto animate-fade-in">
+            <div className="bg-brand-surface border-8 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] max-w-lg w-full p-6 md:p-8 space-y-6 my-8">
+              <div className="flex justify-between items-center border-b-4 border-brand-on-surface pb-3">
+                <h3 className="font-display text-xl font-black text-brand-on-surface uppercase">
+                  {editingScheduleEvent ? 'Edit Schedule Event' : 'Add New Schedule Event'}
+                </h3>
+                <button
+                  onClick={() => setShowScheduleModal(false)}
+                  className="p-1 border-2 border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-brand-primary-container cursor-pointer"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveScheduleEvent} className="space-y-4 font-sans font-bold text-xs text-brand-on-surface">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Day of Convention</label>
+                    <select
+                      value={scheduleForm.day_idx}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, day_idx: Number(e.target.value) })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono font-bold bg-white"
+                    >
+                      <option value={0}>Day 1 (June 11th)</option>
+                      <option value={1}>Day 2 (June 12th)</option>
+                      <option value={2}>Day 3 (June 13th)</option>
+                      <option value={3}>Day 4 (June 14th)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Event Type Category</label>
+                    <select
+                      value={scheduleForm.type}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, type: e.target.value })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono font-bold bg-white"
+                    >
+                      <option value="Workshop">Workshop</option>
+                      <option value="Seminar">Seminar</option>
+                      <option value="Masterclass">Masterclass</option>
+                      <option value="Nexus Event">Nexus Event</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Time Label Display (e.g. "09:30 AM – 11:00 AM")</label>
+                  <input
+                    type="text"
+                    required
+                    value={scheduleForm.time}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, time: e.target.value })}
+                    placeholder="09:30 AM – 11:00 AM"
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Start Hour Decimal (e.g. 9.5)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      value={scheduleForm.startHour}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, startHour: Number(e.target.value) })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">End Hour Decimal (e.g. 11.0)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      value={scheduleForm.endHour}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, endHour: Number(e.target.value) })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Speaker / Presenter</label>
+                  <input
+                    type="text"
+                    value={scheduleForm.speaker}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, speaker: e.target.value })}
+                    placeholder="Leave blank if none"
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Topic / Event Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={scheduleForm.topic}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, topic: e.target.value })}
+                    placeholder="Event Title"
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Venue Room / Location</label>
+                  <input
+                    type="text"
+                    required
+                    value={scheduleForm.venue}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, venue: e.target.value })}
+                    placeholder="Seminar Room A-012"
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-brand-secondary text-brand-on-secondary border-4 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-y-[1px] cursor-pointer mt-4"
+                >
+                  SAVE SCHEDULE EVENT
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Announcement Broadcast Modal */}
+        {showAnnModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:hidden overflow-y-auto animate-fade-in">
+            <div className="bg-brand-surface border-8 border-brand-on-surface shadow-[8px_8px_0px_0px_rgba(28,27,27,1)] max-w-lg w-full p-6 md:p-8 space-y-6 my-8">
+              <div className="flex justify-between items-center border-b-4 border-brand-on-surface pb-3">
+                <h3 className="font-display text-xl font-black text-brand-on-surface uppercase">
+                  Broadcast New Updates Notification
+                </h3>
+                <button
+                  onClick={() => setShowAnnModal(false)}
+                  className="p-1 border-2 border-brand-on-surface bg-brand-primary text-brand-on-primary hover:bg-brand-primary-container cursor-pointer"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveAnnouncement} className="space-y-4 font-sans font-bold text-xs text-brand-on-surface">
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Notice Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={annForm.title}
+                    onChange={(e) => setAnnForm({ ...annForm, title: e.target.value })}
+                    placeholder="e.g. Schedule Update / Critical Notice"
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Broadcast Message Body</label>
+                  <textarea
+                    required
+                    value={annForm.message}
+                    onChange={(e) => setAnnForm({ ...annForm, message: e.target.value })}
+                    placeholder="Write the announcement description..."
+                    rows={4}
+                    className="w-full input-brutalist px-3 py-2 text-xs font-sans font-bold"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Notice Category Level</label>
+                    <select
+                      value={annForm.type}
+                      onChange={(e) => setAnnForm({ ...annForm, type: e.target.value })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono font-bold bg-white"
+                    >
+                      <option value="info">Info (Blue)</option>
+                      <option value="warning">Warning (Yellow)</option>
+                      <option value="error">Critical Alert (Red)</option>
+                      <option value="success">Success / Alert (Green)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Scheduled for (Optional)</label>
+                    <input
+                      type="datetime-local"
+                      value={annForm.scheduled_for}
+                      onChange={(e) => setAnnForm({ ...annForm, scheduled_for: e.target.value })}
+                      className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] font-bold text-brand-on-surface-variant uppercase tracking-wider mb-1">Expiration Time (Optional)</label>
+                  <input
+                    type="datetime-local"
+                    value={annForm.expires_at}
+                    onChange={(e) => setAnnForm({ ...annForm, expires_at: e.target.value })}
+                    className="w-full input-brutalist px-3 py-2 text-xs font-mono"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-brand-primary text-brand-on-primary border-4 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-primary-container active:translate-y-[1px] cursor-pointer mt-4"
+                >
+                  BROADCAST NOTICE TO ALL SYSTEM CONSOLES
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Participant CRUD Modal */}
         {showPartModal && (

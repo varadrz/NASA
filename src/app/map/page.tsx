@@ -21,318 +21,7 @@ import {
   EyeOff
 } from 'lucide-react';
 
-interface EventItem {
-  time: string;
-  startHour: number; // 24h decimal format (e.g. 9.5 for 09:30 AM, 14.5 for 02:30 PM)
-  endHour: number;
-  speaker: string;
-  topic: string;
-  venue: string;
-  type: 'Masterclass' | 'Seminar' | 'Workshop' | 'Nexus Event';
-}
-
-interface ScheduleDay {
-  dayName: string;
-  dateStr: string; // "YYYY-MM-DD"
-  events: EventItem[];
-}
-
-const SCHEDULE_DATA: ScheduleDay[] = [
-  {
-    dayName: "DAY 01",
-    dateStr: "2026-06-11",
-    events: [
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Projektin", topic: "1:1 Real-scale Walkthroughs", venue: "Law block E-306", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. B Venkateswara Raja (BVR)", topic: "AI in Architecture", venue: "Lab block E-105", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "AEC Sastra", topic: "BIM for Interiors", venue: "Law block E-402", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Rajesh Kumar Vaithiyalingam", topic: "Code - facade", venue: "Design block D-103", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shri Ram R M", topic: "Crafting the Madras Terrace Roof: Traditional Lime-Based Practices", venue: "Birthday spot", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mrs. Anita Iyer Narayan", topic: "Design for all", venue: "C - 004", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Eesha sharma", topic: "Designing the Invisible: Sensory Affordances in Space", venue: "Law block E - 401 ( lab)", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Garima Dubey", topic: "Designing with Climate: Regenerative Micro-Nodesc", venue: "Lab block F - 301", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Thirupurasundari sevvel", topic: "Everyday Heritage", venue: "Lab block F - 113", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Anshul rai", topic: "Film Making", venue: "Outdoor + F-112", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Pritish", topic: "Forged Expressions: Where Metal Meets Art", venue: "Lab block F-106 & metal workshop", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Zee Ehtram", topic: "FORM IN FLUX - An Immersive Installation Workshop", venue: "Design Block D- 004 + Career connect lawn", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mr. Kalashree Vibhute", topic: "Form in Focus", venue: "Law block E-303", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Aagam Pareshkumar Shah", topic: "Frame Of Mind - A Photography Workshop", venue: "Lab block F-103", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "AEC Sastra", topic: "Harnessing the Elements: Designing for a Living Planet", venue: "Law block E-403", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Nikunj & Ar. Samrat", topic: "Lamella Structures - The Art of Assembly", venue: "Law block E-305", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mr. Manoj Bhusare", topic: "Metal jewellery design and etching", venue: "Design block D-104", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Gagan", topic: "String Art Workshop", venue: "Lab block F-005", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Sanjay Antony", topic: "Sustainable & Net Zero Energy Building Design Workshop", venue: "Law block E-301", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Nithin Kumar J", topic: "TerraLab: Build, Break & Create.", venue: "Lab block F-004", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Panduranga & Ar. varun", topic: "The 3 Minute Architect", venue: "Lab block F - 302", type: "Workshop" },
-      { time: "09:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mohit Janekunte", topic: "Think Bamboo [ A Bamboo construction workshop ]", venue: "Lab block F-014 and near wooden workshop", type: "Workshop" },
-      { time: "10:00 AM – 11:00 AM", startHour: 10.0, endHour: 11.0, speaker: "Ar. Rohan Shivkumar", topic: "Space in Cinema & Architectural Narratives", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "ArchiPulse", venue: "Admin", type: "Nexus Event" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "ScrapScape Challenge", venue: "AdminLawn", type: "Nexus Event" },
-      { time: "10:00 AM – 04:00 PM", startHour: 10.0, endHour: 16.0, speaker: "NASA India Council", topic: "Treasure Hunt", venue: "Library Lawn", type: "Nexus Event" },
-      { time: "10:30 AM – 12:00 PM", startHour: 10.5, endHour: 12.0, speaker: "Himanshu Patel", topic: "Designing with Vernacular Wisdom & Climate Response", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "10:30 AM – 12:00 PM", startHour: 10.5, endHour: 12.0, speaker: "Kamal Kamaraju", topic: "The Directed Space: Translating Film to Blueprints", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "11:30 AM – 12:30 PM", startHour: 11.5, endHour: 12.5, speaker: "Ar. Shabbir Unwala", topic: "Design with Nature & Ecological Adaptations", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "11:30 AM – 12:30 PM", startHour: 11.5, endHour: 12.5, speaker: "Ar. Vishwanath Kashikar", topic: "Why do most Design Studios fail to meet objectives?", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Projektin", topic: "1:1 Real-scale Walkthroughs", venue: "Law block E-306", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. B Venkateswara Raja (BVR)", topic: "AI in Architecture", venue: "Lab block E-105", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "AEC Sastra", topic: "BIM for Interiors", venue: "Law block E-402", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Anshul rai", topic: "CineScape in structures", venue: "Outdoor + F-112", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Rajesh Kumar Vaithiyalingam", topic: "Code - facade", venue: "Design block D-103", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shri Ram R M", topic: "Crafting the Madras Terrace Roof: Traditional Lime-Based Practices", venue: "Birthday spot", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Anita Iyer Narayan", topic: "Design for all", venue: "law block E-301", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Eesha sharma", topic: "Designing the Invisible: Sensory Affordances in Space", venue: "Law block E - 401", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Garima Dubey", topic: "Designing with Climate: Regenerative Micro-Nodesc", venue: "Lab block F - 301", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Thirupurasundari sevvel", topic: "Everyday Heritage", venue: "Lab block F - 113", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Pritish", topic: "Forged Expressions: Where Metal Meets Art", venue: "Lab block F-106 & metal workshop", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Zee Ehtram", topic: "FORM IN FLUX - An Immersive Installation Workshop", venue: "Design Block D- 004 + Career connect lawn", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mr. Kalashree Vibhute", topic: "Form in Focus", venue: "Law block E-303", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Aagam Pareshkumar Shah", topic: "Frame Of Mind - A Photography Workshop", venue: "Lab block F-103", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "AEC Sastra", topic: "Harnessing the Elements: Designing for a Living Planet", venue: "Law block E- 403", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Nikunj & Ar. Samrat", topic: "LAMELLA STRUCTURES - The Art of Assembly", venue: "Law block E-305", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mr. Manoj Bhusare", topic: "Metal jewellery design and etching", venue: "Design block D-104", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Gagan", topic: "String Art Workshop", venue: "Lab block F-005", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Sanjay Antony", topic: "Sustainable & Net Zero Energy Building Design Workshop", venue: "Law block E-301", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Nithin Kumar J", topic: "TerraLab: Build, Break & Create.", venue: "Lab block F-004", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Panduranga & Ar. Varun", topic: "The 3 Minute Architect", venue: "Law block E-201", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mohit Janekunte", topic: "Think Bamboo [ A Bamboo construction workshop ]", venue: "Lab block F-014 and near wooden workshop", type: "Workshop" },
-      { time: "02:00 PM – 04:00 PM", startHour: 14.0, endHour: 16.0, speaker: "NASA India", topic: "Balance & Beyond", venue: "Admin Lawn", type: "Nexus Event" },
-      { time: "02:00 PM – 04:00 PM", startHour: 14.0, endHour: 16.0, speaker: "NASA India", topic: "Design Dialogues", venue: "Admin", type: "Nexus Event" },
-      { time: "02:30 PM – 04:00 PM", startHour: 14.5, endHour: 16.0, speaker: "Sona Reddy", topic: "Experiential Dining: Architecture Beyond Food", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "03:30 PM – 04:30 PM", startHour: 15.5, endHour: 16.5, speaker: "Dr. Rajan Rawal", topic: "Role of First Principles of Sciences in Built Environment", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "04:00 PM – 05:30 PM", startHour: 16.0, endHour: 17.5, speaker: "NASA India", topic: "Jamming Session", venue: "Stand up comedy", type: "Nexus Event" },
-      { time: "10:00 PM – 12:00 AM", startHour: 22.0, endHour: 24.0, speaker: "NASA India", topic: "Jamming Session", venue: "Dumb charades", type: "Nexus Event" }
-    ]
-  },
-  {
-    dayName: "DAY 02",
-    dateStr: "2026-06-12",
-    events: [
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shweta Hingane", topic: "Architecture Illustrations & Motion Diagram", venue: "C- 003", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "AEC Sastra", topic: "BIM for Interiors", venue: "Law block E-402", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Madogiri", topic: "Building with Earth: Earthbag Bench", venue: "birthday spot towards hostels", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Harshika verma", topic: "Charcoal Art", venue: "Design block D-102", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Anshul rai", topic: "CineScape in structures", venue: "Outdoor + F-112", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Dhirty Hands", topic: "Cob Wall design", venue: "Lab block F-005", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Rajesh Kumar Vaithiyalingam", topic: "Code - facade", venue: "Design block D-103", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shri Ram R M", topic: "Crafting the Madras Terrace Roof: Traditional Lime-Based Practices", venue: "Birthday spot", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mrs. Anita Iyer Narayan", topic: "Design for all", venue: "C-004", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Eesha sharma", topic: "Designing the Invisible: Sensory Affordances in Space", venue: "Law block E - 401", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Sandeep Raju Vysyaraju", topic: "Earth as Architecture: Hands-on Rammed Earth Workshop", venue: "Lab block F-002", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Pritish", topic: "Forged Expressions: Where Metal Meets Art", venue: "Lab block F-106 & metal workshop", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Zee Ehtram", topic: "FORM IN FLUX - An Immersive Installation Workshop", venue: "Design Block D- 004 + Career connect lawn", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mr. Kalashree Vibhute", topic: "Form in Focus", venue: "Law block E-303", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Aagam Pareshkumar Shah", topic: "Frame Of Mind - A Photography Workshop", venue: "Lab block F-103", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mahesh Rameshwar Bangad", topic: "From Concept to Creation: Thinking Design", venue: "Lab block F - 303", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Tejas Eknath Pawar", topic: "Future-Proofing the Past: The Confluence of Historic Preservation and Innovation", venue: "Lab block F - 304", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Nikunj & Ar. Samrat", topic: "LAMELLA STRUCTURES - The Art of Assembly", venue: "Law block E-305", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mr. Manoj Bhusare", topic: "Metal jewellery design and etching", venue: "Design block D-104", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Aditya Sharma", topic: "Natural building workshop foundation to finish", venue: "Design block D-101", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Vishwajeet walvekar", topic: "PORTFOLIO LOGIC: Communicating Your Thesis", venue: "Law block E-304", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Lakshya Satija", topic: "Spanning Space: Hands-on Exploration of Large Span Structures", venue: "Lab block F- 105", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Gagan", topic: "String Art Workshop", venue: "Lab block F-104", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Sanjay Antony", topic: "Sustainable & Net Zero Energy Building Design Workshop", venue: "Law block E-301", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Pingali Naga Praveen", topic: "Syntactic Structures: From Words to Space Making", venue: "Law block E-302", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Nithin Kumar J", topic: "TerraLab: Build, Break & Create.", venue: "Lab block F-004", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Panduranga & Ar. Varun", topic: "The Spatial Biography", venue: "Lab block F - 302", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mohit Janekunte", topic: "Think Bamboo [ A bamboo construction workshop ]", venue: "Lab block F-014 and near wooden workshop", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Nabhan Ahmed", topic: "Vision To Venture", venue: "c - 004", type: "Workshop" },
-      { time: "10:00 AM – 11:00 AM", startHour: 10.0, endHour: 11.0, speaker: "Dhwaj Shah", topic: "Advanced Parametric Facades & Visualizations", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "Archipoly", venue: "AdminLawn", type: "Nexus Event" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "Build 3-Words", venue: "Library Lawn", type: "Nexus Event" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Ar. Sagar Saoji", topic: "Content Creation in Architecture", venue: "Lab block F - 307", type: "Workshop" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "Design Disaster", venue: "Admin", type: "Nexus Event" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Ar. Charlie Gupta & Ar. Ridhu Dhan", topic: "UDL Animation Masterclass", venue: "Lab block F- 102", type: "Masterclass" },
-      { time: "10:30 AM – 12:00 PM", startHour: 10.5, endHour: 12.0, speaker: "Talulah D'Silva", topic: "Designing Habitats: Where Built Form Supports Life", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "10:30 AM – 12:00 PM", startHour: 10.5, endHour: 12.0, speaker: "Apurva Bose Dutta", topic: "The Practical Palette: Evolving Architectural Writing", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "12:30 PM – 01:30 PM", startHour: 12.5, endHour: 13.5, speaker: "Paul Kronenberg", topic: "Catalysts by Design: The Changineer Way", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "12:30 PM – 01:30 PM", startHour: 12.5, endHour: 13.5, speaker: "Kalaiselvi", topic: "Invisible Architecture: Designing Through Sound", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Ar. Sagar Saoji", topic: "Content Creation in Architecture", venue: "Law block E-104", type: "Workshop" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Ar. Charlie Gupta & Ar. Ridhu Dhan", topic: "Urban Design Lab", venue: "Lab block F- 102", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "AEC Sastra", topic: "BIM for Interiors", venue: "Law block E-402", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Madogiri", topic: "Building with Earth: Earthbag Bench", venue: "birthday spot towards hostels", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Harshika verma", topic: "Charcoal art", venue: "Design block D-102", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Dhirty Hands", topic: "Cob Wall design", venue: "Lab block F-005", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Rajesh Kumar Vaithiyalingam", topic: "Code - facade", venue: "Design block D-103", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shri Ram R M", topic: "Crafting the Madras Terrace Roof: Traditional Lime-Based Practices", venue: "Birthday spot", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mrs. Anita Iyer Narayan", topic: "Design for all", venue: "law block E-301", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Eesha sharma", topic: "Designing the Invisible: Sensory Affordances in Space", venue: "Law block E - 401", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Anshul rai", topic: "Film Making", venue: "Outdoor + F-112", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Pritish", topic: "Forged Expressions: Where Metal Meets Art", venue: "Lab block F-106 & metal workshop", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Zee Ehtram", topic: "FORM IN FLUX - An Immersive Installation Workshop", venue: "Design Block D- 004 + Career connect lawn", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mr. Kalashree Vibhute", topic: "Form in Focus", venue: "Law block E-303", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Aagam Pareshkumar Shah", topic: "Frame Of Mind - A Photography Workshop", venue: "Lab block F-103", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mahesh Rameshwar Bangad", topic: "From Concept to Creation: Thinking Design", venue: "Lab block F - 303", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Tejas Eknath Pawar", topic: "Future-Proofing the Past: The Confluence of Historic Preservation and Innovation", venue: "Law block E-202", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Nikunj & Ar. Samrat", topic: "LAMELLA STRUCTURES - The Art of Assembly", venue: "Law block E-305", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mr. Manoj Bhusare", topic: "Metal jewellery design and etching", venue: "Design block D-104", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Aditya Sharma", topic: "mud construction workshop/ natural building workshop", venue: "Design block D-101", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shweta Hingane", topic: "Photoshop", venue: "Law block E- 206", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Vishwajeet walvekar", topic: "PORTFOLIO LOGIC: Communicating Your Thesis", venue: "Law block E-304", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Sandeep Raju Vysyaraju", topic: "Rammed earth", venue: "Lab block F-002", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Lakshya Satija", topic: "Spanning Space: Hands-on Exploration of Large Span Structures", venue: "Lab block F- 105", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Gagan", topic: "String Art Workshop", venue: "Lab block F-104", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Sanjay Antony", topic: "Sustainable & Net Zero Energy Building Design Workshop", venue: "Law block E-301", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Pingali Naga Praveen", topic: "Syntactic Structures: From Words to Space Making", venue: "Law block E-302", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Nithin Kumar J", topic: "TerraLab: Build, Break & Create.", venue: "Lab block F-004", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Panduranga & Ar. Varun", topic: "The Spatial Biography", venue: "Law block E-201", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mohit Janekunte", topic: "Think Bamboo [ A bamboo construction workshop ]", venue: "Lab block F-014 and near wooden workshop", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Nabhan Ahmed", topic: "Vision To Venture", venue: "c - 004", type: "Workshop" },
-      { time: "02:00 PM – 04:00 PM", startHour: 14.0, endHour: 16.0, speaker: "NASA India", topic: "Fold & Flow", venue: "Library Lawn", type: "Nexus Event" },
-      { time: "02:00 PM – 04:00 PM", startHour: 14.0, endHour: 16.0, speaker: "NASA India", topic: "Sketch Stories", venue: "Admin", type: "Nexus Event" },
-      { time: "02:00 PM – 04:00 PM", startHour: 14.0, endHour: 16.0, speaker: "NASA India", topic: "Stack Attack", venue: "AdminLawn", type: "Nexus Event" },
-      { time: "02:30 PM – 04:00 PM", startHour: 14.5, endHour: 16.0, speaker: "Anuj Daga", topic: "How Writing Shapes the Image of Architecture?", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "02:30 PM – 04:00 PM", startHour: 14.5, endHour: 16.0, speaker: "Ayan Sen", topic: "Making Architecture Contextual & Climatic Adaptation", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "03:30 PM – 04:30 PM", startHour: 15.5, endHour: 16.5, speaker: "Ar. Gaurav Shorey", topic: "What Lies behind Sustainable Buildings?", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "04:00 PM – 05:30 PM", startHour: 16.0, endHour: 17.5, speaker: "NASA India", topic: "Jamming Session", venue: "Stand up comedy", type: "Nexus Event" },
-      { time: "10:00 PM – 12:00 AM", startHour: 22.0, endHour: 24.0, speaker: "NASA India", topic: "Jamming Session", venue: "Dumb charades", type: "Nexus Event" }
-    ]
-  },
-  {
-    dayName: "DAY 03",
-    dateStr: "2026-06-13",
-    events: [
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shweta Hingane", topic: "Architecture Illustrations & Motion Diagram", venue: "C-003", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Bojja Sankar", topic: "Art and Architecture cinema", venue: "Lab block F - 106", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Madogiri", topic: "Building with Earth: Earthbag Bench", venue: "birthday spot towards hostels", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mohammed Muheeb Khan", topic: "Charcater design and storytelling", venue: "Lab block F-104", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Harshika verma", topic: "Charcoal Art", venue: "Design block D-102", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Rajesh Kumar Vaithiyalingam", topic: "Code - facade", venue: "Design block D-103", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shri Ram R M", topic: "Crafting the Madras Terrace Roof: Traditional Lime-Based Practices", venue: "Birthday spot", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Sandeep Raju Vysyaraju", topic: "Earth as Architecture: Hands-on Rammed Earth Workshop", venue: "Lab block F-002", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mr. Kushal Kothari", topic: "Echoes of Refraction: Designing the Bespoke Chandelier", venue: "Law block E-403", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Zee Ehtram", topic: "FORM IN FLUX - An Immersive Installation Workshop", venue: "Design Block D- 004 + Career connect lawn", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mr. Kalashree Vibhute", topic: "Form in Focus", venue: "Law block E-303", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Aagam Pareshkumar Shah", topic: "Frame Of Mind - A Photography Workshop", venue: "Lab block F-103", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mahesh Rameshwar Bangad", topic: "From Concept to Creation: Thinking Design", venue: "Lab block F - 303", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Dhirty Hands", topic: "Get Your Hands Dhirty", venue: "Lab block F-005", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mohith Rai Srivastav", topic: "Lived Space: Creative Observation", venue: "Law block E-305", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Biswajit Das", topic: "MetaAeon: Earth Was Just Our First Draft", venue: "Lab block F- 308", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mr. Manoj Bhusare", topic: "Metal jewellery design and etching", venue: "Design block D-104", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Aditya Sharma", topic: "natural building workshop foundation to finish", venue: "Design block D-101", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Subin Jameel", topic: "Playful Architecture", venue: "Law block E-404", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Vishwajeet walvekar", topic: "PORTFOLIO LOGIC: Communicating Your Thesis", venue: "Law block E-304", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Bharat srinivasan", topic: "SketchUp × AI Visualization for Architects", venue: "Lab block F - 112", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Lakshya Satija", topic: "Spanning Space: Hands-on Exploration of Large Span Structures", venue: "Lab block F- 105", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Pingali Naga Praveen", topic: "Syntactic Structures: From Words to Space Making", venue: "Law block E-302", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shikha parmar", topic: "the thinking space", venue: "C-004", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mohit Janekunte", topic: "Think Bamboo [ A Bamboo construction workshop ]", venue: "Lab block F-014 and near wooden workshop", type: "Workshop" },
-      { time: "10:00 AM – 11:00 AM", startHour: 10.0, endHour: 11.0, speaker: "Dr. Jigna Desai", topic: "Why Conserve? And Other Dilemmas of Architecture", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Mr. Darryl Custer", topic: "After Architecture", venue: "Law block E- 401", type: "Workshop" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "Archishuffle", venue: "Admin", type: "Nexus Event" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Ar. Mythili Shetty", topic: "Beating Deadline Demons- Scheduling like a Pro", venue: "Lab block F - 113", type: "Workshop" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "Canvas Relay", venue: "Library Lawn", type: "Nexus Event" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Ar. Lalit Kishor Bhati", topic: "Enabling Wellbeing & Transformative Futures", venue: "Law block E-306", type: "Workshop" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "Ludo Life: Mega", venue: "AdminLawn", type: "Nexus Event" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Ar.Hrudya Seemala & Ar. Sanjitha Suresh", topic: "Reading Spaces: Narratives and Photogrammetry", venue: "Law block E-301", type: "Workshop" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Ar. kiran kumar", topic: "Tracing : An Act / A Medium", venue: "Lab block F - 112", type: "Workshop" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Ar. Charlie Gupta and Ar. Ridhu Dhan", topic: "UDL Animation Masterclass", venue: "Lab block F- 102", type: "Masterclass" },
-      { time: "10:30 AM – 12:00 PM", startHour: 10.5, endHour: 12.0, speaker: "Prashant Pole", topic: "Architecture: Form, Function and Context - A Narrative", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "10:30 AM – 12:00 PM", startHour: 10.5, endHour: 12.0, speaker: "Reboni Saha", topic: "Integrated Design Thinking: Architecture & Product", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "11:30 AM – 12:30 PM", startHour: 11.5, endHour: 12.5, speaker: "Ar. Sujata Hingorani", topic: "Landscape design and urban ecosystem planning", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "12:30 PM – 01:30 PM", startHour: 12.5, endHour: 13.5, speaker: "Eliza Higgins", topic: "Design and Spatial Inclusivity in modern developments", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Mr. Darryl Custer", topic: "After Architecture", venue: "Law block E- 104", type: "Workshop" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Ar. Mythili Shetty", topic: "Beating Deadline Demons- Scheduling like a Pro", venue: "Lab block F - 113", type: "Workshop" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Ar. Lalit Kishor Bhati", topic: "Enabling Wellbeing & Transformative Futures", venue: "Law block E-306", type: "Workshop" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Ar.Hrudya Seemala & Ar. Sanjitha Suresh", topic: "Reading Spaces: Narratives and Photogrammetry", venue: "Law block E-301", type: "Workshop" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Ar. kiran kumar", topic: "Tracing : An Act / A Medium", venue: "Law block E-105", type: "Workshop" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Ar. Charlie Gupta and Ar. Ridhu Dhan", topic: "UDL Animation Masterclass", venue: "Lab block F- 102", type: "Masterclass" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shweta Hingane", topic: "Architecture Illustrations & Motion Diagram", venue: "Law block E- 206", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Bojja Sankar", topic: "Art and Architecture cinema", venue: "Law block E-201", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Madogiri", topic: "Building with Earth: Earthbag Bench", venue: "birthday spot towards hostels", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mohammed Muheeb Khan", topic: "Charcater design and storytelling", venue: "Lab block F-104", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Harshika verma", topic: "Charcoal Art", venue: "Design block D-102", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Rajesh Kumar Vaithiyalingam", topic: "Code - facade", venue: "Design block D-103", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shri Ram R M", topic: "Crafting the Madras Terrace Roof: Traditional Lime-Based Practices", venue: "Birthday spot", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Sandeep Raju Vysyaraju", topic: "Earth as Architecture: Hands-on Rammed Earth", venue: "Lab block F-002", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mr. Kushal Kothari", topic: "Echoes of Refraction: Designing the Bespoke Chandelier", venue: "Law block E-203", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Zee Ehtram", topic: "FORM IN FLUX - An Immersive Installation Workshop", venue: "Design Block D- 004 + Career connect lawn", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mr. Kalashree Vibhute", topic: "Form in Focus", venue: "Law block E-303", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Aagam Pareshkumar Shah", topic: "Frame Of Mind - A Photography Workshop", venue: "Lab block F-004", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mahesh Rameshwar Bangad", topic: "From CONCEPT to CREATION", venue: "Lab block F - 303", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Dhirty Hands", topic: "Get Your Hands Dhirty", venue: "Lab block F-005", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mohith Rai Srivastav", topic: "Lived Space: Creative Observation", venue: "Law block E-305", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Biswajit Das", topic: "MetaAeon: Earth Was Just Our First Draft !!", venue: "Lab block F- 308", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mr. Manoj Bhusare", topic: "Metal jewellery design and etching", venue: "Design block D-104", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Aditya Sharma", topic: "natural building workshop foundation to finish", venue: "Design block D-101", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Subin Jameel", topic: "Playful Architecture", venue: "Law block E- 107", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Vishwajeet walvekar", topic: "PORTFOLIO LOGIC: Communicating Your Thesis", venue: "Law block E-304", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Bharat srinivasan", topic: "SketchUp × AI Visualization for Architects", venue: "Law block E-204", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Lakshya Satija", topic: "Spanning Space: Hands-on Exploration of Large Span Structures", venue: "Lab block F- 105", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Pingali Naga Praveen", topic: "Syntactic Structures: From Words to Space Making", venue: "Law block E-302", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shikha parmar", topic: "The thinking space", venue: "Law block E-404", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mohit Janekunte", topic: "Think Bamboo [ A Bamboo construction workshop ]", venue: "Lab block F-014 and near wooden workshop", type: "Workshop" },
-      { time: "02:00 PM – 04:00 PM", startHour: 14.0, endHour: 16.0, speaker: "NASA India", topic: "Frame the Form", venue: "Library Lawn", type: "Nexus Event" },
-      { time: "02:00 PM – 04:00 PM", startHour: 14.0, endHour: 16.0, speaker: "NASA India", topic: "Line & Legacy", venue: "Admin", type: "Nexus Event" },
-      { time: "02:00 PM – 04:00 PM", startHour: 14.0, endHour: 16.0, speaker: "NASA India", topic: "Texture Tales", venue: "Admin Lawn", type: "Nexus Event" },
-      { time: "02:30 PM – 04:00 PM", startHour: 14.5, endHour: 16.0, speaker: "Shikha Jain", topic: "Heritage conservation guidelines and frameworks", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "02:30 PM – 04:00 PM", startHour: 14.5, endHour: 16.0, speaker: "Ankush Chandran", topic: "Urban Practice in the Age of Data", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "03:30 PM – 04:30 PM", startHour: 15.5, endHour: 16.5, speaker: "Ar. Aditi Pai", topic: "Green certifications and ratings for buildings", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "04:00 PM – 05:30 PM", startHour: 16.0, endHour: 17.5, speaker: "NASA India", topic: "Jamming Session", venue: "Stand up comedy", type: "Nexus Event" },
-      { time: "10:00 PM – 12:00 AM", startHour: 22.0, endHour: 24.0, speaker: "NASA India", topic: "Jamming Session", venue: "Dumb charades", type: "Nexus Event" }
-    ]
-  },
-  {
-    dayName: "DAY 04",
-    dateStr: "2026-06-14",
-    events: [
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Projektin", topic: "1:1 Real-scale Walkthroughs", venue: "Law block E-306", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shweta Hingane", topic: "Architecture Illustrations & Motion Diagram", venue: "C- 003", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Bojja Sankar", topic: "Art and Architecture cinema", venue: "Lab block F - 106", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mythili Shetty", topic: "Beating Deadline Demons- Scheduling like a Pro", venue: "Lab block F - 113", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "AEC Sastra", topic: "Beyond the Blueprint: Immersive Design for the next Generation of Architects", venue: "Law block E- 302", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Madogiri", topic: "Building with Earth: Earthbag Bench", venue: "birthday spot towards hostels", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mohammed Muheeb Khan", topic: "Charcater design and storytelling", venue: "Lab block F-104", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Harshika verma", topic: "Charcoal Art", venue: "Design block D-102", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Rajesh Kumar Vaithiyalingam", topic: "Code - facade", venue: "Design block D-103", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shri Ram R M", topic: "Crafting the Madras Terrace Roof: Traditional Lime-Based Practices", venue: "Birthday spot", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Siddharth Bhayani", topic: "Design Entrepreneurship", venue: "Law block E- 304", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Sandeep Raju Vysyaraju", topic: "Earth as Architecture: Hands-on Rammed Earth", venue: "Lab block F-002", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Mr. Kushal Kothari", topic: "Echoes of Refraction: Designing the Bespoke Chandelier", venue: "Law block E-403", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Dhirty Hands", topic: "Get Your Hands Dhirty", venue: "Lab block F-005", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Mohith Rai Srivastav", topic: "Lived Space: Creative Observation", venue: "Law block E-305", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Biswajit Das", topic: "MetaAeon: Earth Was Just Our First Draft !!", venue: "Lab block F- 308", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Aditya Sharma", topic: "mud construction workshop/ natural building workshop", venue: "Design block D-101", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Subin Jameel", topic: "Playful Architecture", venue: "Law Block E-404", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Bharat srinivasan", topic: "SketchUp × AI Visualization for Architects", venue: "Lab block F - 112", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Shikha parmar", topic: "The thinking space", venue: "C-004", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "AEC Sastra", topic: "The Unified Blueprint: Bridging Design Disciplines", venue: "Law block E- 303", type: "Workshop" },
-      { time: "9:30 AM – 12:30 PM", startHour: 9.5, endHour: 12.5, speaker: "Ar. Nabhan Ahmed", topic: "Vision To Venture", venue: "C - 003", type: "Workshop" },
-      { time: "10:00 AM – 11:00 AM", startHour: 10.0, endHour: 11.0, speaker: "Prof. Surya Kakani", topic: "Structuring Thought & Spatial Tectonics", venue: "LT (Lecture Theatre)", type: "Masterclass" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "Mega Morph Games", venue: "Admin Lawn", type: "Nexus Event" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "Ar.Hrudya Seemala & Ar. Sanjitha Suresh", topic: "Reading Spaces: Narratives and Photogrammetry", venue: "Law block E-301", type: "Workshop" },
-      { time: "10:00 AM – 12:00 PM", startHour: 10.0, endHour: 12.0, speaker: "NASA India", topic: "Reel the Real", venue: "Library Lawn", type: "Nexus Event" },
-      { time: "10:30 AM – 12:00 PM", startHour: 10.5, endHour: 12.0, speaker: "Pankaj Sekhsaria", topic: "Great Nicobar - An Island on the brink", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "10:30 AM – 12:00 PM", startHour: 10.5, endHour: 12.0, speaker: "Nripal Adhikary", topic: "Revisiting Vernacular in the 21st Century", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "12:30 PM – 01:30 PM", startHour: 12.5, endHour: 13.5, speaker: "Sapna Desai", topic: "Intersection of Public Health & Architecture", venue: "Seminar Room E-015", type: "Seminar" },
-      { time: "12:30 PM – 01:30 PM", startHour: 12.5, endHour: 13.5, speaker: "Krithika Karuppiah", topic: "Vastu vs Modern Design: Science or Superstition?", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "01:30 PM – 03:30 PM", startHour: 13.5, endHour: 15.5, speaker: "Ar.Hrudya Seemala & Ar. Sanjitha Suresh", topic: "Reading Spaces: Narratives and Photogrammetry", venue: "Law block E-301", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Projektin", topic: "1:1 Real-scale Walkthroughs", venue: "Law block E-306", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shweta Hingane", topic: "Architecture Illustrations & Motion Diagram", venue: "Law block E- 206", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Bojja Sankar", topic: "Art and Architecture cinema", venue: "Law block E-201", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mythili Shetty", topic: "Beating Deadline Demons- Scheduling like a Pro", venue: "Law block E-205", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "AEC Sastra", topic: "Beyond the Blueprint: Immersive Design for the next Generation of Architects", venue: "Law block E- 401", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Madogiri", topic: "Building with Earth: Earthbag Bench", venue: "birthday spot towards hostels", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Harshika verma", topic: "Charcoal Art", venue: "Design block D-102", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Rajesh Kumar Vaithiyalingam", topic: "Code - facade", venue: "Design block D-103", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shri Ram R M", topic: "Crafting the Madras Terrace Roof: Traditional Lime-Based Practices", venue: "Birthday spot", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Siddharth Bhayani", topic: "Design Entrepreneurship", venue: "Law block E- 104", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mohammed Muheeb Khan", topic: "Doddle Dimensions", venue: "Lab block F-104", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Sandeep Raju Vysyaraju", topic: "Earth as Architecture: Hands-on Rammed Earth", venue: "Lab block F-002", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Mr. Kushal Kothari", topic: "Echoes of Refraction: Designing the Bespoke Chandelier", venue: "Law block E-203", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Dhirty Hands", topic: "Get Your Hand Dhrity", venue: "Lab block F-005", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Mohith Rai Srivastav", topic: "Lived Space: Creative Observation", venue: "Law block E-305", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Biswajit Das", topic: "MetaAeon: Earth Was Just Our First Draft !!", venue: "Law block E-102", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Aditya Sharma", topic: "natural building workshop foundation to finish", venue: "Design block D-101", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Subin Jameel", topic: "Playful Architecture", venue: "Law block E- 107", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Bharat srinivasan", topic: "SketchUp × AI Visualization for Architects", venue: "Law block E-204", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Shikha parmar", topic: "The thinking space", venue: "Law block E-404", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "AEC Sastra", topic: "The Unified Blueprint: Bridging Design Disciplines", venue: "Law block E- 402", type: "Workshop" },
-      { time: "01:30 PM – 04:30 PM", startHour: 13.5, endHour: 16.5, speaker: "Ar. Nabhan Ahmed", topic: "Vision To Venture", venue: "Law block E-207", type: "Workshop" },
-      { time: "02:30 PM – 04:00 PM", startHour: 14.5, endHour: 16.0, speaker: "Sreenag", topic: "Rethinking Architectural Photography & Angles", venue: "Seminar Room E-012", type: "Seminar" },
-      { time: "04:00 PM – 05:30 PM", startHour: 16.0, endHour: 17.5, speaker: "NASA India", topic: "Jamming Session", venue: "Stand up comedy", type: "Nexus Event" },
-      { time: "10:00 PM – 12:00 AM", startHour: 22.0, endHour: 24.0, speaker: "NASA India", topic: "Jamming Session", venue: "Dumb charades", type: "Nexus Event" }
-    ]
-  }
-];
+import { INITIAL_SCHEDULE, ScheduleDay, EventItem } from '@/lib/initial-schedule';
 
 export default function CampusMapPage() {
   // Map Zoom & Pan State
@@ -341,10 +30,46 @@ export default function CampusMapPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
+  // Schedule state & dynamic loading
+  const [scheduleData, setScheduleData] = useState<ScheduleDay[]>(INITIAL_SCHEDULE);
+
   // Schedule Filters & Toggles
   const [selectedDayIdx, setSelectedDayIdx] = useState(0);
   const [showPastEvents, setShowPastEvents] = useState(true);
   const [selectedType, setSelectedType] = useState<string>('ALL');
+
+  // Fetch dynamic schedule data
+  useEffect(() => {
+    async function fetchSchedule() {
+      try {
+        const res = await fetch('/api/schedule');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setScheduleData(data);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching schedule from API:', err);
+      }
+    }
+    fetchSchedule();
+  }, []);
+
+  // Set initial selected day index based on current local system date if within convention dates
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${year}-${month}-${day}`;
+    
+    const dayDates = ["2026-06-11", "2026-06-12", "2026-06-13", "2026-06-14"];
+    const idx = dayDates.indexOf(todayStr);
+    if (idx !== -1) {
+      setSelectedDayIdx(idx);
+    }
+  }, []);
 
   // Clock state (updates every second)
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
@@ -426,12 +151,19 @@ export default function CampusMapPage() {
 
   // Check event status
   const getEventStatus = (event: EventItem, dayIdx: number) => {
-    const activeSimulatedDayIdx = 0;
-
-    if (dayIdx < activeSimulatedDayIdx) {
-      return 'COMPLETED';
-    } else if (dayIdx > activeSimulatedDayIdx) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${year}-${month}-${day}`;
+    
+    const dayDates = ["2026-06-11", "2026-06-12", "2026-06-13", "2026-06-14"];
+    const targetDateStr = dayDates[dayIdx] || "2026-06-11";
+    
+    if (todayStr < targetDateStr) {
       return 'UPCOMING';
+    } else if (todayStr > targetDateStr) {
+      return 'COMPLETED';
     }
 
     const currentHour = getSimulatedHourDecimal();
@@ -445,8 +177,8 @@ export default function CampusMapPage() {
   };
 
   // Filter events based on active tab, type filter, and showPastEvents toggle
-  const currentDayData = SCHEDULE_DATA[selectedDayIdx];
-  const filteredEvents = currentDayData.events.filter(event => {
+  const currentDayData = scheduleData[selectedDayIdx] || INITIAL_SCHEDULE[selectedDayIdx] || { dayName: "DAY 01", dateStr: "2026-06-11", events: [] };
+  const filteredEvents = (currentDayData.events || []).filter(event => {
     if (selectedType !== 'ALL' && event.type.toUpperCase() !== selectedType) {
       return false;
     }
@@ -607,10 +339,9 @@ export default function CampusMapPage() {
               Updates in Real-Time
             </div>
           </div>
-
           {/* Day selection tabs */}
           <div className="flex overflow-x-auto border-b-4 border-brand-on-surface bg-brand-surface-highest md:grid md:grid-cols-4 scrollbar-none whitespace-nowrap">
-            {SCHEDULE_DATA.map((day, idx) => (
+            {scheduleData.map((day, idx) => (
               <button
                 key={idx}
                 onClick={() => setSelectedDayIdx(idx)}
@@ -719,10 +450,10 @@ export default function CampusMapPage() {
                     <div className="flex-1 space-y-1.5">
                       <div className="flex items-center gap-2">
                         <span className={`px-2 py-0.5 font-mono text-[8px] font-bold uppercase tracking-widest ${
-                          event.type === 'Masterclass' ? 'bg-brand-primary text-brand-on-primary' :
-                          event.type === 'Seminar' ? 'bg-brand-secondary text-brand-on-secondary' :
-                          event.type === 'Workshop' ? 'bg-brand-tertiary text-brand-on-tertiary' :
-                          event.type === 'Nexus Event' ? 'bg-brand-mustard text-brand-on-surface border border-brand-on-surface font-extrabold shadow-[1px_1px_0px_0px_rgba(28,27,27,1)]' :
+                          event.type?.toUpperCase() === 'MASTERCLASS' ? 'bg-brand-primary text-brand-on-primary' :
+                          event.type?.toUpperCase() === 'SEMINAR' ? 'bg-brand-secondary text-brand-on-secondary' :
+                          event.type?.toUpperCase() === 'WORKSHOP' ? 'bg-brand-tertiary text-brand-on-tertiary' :
+                          event.type?.toUpperCase() === 'NEXUS EVENT' ? 'bg-brand-mustard text-brand-on-surface border border-brand-on-surface font-extrabold shadow-[1px_1px_0px_0px_rgba(28,27,27,1)]' :
                           'bg-brand-on-surface-variant text-brand-on-primary'
                         }`}>
                           {event.type}

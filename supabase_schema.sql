@@ -121,3 +121,34 @@ INSERT INTO quizzes (barrel_id, title, description) VALUES
 
 -- We will insert a comprehensive set of 200 architectural questions in the application initialization or direct DB seed.
 -- For the SQL schema script, we will define 2-3 sample questions per quiz, and then write a seed router/api to load all 200 questions to avoid huge SQL command executions.
+
+-- -------------------------------------------------------------
+-- Schedule Events and Announcements Tables
+-- -------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS schedule_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    day_idx INT NOT NULL,
+    time TEXT NOT NULL,
+    "startHour" FLOAT NOT NULL,
+    "endHour" FLOAT NOT NULL,
+    speaker TEXT NOT NULL,
+    topic TEXT NOT NULL,
+    venue TEXT NOT NULL,
+    type TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS announcements (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT,
+    message TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'info',
+    scheduled_for TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_schedule_day_time ON schedule_events(day_idx, "startHour");
+CREATE INDEX IF NOT EXISTS idx_announcements_created ON announcements(created_at DESC);
+

@@ -40,6 +40,19 @@ const checkProductionDbGuard = () => {
   }
 };
 
+const isTableMissingError = (error: any): boolean => {
+  if (!error) return false;
+  const code = String(error.code || '');
+  const message = String(error.message || '').toLowerCase();
+  return (
+    code === '42P01' || 
+    code === 'PGRST205' || 
+    message.includes('relation') || 
+    message.includes('could not find the table') || 
+    message.includes('schema cache')
+  );
+};
+
 // Initialize real Supabase client if configured (using service role key to act as admin/bypass RLS on server side)
 export const supabase = IS_REAL_DB 
   ? createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
@@ -742,5 +755,132 @@ export const DB = {
       console.error('Seeding catch error:', err);
       return { success: false, error: err.message };
     }
+  },
+
+  // Schedule Events CRUD
+  async getScheduleEvents() {
+    if (!IS_REAL_DB || !supabase) return await MockDB.getScheduleEvents();
+    const { data, error } = await supabase
+      .from('schedule_events')
+      .select('*')
+      .order('day_idx', { ascending: true })
+      .order('startHour', { ascending: true });
+    if (error) {
+      if (isTableMissingError(error)) {
+        console.warn('schedule_events table not found in Supabase. Falling back to MockDB.');
+        return await MockDB.getScheduleEvents();
+      }
+      console.error('Error fetching schedule_events:', error);
+      return [];
+    }
+    return data || [];
+  },
+
+  async createScheduleEvent(event: any) {
+    if (!IS_REAL_DB || !supabase) return await MockDB.createScheduleEvent(event);
+    const { data, error } = await supabase
+      .from('schedule_events')
+      .insert(event)
+      .select()
+      .single();
+    if (error) {
+      if (isTableMissingError(error)) {
+        console.warn('schedule_events table not found in Supabase. Falling back to MockDB.');
+        return await MockDB.createScheduleEvent(event);
+      }
+      console.error('Error creating schedule_event:', error);
+      throw new Error(error.message);
+    }
+    return data;
+  },
+
+  async updateScheduleEvent(id: string, event: any) {
+    if (!IS_REAL_DB || !supabase) return await MockDB.updateScheduleEvent(id, event);
+    const { data, error } = await supabase
+      .from('schedule_events')
+      .update(event)
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) {
+      if (isTableMissingError(error)) {
+        console.warn('schedule_events table not found in Supabase. Falling back to MockDB.');
+        return await MockDB.updateScheduleEvent(id, event);
+      }
+      console.error('Error updating schedule_event:', error);
+      throw new Error(error.message);
+    }
+    return data;
+  },
+
+  async deleteScheduleEvent(id: string) {
+    if (!IS_REAL_DB || !supabase) return await MockDB.deleteScheduleEvent(id);
+    const { error } = await supabase
+      .from('schedule_events')
+      .delete()
+      .eq('id', id);
+    if (error) {
+      if (isTableMissingError(error)) {
+        console.warn('schedule_events table not found in Supabase. Falling back to MockDB.');
+        return await MockDB.deleteScheduleEvent(id);
+      }
+      console.error('Error deleting schedule_event:', error);
+      return false;
+    }
+    return true;
+  },
+
+  // Announcements CRUD
+  async getAnnouncements() {
+    if (!IS_REAL_DB || !supabase) return await MockDB.getAnnouncements();
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      if (isTableMissingError(error)) {
+        console.warn('announcements table not found in Supabase. Falling back to MockDB.');
+        return await MockDB.getAnnouncements();
+      }
+      console.error('Error fetching announcements:', error);
+      return [];
+    }
+    return data || [];
+  },
+
+  async createAnnouncement(ann: any) {
+    if (!IS_REAL_DB || !supabase) return await MockDB.createAnnouncement(ann);
+    const { data, error } = await supabase
+      .from('announcements')
+      .insert(ann)
+      .select()
+      .single();
+    if (error) {
+      if (isTableMissingError(error)) {
+        console.warn('announcements table not found in Supabase. Falling back to MockDB.');
+        return await MockDB.createAnnouncement(ann);
+      }
+      console.error('Error creating announcement:', error);
+      throw new Error(error.message);
+    }
+    return data;
+  },
+
+  async deleteAnnouncement(id: string) {
+    if (!IS_REAL_DB || !supabase) return await MockDB.deleteAnnouncement(id);
+    const { error } = await supabase
+      .from('announcements')
+      .delete()
+      .eq('id', id);
+    if (error) {
+      if (isTableMissingError(error)) {
+        console.warn('announcements table not found in Supabase. Falling back to MockDB.');
+        return await MockDB.deleteAnnouncement(id);
+      }
+      console.error('Error deleting announcement:', error);
+      return false;
+    }
+    return true;
   }
 };
+
