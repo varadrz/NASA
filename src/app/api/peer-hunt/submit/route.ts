@@ -67,7 +67,16 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Verify Instagram ID (registration ID/Z-ID fallback)
-    const normalizedInputId = inputId.replace(/^@+/, '').toLowerCase();
+    const cleanInstagramId = (id: string) => {
+      return id.replace(/^@+/, '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
+    };
+
+    const cleanRegId = (id: string) => {
+      return id.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
+    };
+
+    const normalizedInput = cleanInstagramId(inputId);
+    const inputRegId = cleanRegId(inputId);
 
     // Dynamically check the participant's current details in the DB to support any profile updates
     const allParticipants = await DB.getAllParticipants();
@@ -76,10 +85,10 @@ export async function POST(request: NextRequest) {
     const currentInsta = targetUser?.instagram_id || target.instagram_id || '';
     const currentRegId = targetUser?.registration_id || target.reg_id || '';
 
-    const expectedId = currentInsta.trim().replace(/^@+/, '').toLowerCase();
-    const expectedRegId = currentRegId.trim().toLowerCase();
+    const expectedId = cleanInstagramId(currentInsta);
+    const expectedRegId = cleanRegId(currentRegId);
 
-    if (normalizedInputId !== expectedId && normalizedInputId !== expectedRegId) {
+    if (normalizedInput !== expectedId && inputRegId !== expectedRegId) {
       return NextResponse.json({ error: 'Invalid Instagram ID for this participant. Verify physically.' }, { status: 400 });
     }
 

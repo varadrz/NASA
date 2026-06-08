@@ -575,10 +575,10 @@ export default function Home() {
                     {progress.peer_targets.map((peer) => (
                       <div 
                         key={peer.name}
-                        className={`p-4 border-2 border-brand-on-surface flex flex-col justify-between items-stretch text-center transition ${
+                        className={`p-4 border-2 border-brand-on-surface flex flex-col justify-between items-stretch text-center transition duration-200 ${
                           peer.found 
                             ? 'bg-brand-surface-low border-dashed opacity-75' 
-                            : 'bg-brand-surface shadow-[2px_2px_0px_0px_rgba(28,27,27,1)]'
+                            : 'bg-brand-surface shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] hover:shadow-[5px_5px_0px_0px_rgba(28,27,27,1)] hover:-translate-x-0.5 hover:-translate-y-0.5'
                         }`}
                       >
                         <div className="font-mono text-[9px] font-bold text-brand-on-surface-variant uppercase tracking-widest mb-2 border-b border-brand-outline-variant pb-1">
@@ -590,7 +590,7 @@ export default function Home() {
                         </div>
 
                         {peer.found ? (
-                          <div className="py-1 bg-brand-secondary text-white text-[10px] font-mono font-bold uppercase border border-brand-on-surface">
+                          <div className="py-1 bg-brand-secondary text-brand-on-secondary text-[10px] font-mono font-bold uppercase border border-brand-on-surface">
                             +25 XP SECURED
                           </div>
                         ) : (
@@ -601,7 +601,7 @@ export default function Home() {
                               setPeerVerifyError(null);
                               setPeerVerifySuccess(null);
                             }}
-                            className="w-full py-1.5 bg-brand-primary text-brand-on-primary border border-brand-on-surface text-[10px] font-display font-black uppercase tracking-wider shadow-[1.5px_1.5px_0px_0px_rgba(28,27,27,1)] hover:bg-opacity-95 active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none transition-all cursor-pointer"
+                            className="w-full py-1.5 bg-brand-secondary text-brand-on-secondary border border-brand-on-surface text-[10px] font-display font-black uppercase tracking-wider shadow-[1.5px_1.5px_0px_0px_rgba(28,27,27,1)] hover:bg-brand-secondary/95 active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none transition-all cursor-pointer"
                           >
                             Verify Instagram
                           </button>
@@ -679,7 +679,7 @@ export default function Home() {
                             <button
                               type="submit"
                               disabled={peerSubmitting}
-                              className="flex-1 py-3 bg-brand-primary text-brand-on-primary border-2 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider hover:bg-brand-primary-container transition shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50"
+                              className="flex-1 py-3 bg-brand-secondary text-brand-on-secondary border-2 border-brand-on-surface font-display font-black text-xs uppercase tracking-wider hover:bg-brand-secondary/95 transition shadow-[2px_2px_0px_0px_rgba(28,27,27,1)] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50"
                             >
                               {peerSubmitting ? 'VALIDATING...' : 'SUBMIT'}
                             </button>
