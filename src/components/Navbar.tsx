@@ -554,9 +554,13 @@ export default function Navbar() {
                 <input
                   type="tel"
                   value={editForm.phone_number}
-                  onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setEditForm({ ...editForm, phone_number: val });
+                  }}
+                  placeholder="9999999999"
                   disabled={editSubmitting}
-                  className="w-full input-brutalist px-3 py-2 text-xs uppercase"
+                  className="w-full input-brutalist px-3 py-2 text-xs uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
                   required
                 />
               </div>

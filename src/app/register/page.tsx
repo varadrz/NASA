@@ -26,9 +26,13 @@ function RegisterForm() {
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let { name, value } = e.target;
+    if (name === 'phone_number') {
+      value = value.replace(/\D/g, '').slice(0, 10);
+    }
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
     setError(null);
   };
@@ -169,7 +173,7 @@ function RegisterForm() {
                 name="phone_number"
                 value={formData.phone_number}
                 onChange={handleChange}
-                placeholder="+91 99999 99999"
+                placeholder="9999999999"
                 disabled={submitting}
                 className="w-full input-brutalist px-4 py-3.5 text-sm uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
                 required
@@ -179,7 +183,7 @@ function RegisterForm() {
             {/* Z-Id */}
             <div>
               <label htmlFor="registration_id" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
-                Z-Id (Zone / Group Code)
+                Z-ID
               </label>
               <div className="flex border-2 border-brand-on-surface focus-within:border-brand-secondary focus-within:shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] transition-all bg-brand-surface">
                 <span className="flex items-center justify-center px-4 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-sm select-none">

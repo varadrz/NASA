@@ -23,9 +23,13 @@ function LoginForm() {
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let { name, value } = e.target;
+    if (name === 'phone_number') {
+      value = value.replace(/\D/g, '').slice(0, 10);
+    }
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
     setError(null);
   };
@@ -135,7 +139,7 @@ function LoginForm() {
               name="phone_number"
               value={formData.phone_number}
               onChange={handleChange}
-              placeholder="+91 99999 99999"
+              placeholder="9999999999"
               disabled={submitting}
               className="w-full input-brutalist px-4 py-3.5 text-sm uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
               required
