@@ -175,6 +175,7 @@ const getDynamicRange = (totalUsers: number): number => {
       authenticated: true,
       participant: {
         id: participant.id,
+        app_id: (participant as any).app_id || '',
         full_name: participant.full_name,
         college_name: participant.college_name,
         phone_number: participant.phone_number || '',

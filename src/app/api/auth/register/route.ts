@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
       success: true,
       participant: {
         id: participant.id,
+        app_id: (participant as any).app_id || '',
         full_name: participant.full_name,
         college_name: participant.college_name,
         registration_id: participant.registration_id

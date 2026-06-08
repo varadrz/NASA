@@ -53,6 +53,7 @@ const getBarrelIdFromCode = (code: string): number | null => {
 
 interface Participant {
   id: string;
+  app_id?: string;
   full_name: string;
   college_name: string;
   registration_id: string;
@@ -336,9 +337,14 @@ export default function Home() {
           <div className="space-y-8 animate-fade-in">
             {/* Page Title & Status */}
             <div className="border-b-4 border-brand-on-surface inline-block pr-12 pb-2">
-              <span className="font-mono text-xs font-bold bg-brand-primary text-brand-on-primary px-3 py-1 mb-2 inline-block">
+              <span className="font-mono text-xs font-bold bg-brand-primary text-brand-on-primary px-3 py-1 mb-2 inline-block mr-2">
                 PARTICIPANT STATUS
               </span>
+              {participant.app_id && (
+                <span className="font-mono text-xs font-bold bg-brand-secondary text-brand-on-secondary px-3 py-1 mb-2 inline-block">
+                  APP ID: {participant.app_id}
+                </span>
+              )}
               <h2 className="font-display text-3xl md:text-4xl font-black uppercase text-brand-on-surface tracking-tight mt-1">
                 WELCOME BACK, <br />
                 <span className="text-brand-primary">{participant.full_name}</span>

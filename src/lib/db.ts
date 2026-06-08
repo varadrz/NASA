@@ -189,9 +189,47 @@ export const DB = {
     instagram_id?: string;
   }) {
     checkProductionDbGuard();
-    if (!IS_REAL_DB || !supabase) return await MockDB.createParticipant(pData);
 
-    // 1. Insert participant
+    // 1. Calculate sequence
+    const regIdLower = pData.registration_id.toLowerCase().trim();
+    let seq = 1;
+    if (IS_REAL_DB && supabase) {
+      const { count, error: countError } = await supabase
+        .from('participants')
+        .select('*', { count: 'exact', head: true })
+        .ilike('registration_id', regIdLower);
+      if (!countError && count !== null) {
+        seq = count + 1;
+      }
+    } else {
+      const { getDB } = require('./mock-db');
+      const db = getDB();
+      const count = db.participants.filter((p: any) => p.registration_id.toLowerCase().trim() === regIdLower).length;
+      seq = count + 1;
+    }
+
+    // Extract zone number (e.g. "Zone 3" -> "3")
+    const zoneMatch = pData.college_name.match(/\d+/);
+    const zoneNum = zoneMatch ? zoneMatch[0] : '1';
+
+    // Extract digits from registration_id (e.g. "Z-003" -> "003")
+    const regMatch = pData.registration_id.match(/\d+/);
+    const zIdDigits = regMatch ? regMatch[0] : '001';
+    const zIdPadded = zIdDigits.padStart(3, '0');
+
+    // Format sequence (e.g. 2 -> "002")
+    const seqPadded = String(seq).padStart(3, '0');
+
+    const app_id = `${zoneNum}${zIdPadded}${seqPadded}`;
+
+    if (!IS_REAL_DB || !supabase) {
+      return await MockDB.createParticipant({
+        ...pData,
+        app_id
+      });
+    }
+
+    // 2. Insert participant
     const { data: participant, error: pError } = await supabase
       .from('participants')
       .insert({
@@ -200,6 +238,7 @@ export const DB = {
         phone_number: pData.phone_number,
         registration_id: pData.registration_id,
         instagram_id: pData.instagram_id || '',
+        app_id: app_id,
         is_disabled: false
       })
       .select()

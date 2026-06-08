@@ -7,6 +7,7 @@ import { Award, Compass, LayoutDashboard, LogOut, QrCode, User, Shield, X, Calen
 
 interface ParticipantSession {
   id: string;
+  app_id?: string;
   full_name: string;
   college_name: string;
   phone_number?: string;
@@ -216,7 +217,12 @@ export default function Navbar() {
               {!loading && participant ? (
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <div className="text-xs font-display font-black uppercase text-brand-on-surface">{participant.full_name}</div>
+                    <div className="text-xs font-display font-black uppercase text-brand-on-surface leading-none mb-1">{participant.full_name}</div>
+                    {participant.app_id && (
+                      <div className="text-[9px] font-mono font-bold text-brand-outline-variant uppercase mb-1">
+                        App ID: {participant.app_id}
+                      </div>
+                    )}
                     <div className="text-[10px] font-mono font-bold text-brand-primary flex gap-2 justify-end">
                       <span>{progress?.total_score || 0} XP</span>
                       <span>•</span>
@@ -388,8 +394,11 @@ export default function Navbar() {
                     {getInitials(participant.full_name)}
                   </div>
                   <div>
-                    <h3 className="font-display font-black text-base uppercase text-brand-on-surface leading-tight">{participant.full_name}</h3>
-                    <p className="font-mono text-xs text-brand-on-surface-variant uppercase">{participant.college_name}</p>
+                    <h3 className="font-display font-black text-base uppercase text-brand-on-surface leading-tight mb-0.5">{participant.full_name}</h3>
+                    {participant.app_id && (
+                      <p className="font-mono text-[10px] font-bold text-brand-primary uppercase mb-0.5">App ID: {participant.app_id}</p>
+                    )}
+                    <p className="font-mono text-xs text-brand-on-surface-variant uppercase mb-0.5">{participant.college_name}</p>
                     <p className="font-mono text-[10px] text-brand-outline-variant uppercase">Instagram: @{participant.instagram_id ? participant.instagram_id.replace(/^@/, '') : 'not_set'}</p>
                   </div>
                 </div>

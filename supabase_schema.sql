@@ -13,13 +13,15 @@ DROP TABLE IF EXISTS quizzes CASCADE;
 DROP TABLE IF EXISTS participants CASCADE;
 
 -- MIGRATION NOTE FOR EXISTING DATABASES:
--- If you have already initialized the database, execute these commands to update your constraints:
+-- If you have already initialized the database, execute these commands to update your constraints and columns:
 --   ALTER TABLE participants DROP CONSTRAINT IF EXISTS participants_registration_id_key;
 --   ALTER TABLE participants ADD CONSTRAINT unique_name_phone UNIQUE (full_name, phone_number);
+--   ALTER TABLE participants ADD COLUMN IF NOT EXISTS app_id VARCHAR(50) UNIQUE;
 
 -- 1. Participants Table
 CREATE TABLE participants (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    app_id VARCHAR(50) UNIQUE NULL, -- Can be NULL initially for back-compat but unique
     full_name VARCHAR(255) NOT NULL,
     college_name VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,

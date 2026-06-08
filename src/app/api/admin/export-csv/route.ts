@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
 
     // Headers
     let csvContent = '\uFEFF'; // UTF-8 BOM for Excel formatting
-    csvContent += 'Rank,Registration ID,Full Name,College Name,Phone Number,Completed Quizzes,Total Score,Total Time (seconds),Status,Registration Date\n';
+    csvContent += 'Rank,App ID,Registration ID,Full Name,College Name,Phone Number,Completed Quizzes,Total Score,Total Time (seconds),Status,Registration Date\n';
 
     // Group participants by ID to easily join rank
     const rankMap = new Map<string, number>();
@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
       
       const row = [
         rank,
+        (p as any).app_id || '',
         p.registration_id,
         p.full_name,
         p.college_name,

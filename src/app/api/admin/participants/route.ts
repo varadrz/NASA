@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
         const prog = await DB.getParticipantProgress(p.id);
         return {
           id: p.id,
+          app_id: (p as any).app_id || '',
           full_name: p.full_name,
           college_name: p.college_name,
           phone_number: p.phone_number,
@@ -156,6 +157,43 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      // Calculate/recalculate app_id if needed
+      const currentParticipant = await DB.getParticipantById(id);
+      let app_id = (currentParticipant as any)?.app_id;
+
+      const regIdLower = registration_id.toLowerCase().trim();
+      const currentRegIdLower = currentParticipant?.registration_id?.toLowerCase().trim();
+      const currentCollege = currentParticipant?.college_name?.trim();
+
+      if (!app_id || regIdLower !== currentRegIdLower || college_name.trim() !== currentCollege) {
+        let seq = 1;
+        if (DB.isRealDatabase() && supabase) {
+          const { count, error: countError } = await supabase
+            .from('participants')
+            .select('*', { count: 'exact', head: true })
+            .ilike('registration_id', regIdLower);
+          if (!countError && count !== null) {
+            seq = count + 1;
+          }
+        } else {
+          const { getDB } = require('@/lib/mock-db');
+          const db = getDB();
+          const count = db.participants.filter((x: any) => x.id !== id && x.registration_id.toLowerCase().trim() === regIdLower).length;
+          seq = count + 1;
+        }
+
+        const zoneMatch = college_name.match(/\d+/);
+        const zoneNum = zoneMatch ? zoneMatch[0] : '1';
+
+        const regMatch = registration_id.match(/\d+/);
+        const zIdDigits = regMatch ? regMatch[0] : '001';
+        const zIdPadded = zIdDigits.padStart(3, '0');
+
+        const seqPadded = String(seq).padStart(3, '0');
+
+        app_id = `${zoneNum}${zIdPadded}${seqPadded}`;
+      }
+
       if (DB.isRealDatabase() && supabase) {
         // Update participant table
         const { error: pError } = await supabase
@@ -166,6 +204,7 @@ export async function POST(request: NextRequest) {
             phone_number,
             registration_id,
             instagram_id: instagram_id || '',
+            app_id: app_id,
             is_disabled: !!is_disabled
           })
           .eq('id', id);
@@ -198,6 +237,7 @@ export async function POST(request: NextRequest) {
         p.phone_number = phone_number;
         p.registration_id = registration_id;
         p.instagram_id = instagram_id || '';
+        p.app_id = app_id;
         p.is_disabled = !!is_disabled;
 
         let prog = db.participant_progress.find((x: any) => x.participant_id === id);

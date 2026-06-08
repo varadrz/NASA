@@ -7,6 +7,7 @@ import { questionsData, QuizSeed, QuestionInput } from './questions-data';
 
 interface Participant {
   id: string;
+  app_id: string;
   full_name: string;
   college_name: string;
   phone_number: string;
@@ -193,10 +194,26 @@ export const MockDB = {
     return db.participants.filter(p => p.full_name.toLowerCase() === name.trim().toLowerCase());
   },
 
-  async createParticipant(pData: Omit<Participant, 'id' | 'is_disabled' | 'created_at'>): Promise<Participant> {
+  async createParticipant(pData: Omit<Participant, 'id' | 'is_disabled' | 'created_at' | 'app_id'> & { app_id?: string }): Promise<Participant> {
     const db = getDB();
+
+    let app_id = pData.app_id;
+    if (!app_id) {
+      const regIdLower = pData.registration_id.toLowerCase().trim();
+      const count = db.participants.filter((p: any) => p.registration_id.toLowerCase().trim() === regIdLower).length;
+      const seq = count + 1;
+      const zoneMatch = pData.college_name.match(/\d+/);
+      const zoneNum = zoneMatch ? zoneMatch[0] : '1';
+      const regMatch = pData.registration_id.match(/\d+/);
+      const zIdDigits = regMatch ? regMatch[0] : '001';
+      const zIdPadded = zIdDigits.padStart(3, '0');
+      const seqPadded = String(seq).padStart(3, '0');
+      app_id = `${zoneNum}${zIdPadded}${seqPadded}`;
+    }
+
     const newParticipant: Participant = {
       id: `part-${Math.random().toString(36).substr(2, 9)}`,
+      app_id,
       full_name: pData.full_name,
       college_name: pData.college_name,
       phone_number: pData.phone_number,

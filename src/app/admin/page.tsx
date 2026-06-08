@@ -77,6 +77,7 @@ interface QuizStat {
 
 interface ParticipantEnriched {
   id: string;
+  app_id?: string;
   full_name: string;
   college_name: string;
   phone_number: string;
@@ -581,7 +582,8 @@ export default function AdminPage() {
   const filteredParticipants = participants.filter(p =>
     p.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.college_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.registration_id.toLowerCase().includes(searchQuery.toLowerCase())
+    p.registration_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.app_id && p.app_id.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   // -------------------------------------------------------------
@@ -893,6 +895,7 @@ export default function AdminPage() {
                       <thead>
                         <tr className="bg-brand-on-surface border-b-2 border-brand-on-surface text-xs text-brand-surface font-mono uppercase tracking-widest font-bold">
                           <th className="py-4 px-6">Reg ID</th>
+                          <th className="py-4 px-6">App ID</th>
                           <th className="py-4 px-6">Participant</th>
                           <th className="py-4 px-6">Zone No.</th>
                           <th className="py-4 px-6">Phone</th>
@@ -906,6 +909,7 @@ export default function AdminPage() {
                         {filteredParticipants.map((p) => (
                           <tr key={p.id} className="hover:bg-brand-surface-low">
                             <td className="py-4 px-6 font-mono text-xs text-brand-secondary">{p.registration_id}</td>
+                            <td className="py-4 px-6 font-mono text-xs text-brand-primary">{p.app_id || 'N/A'}</td>
                             <td className="py-4 px-6">
                               <div className="font-display uppercase font-bold">{p.full_name}</div>
                               {p.instagram_id && (
