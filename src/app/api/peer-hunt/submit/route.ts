@@ -118,7 +118,9 @@ export async function POST(request: NextRequest) {
       success: true,
       message: `Verified ${target.name}! +25 XP awarded.`,
       newScore,
-      peer_targets: targets.map(t => ({ name: t.name, found: t.found }))
+      peer_targets: targets
+        .filter((t: any) => !t.name.startsWith('__'))
+        .map((t: any) => ({ name: t.name, found: t.found }))
     });
   } catch (error: any) {
     console.error('Peer hunt submit error:', error);
