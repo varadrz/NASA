@@ -188,6 +188,11 @@ export const MockDB = {
     return db.participants.find(p => p.registration_id.toLowerCase() === regId.toLowerCase()) || null;
   },
 
+  async getParticipantsByName(name: string): Promise<Participant[]> {
+    const db = getDB();
+    return db.participants.filter(p => p.full_name.toLowerCase() === name.trim().toLowerCase());
+  },
+
   async createParticipant(pData: Omit<Participant, 'id' | 'is_disabled' | 'created_at'>): Promise<Participant> {
     const db = getDB();
     const newParticipant: Participant = {

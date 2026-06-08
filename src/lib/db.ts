@@ -89,6 +89,21 @@ export const DB = {
     return data;
   },
 
+  async getParticipantsByName(name: string) {
+    if (!IS_REAL_DB || !supabase) return await MockDB.getParticipantsByName(name);
+
+    const { data, error } = await supabase
+      .from('participants')
+      .select('*')
+      .ilike('full_name', name.trim());
+
+    if (error) {
+      console.error('Error fetching participants by name:', error);
+      return [];
+    }
+    return data || [];
+  },
+
   async updateParticipantDetails(id: string, details: { full_name: string; college_name: string; phone_number: string; instagram_id: string }): Promise<any> {
     if (!IS_REAL_DB || !supabase) return await MockDB.updateParticipantDetails(id, details);
 

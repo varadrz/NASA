@@ -65,6 +65,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Details can only be changed once. You have already used your edit allowance.' }, { status: 400 });
     }
 
+    // Check if the updated full name and phone number are already taken by a DIFFERENT participant
+    const normalizePhone = (num: string) => num.replace(/\D/g, '');
+    const existingParts = await DB.getParticipantsByName(full_name.trim());
+    const taken = existingParts.find(p => p.id !== decoded.participantId && normalizePhone(p.phone_number) === normalizePhone(phone_number.trim()));
+    if (taken) {
+      return NextResponse.json({ error: 'This Full Name and Phone Number combination is already registered by another participant.' }, { status: 409 });
+    }
+
     // 4. Perform update
     const updatedParticipant = await DB.updateParticipantDetails(decoded.participantId, {
       full_name: full_name.trim(),

@@ -24,31 +24,32 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { registration_id, phone_number } = body;
+    const { full_name, phone_number } = body;
 
     // 3. Validation
-    if (!registration_id || !phone_number) {
+    if (!full_name || !phone_number) {
       return NextResponse.json(
-        { error: 'Registration ID and Phone Number are required.' },
+        { error: 'Full Name and Phone Number are required.' },
         { status: 400 }
       );
     }
 
-    const trimmedRegId = registration_id.trim();
+    const trimmedName = full_name.trim();
 
-    // 4. Fetch participant from DB
-    const participant = await DB.getParticipantByRegistrationId(trimmedRegId);
-    if (!participant) {
+    // 4. Fetch participants by name from DB
+    const participants = await DB.getParticipantsByName(trimmedName);
+    if (participants.length === 0) {
       return NextResponse.json(
-        { error: 'Invalid Registration ID or registered Phone Number.' },
+        { error: 'Invalid Full Name or registered Phone Number.' },
         { status: 401 }
       );
     }
 
-    // 5. Verify Phone Number (normalized comparison)
-    if (normalizePhone(participant.phone_number) !== normalizePhone(phone_number)) {
+    // 5. Find participant with matching phone number (normalized comparison)
+    const participant = participants.find(p => normalizePhone(p.phone_number) === normalizePhone(phone_number));
+    if (!participant) {
       return NextResponse.json(
-        { error: 'Invalid Registration ID or registered Phone Number.' },
+        { error: 'Invalid Full Name or registered Phone Number.' },
         { status: 401 }
       );
     }
@@ -71,7 +72,7 @@ export async function POST(request: NextRequest) {
     // 8. Write Audit Log
     await DB.logAudit(
       participant.id,
-      `Participant logged in: ${participant.full_name} (${trimmedRegId})`,
+      `Participant logged in: ${participant.full_name} (${participant.registration_id})`,
       ip,
       userAgent
     );

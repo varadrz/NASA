@@ -12,16 +12,22 @@ DROP TABLE IF EXISTS questions CASCADE;
 DROP TABLE IF EXISTS quizzes CASCADE;
 DROP TABLE IF EXISTS participants CASCADE;
 
+-- MIGRATION NOTE FOR EXISTING DATABASES:
+-- If you have already initialized the database, execute these commands to update your constraints:
+--   ALTER TABLE participants DROP CONSTRAINT IF EXISTS participants_registration_id_key;
+--   ALTER TABLE participants ADD CONSTRAINT unique_name_phone UNIQUE (full_name, phone_number);
+
 -- 1. Participants Table
 CREATE TABLE participants (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     full_name VARCHAR(255) NOT NULL,
     college_name VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
-    registration_id VARCHAR(50) UNIQUE NOT NULL,
+    registration_id VARCHAR(50) NOT NULL,
     instagram_id VARCHAR(100) NULL,
     is_disabled BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_name_phone UNIQUE (full_name, phone_number)
 );
 
 -- 2. Quizzes Table (Corresponds to 20 Barrels)

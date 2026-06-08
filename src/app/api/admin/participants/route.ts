@@ -79,6 +79,17 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Full name, college, phone, and registration ID are required.' }, { status: 400 });
       }
 
+      // Check for duplicate participant by Name and Phone combination
+      const normalizePhone = (num: string) => num.replace(/\D/g, '');
+      const existingParts = await DB.getParticipantsByName(full_name);
+      const existing = existingParts.find(p => normalizePhone(p.phone_number) === normalizePhone(phone_number));
+      if (existing) {
+        return NextResponse.json(
+          { error: 'A participant with this Full Name and Phone Number is already registered.' },
+          { status: 409 }
+        );
+      }
+
       // Create using existing DB wrapper which sets up participant and progress
       const participant = await DB.createParticipant({
         full_name,
@@ -132,6 +143,17 @@ export async function POST(request: NextRequest) {
 
       if (!id) {
         return NextResponse.json({ error: 'Participant ID is required for update.' }, { status: 400 });
+      }
+
+      // Check for duplicate participant by Name and Phone combination (excluding current participant ID)
+      const normalizePhone = (num: string) => num.replace(/\D/g, '');
+      const existingParts = await DB.getParticipantsByName(full_name);
+      const taken = existingParts.find(p => p.id !== id && normalizePhone(p.phone_number) === normalizePhone(phone_number));
+      if (taken) {
+        return NextResponse.json(
+          { error: 'This Full Name and Phone Number combination is already registered by another participant.' },
+          { status: 409 }
+        );
       }
 
       if (DB.isRealDatabase() && supabase) {

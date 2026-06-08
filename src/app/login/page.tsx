@@ -15,7 +15,7 @@ function LoginForm() {
   const barrelRedirect = searchParams.get('barrel');
 
   const [formData, setFormData] = useState({
-    registration_id: '',
+    full_name: '',
     phone_number: ''
   });
 
@@ -35,7 +35,7 @@ function LoginForm() {
     setSubmitting(true);
     setError(null);
 
-    if (!formData.registration_id.trim() || !formData.phone_number.trim()) {
+    if (!formData.full_name.trim() || !formData.phone_number.trim()) {
       setError('Both fields are required.');
       setSubmitting(false);
       return;
@@ -48,8 +48,8 @@ function LoginForm() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          ...formData,
-          registration_id: `Z-${formData.registration_id.trim()}`
+          full_name: formData.full_name.trim(),
+          phone_number: formData.phone_number.trim()
         })
       });
 
@@ -105,32 +105,23 @@ function LoginForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Z-Id */}
+          {/* Full Name */}
           <div>
-            <label htmlFor="registration_id" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
-              Z-Id
+            <label htmlFor="full_name" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
+              Full Name
             </label>
-            <div className="flex border-2 border-brand-on-surface focus-within:border-brand-secondary focus-within:shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] transition-all bg-brand-surface">
-              <span className="flex items-center justify-center px-4 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-sm select-none">
-                Z-
-              </span>
-              <input
-                type="text"
-                id="registration_id"
-                name="registration_id"
-                value={formData.registration_id}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, ''); // Numbers only
-                  setFormData({ ...formData, registration_id: val });
-                  setError(null);
-                }}
-                placeholder="NUMBER"
-                disabled={submitting}
-                className="flex-grow px-4 py-3.5 text-sm bg-transparent text-brand-on-surface placeholder:text-brand-outline-variant placeholder:opacity-50 outline-none border-none uppercase"
-                required
-                autoFocus
-              />
-            </div>
+            <input
+              type="text"
+              id="full_name"
+              name="full_name"
+              value={formData.full_name}
+              onChange={handleChange}
+              placeholder="ENTER YOUR FULL NAME"
+              disabled={submitting}
+              className="w-full input-brutalist px-4 py-3.5 text-sm uppercase placeholder:text-brand-outline-variant placeholder:opacity-50"
+              required
+              autoFocus
+            />
           </div>
 
           {/* Phone Number */}

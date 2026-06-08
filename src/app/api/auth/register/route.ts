@@ -40,11 +40,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 4. Check for duplicate registration_id
-    const existing = await DB.getParticipantByRegistrationId(trimmedRegId);
+    // 4. Check for duplicate participant by Name and Phone combination
+    const normalizePhone = (num: string) => num.replace(/\D/g, '');
+    const existingParts = await DB.getParticipantsByName(full_name);
+    const existing = existingParts.find(p => normalizePhone(p.phone_number) === normalizePhone(phone_number));
     if (existing) {
       return NextResponse.json(
-        { error: 'This Z-Id is already registered.' },
+        { error: 'A participant with this Full Name and Phone Number is already registered.' },
         { status: 409 }
       );
     }

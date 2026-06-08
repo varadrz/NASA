@@ -179,7 +179,7 @@ function RegisterForm() {
             {/* Z-Id */}
             <div>
               <label htmlFor="registration_id" className="font-mono text-xs font-bold block mb-2 text-brand-on-surface-variant uppercase tracking-wider">
-                Z-Id (Unique Code)
+                Z-Id (Zone / Group Code)
               </label>
               <div className="flex border-2 border-brand-on-surface focus-within:border-brand-secondary focus-within:shadow-[3px_3px_0px_0px_rgba(28,27,27,1)] transition-all bg-brand-surface">
                 <span className="flex items-center justify-center px-4 bg-brand-surface-container text-brand-on-surface border-r-2 border-brand-on-surface font-mono font-bold text-sm select-none">
