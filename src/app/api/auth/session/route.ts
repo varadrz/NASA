@@ -93,6 +93,12 @@ const getDynamicRange = (totalUsers: number): number => {
 
         const currentRegId = participant.registration_id || '';
         const otherRegId = dbPart.registration_id || '';
+
+        // Exclude targets under the same Z-ID
+        if (currentRegId.trim().toLowerCase() === otherRegId.trim().toLowerCase()) {
+          return false;
+        }
+
         const currentMatch = currentRegId.match(/\d+/);
         const otherMatch = otherRegId.match(/\d+/);
         
@@ -121,6 +127,12 @@ const getDynamicRange = (totalUsers: number): number => {
 
           const currentRegId = participant.registration_id || '';
           const otherRegId = p.registration_id || '';
+
+          // Exclude targets under the same Z-ID
+          if (currentRegId.trim().toLowerCase() === otherRegId.trim().toLowerCase()) {
+            return false;
+          }
+
           const currentMatch = currentRegId.match(/\d+/);
           const otherMatch = otherRegId.match(/\d+/);
           
